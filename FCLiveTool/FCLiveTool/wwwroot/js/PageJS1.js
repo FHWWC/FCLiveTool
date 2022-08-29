@@ -105,7 +105,7 @@ function LoadVideo(urls) {
         tpreBtn.onclick = function () {
             var myVideo = videojs('my-player');
             var taa = abottoba(this.title);
-            myVideo.src(taa[2]);
+            myVideo.src(decodeURIComponent(taa[2]));
             myVideo.play();
         }
 
