@@ -1,0 +1,53 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - FCLiveTool</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="headerStyle navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+            <div class="container removeCMP">
+                <img class="mainPageLogo" src="/img/FCLiveLogo.png" onclick="location.href='/TVideo/VideoPage';"/>
+                <h3>FCLiveTool</h3>
+
+                <div style="margin:20px;" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item" style="display:none;">
+                            <div>
+                                <a class="nav-link transline" asp-area="" asp-controller="TVideo" asp-action="VideoPage">直播源</a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div>
+                                <a class="nav-link transline" asp-area="" asp-controller="TVideo" asp-action="Privacy">关于</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="embedded">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="contentArea">
+            &copy; 2017-2022 -- FC Dev Team -- <a asp-area="" asp-controller="TVideo" asp-action="Privacy">关于我们</a>
+        </div>
+    </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

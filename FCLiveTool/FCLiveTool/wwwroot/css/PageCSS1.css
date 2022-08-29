@@ -1,0 +1,156 @@
+﻿.RecentTable {
+    width: 250px;   
+}
+
+    .RecentTable .RTWidth {
+        width: 80px;
+    }
+
+    .RecentTable img {
+        height: 50px;
+    }
+
+#VList {
+    max-height: 1000px;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+    #VList table {
+        float: left;
+        backdrop-filter: blur(20px) brightness(160%) saturate(80%);
+        -webkit-backdrop-filter: blur(20px) brightness(160%) saturate(80%);
+        border-radius: 6px;
+        height: 200px;
+        width: 300px;
+        margin: 10px;
+    }
+
+        #VList table * :not(.VListBtn) {
+            margin-left: 5px;
+        }
+
+.VListBtn {
+    position: relative;
+    border: none;
+    background-color: lightgreen;
+    border-radius: 3px;
+    height: 30px;
+    width: 100%;
+}
+
+    .VListBtn:hover {
+        background-color: lightblue;
+    }
+
+.whitetext {
+    color: white;
+}
+
+.sorttext {
+    margin-top: 20px;
+}
+
+#testtest .vlistItems {
+    overflow: hidden;
+}
+
+#testtest .vlistItem {
+    float: left;
+    margin-top: 5px;
+}
+
+.vlistDown {
+    height: 30px;
+    width: 50px;
+    color: black !important;
+    text-align: center;
+    font-size: 1.2em !important;
+    background-color: lightblue;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    border-radius: 5px;
+    border: none;
+    float: right;
+}
+
+.aycBKG {
+    overflow-x: hidden;
+    overflow-y: auto;
+    max-height: 1000px;
+}
+
+    .aycBKG a {
+        color: lightgreen;
+        font-size: 1.2em;
+    }
+
+        .aycBKG a:hover {
+            color: lightblue;
+        }
+
+.allAyc {
+    backdrop-filter: blur(20px) brightness(160%) saturate(80%);
+    -webkit-backdrop-filter: blur(20px) brightness(160%) saturate(80%);
+    border-radius: 6px;
+}
+
+.removeCMP {
+    margin: 0 5px 0 30px;
+    padding: 0;
+}
+
+.aboutCenter {
+    margin: 0 45%;
+}
+
+    .aboutCenter p {
+        margin: 0 20px;
+    }
+
+.aboutIcon {
+    border-radius: 10px;
+    height: 100px;
+    background-repeat: no-repeat;
+}
+
+.teamIcon {
+    border-radius: 10px;
+    width: 180px;
+    background-repeat: no-repeat;
+}
+
+.aboutSt {
+    border-radius: 6px;
+    width: 160px;
+    height: 50px;
+    background-color: lightblue;
+    float: left;
+    margin: 20px 10px 20px 5px;
+    cursor: pointer;
+}
+
+    .aboutSt img {
+        margin-left: 5px;
+        height: 35px;
+        width: 35px;
+        background-repeat: no-repeat;
+        border-radius: 50%;
+        border: solid 1px black;
+    }
+
+    .aboutSt p {
+        margin: auto;
+    }
+
+    .aboutSt:hover {
+        background-color: skyblue;
+    }
+
+.aboutayc {
+    padding: 10px;
+}
+.tpvideo{
+    display:none;
+}

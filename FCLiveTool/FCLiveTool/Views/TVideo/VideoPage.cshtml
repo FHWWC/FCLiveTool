@@ -1,0 +1,127 @@
+﻿@model FCLiveTool.Models.VideoListModel.AllModel
+@using System.Text.RegularExpressions;
+@using System.Net.Http;
+@using FCLiveTool.Models;
+@using FCLiveTool.Models.VideoListModel
+@using Microsoft.AspNetCore.Http;
+
+<html>
+<head>
+
+    <link href="/css//video-js.min.css" rel="stylesheet" />
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+
+    <!--
+        https://unpkg.com/video.js/dist/video-js.min.css
+            <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="/videojs-contrib-hls.min.js"></script>
+    -->
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <script src="/js/PageJS1.js"></script>
+    <link href="/css/PageCSS1.css" rel="stylesheet" />
+</head>
+<body>
+    <!--
+
+    <video-js id=vid1 width=600 height=300 class="vjs-default-skin" controls>
+        <source src="index.m3u8"
+                type="application/x-mpegURL">
+    </video-js>
+
+    <script>
+        var player = videojs('vid1');
+        player.play();
+    </script>
+    -->
+
+    <table style="margin:0 auto;">
+        <tr>
+            <td></td>
+            <td>
+                <h3 class="whitetext">大家都在看：</h3>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <video id="my-player" class="video-js" controls data-setup='{}' autoplay="autoplay" preload="auto" crossorign="anonymous">
+                    <source type="application/x-mpegURL" src="/index.m3u" />
+                </video>
+            </td>
+            <td style="position:absolute;margin-left: 10px;height: 350px;" class="aycBKG allAyc">
+                @foreach (AllModel.RecentVList recentVList in Model.RLists)
+                {
+                    <div style="cursor: pointer;" onclick="RecentSetSource('@recentVList.SourceLink')">
+                        <table class="RecentTable whitetext">
+                            <tr>
+                                <td class="RTWidth" rowspan="2">
+                                    <img src="@recentVList.LogoLink" />
+                                </td>
+                                <td>
+                                    <b>@recentVList.SourceName</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>@recentVList.Description</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                }
+            </td>
+        </tr>
+
+
+    </table>
+
+
+    <p class="whitetext sorttext">
+        欢迎来到FCLive，在这里你可以随时下载想要的直播源，也可以随时在线预览直播信号，找你想看的内容。完全免费！<br />
+        使用方法：下面提供了直播源，先选择其中一个，然后屏幕下方会加载出它包含的全部链接，点击即可在页面顶部的窗口中预览。
+    </p>
+
+    <h3 class="whitetext sorttext">直播源列表</h3>
+
+    <div id="VList">
+        @foreach (AllModel.VideoList videoList in Model.TVideos)
+        {
+            <table>
+                <tr>
+                    <td>
+                        <h3 style="text-align:center;color:white;margin-top: -10px;">@videoList.SourceName</h3>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p>@videoList.Description</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <input class="VListBtn" type="button" value="查看详情" onclick="LoadM3U8(String.raw`@await LoadVideos(videoList.SourceLink)`)" />
+                    </td>
+
+                </tr>
+            </table>
+
+        }
+    </div>
+
+    <h3 class="whitetext sorttext">视频列表</h3>
+    <div id="testtest" class="aycBKG allAyc"></div>
+
+/*
+此处代码已移除，其作用是下载M3U文件后读取里面的字符串，即一个个的m3u8直播信号。
+*/
+
+    <script>
+        var myVideo = videojs('my-player');
+        myVideo.on('error', function () {
+            myVideo.pause();
+            //document.getElementsByClassName('vjs-play-control vjs-control vjs-button vjs-playing')[0].click();
+            alert("该视频不支持预览!");
+        });
+    </script>
+</body>
+</html>

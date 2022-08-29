@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <View_SelectedScaffolderID>AreaScaffolder</View_SelectedScaffolderID>
+    <View_SelectedScaffolderCategoryPath>root/Common</View_SelectedScaffolderCategoryPath>
+    <WebStackScaffolding_ViewDialogWidth>650.4</WebStackScaffolding_ViewDialogWidth>
+    <WebStackScaffolding_IsLayoutPageSelected>True</WebStackScaffolding_IsLayoutPageSelected>
+    <WebStackScaffolding_IsPartialViewSelected>False</WebStackScaffolding_IsPartialViewSelected>
+    <WebStackScaffolding_IsReferencingScriptLibrariesSelected>False</WebStackScaffolding_IsReferencingScriptLibrariesSelected>
+    <WebStackScaffolding_LayoutPageFile />
+    <NameOfLastUsedPublishProfile>D:\VS 2015-19 Project\FCLiveTool\FCLiveTool\Properties\PublishProfiles\fhwwclives - Web Deploy.pubxml</NameOfLastUsedPublishProfile>
+    <WebStackScaffolding_DependencyDialogWidth>650.4</WebStackScaffolding_DependencyDialogWidth>
+  </PropertyGroup>
+</Project>

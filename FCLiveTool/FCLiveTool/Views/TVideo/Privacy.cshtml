@@ -1,0 +1,90 @@
+﻿@using FCLiveTool.Models.VideoListModel
+
+@{
+    ViewData["Title"] = "关于FCLiveTool";
+}
+<html>
+<head>
+    <script src="/lib/jquery/dist/jquery.js"></script>
+    <link href="/css/PageCSS1.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="allAyc aboutayc">
+        <div class="aboutCenter">
+            <img class="aboutIcon" src="/img/FCLiveLogo.png" />
+            <p class="whitetext">FCLiveTool</p>
+        </div>
+
+        <h3 style="color: lightgreen;">关于本站</h3>
+        <p class="whitetext">
+            FCLiveTool是一款提供各类直播源的工具，可以随时下载想要的直播源，也可以随时在线预览直播信号。网站数据均实时更新，您可以找到您想看的资源。<br />
+            本站的主旨是为大家提供便捷，能帮助更多人是我们希望看到的，我为人人，人人为我。<br />
+            如果您有任何疑问，意见，或问题反馈等等，请联系我们，我们看到后会回复您。联系方式在下面，您可以根据需要选择联系方式。
+        </p>
+
+        <table>
+            <tr>
+                <td>
+                    <div>
+                        <img class="teamIcon" src="/img/TeamIMG.png" />
+                        <h3 style="color: lightgreen;">FC Dev Team</h3>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <table class="aboutSt" onclick="window.open('https://github.com/FHWWC/FCLiveTool'); ">
+                            <tr>
+                                <td>
+                                    <img src="/img/GitHub.png" />
+                                </td>
+                                <td>
+                                    <p>本项目Git</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="aboutSt" onclick="window.open('mailto:justineedyoumost@163.com'); ">
+                            <tr>
+                                <td>
+                                    <img src="/img/EmailICON.png" />
+                                </td>
+                                <td>
+                                    <p>发送邮件</p>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="aboutSt" onclick="CopyGroup()">
+                            <tr>
+                                <td>
+                                    <img src="/img/GroupICON.png" />
+                                </td>
+                                <td>
+                                    <p>我们的群组</p>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                </td>
+            </tr>
+        </table>
+
+
+
+
+    </div>
+
+    <script>
+        function CopyGroup() {
+            var newTB = document.createElement("textarea");
+            newTB.value = "QQ群:      Telegram: t.me/fclivetool";
+            document.body.appendChild(newTB);
+
+            newTB.select();
+            document.execCommand("copy");
+
+            document.body.removeChild(newTB);
+            alert("已将群组复制到剪贴板。");
+        }
+    </script>
+</body>
+</html>
