@@ -6,11 +6,43 @@ catch (ex) {
 
 }
 
-async function LoadM3U8(urls) {
+var currentvideo = "";
+var RM3UIndex = 1;
+var RegexIndex = "";
+var DM3Ufilename = "";
+
+async function LoadM3U8(urls,fname) {
     document.querySelector('#testtest').innerText = "";
+    document.querySelector('#RM3UPanel').hidden = false;
+    document.querySelector('.saveedit').hidden = false;
 
     if (urls != "") {
-        var reg = /(?:.*?tvg-logo="([^"]*)")?(?:.*?tvg-name="([^"]*)")?.*\r?\n(http?\S+.m3u8)/gi;
+        //给相关全局变量赋值
+        currentvideo = urls;    
+        if (fname != undefined) {
+            fname = decodeURIComponent(fname);
+            if (fname.includes("?")) {
+                DM3Ufilename = fname.substring(fname.lastIndexOf("/") + 1, fname.lastIndexOf("?"));
+            }
+            else {
+                DM3Ufilename = fname.substring(fname.lastIndexOf("/") + 1);
+            }
+
+        }
+
+        var reg;
+        switch (RM3UIndex) {
+            case 1:
+                reg = /(?:.*?tvg-logo="([^"]*)")?(?:.*?tvg-name="([^"]*)")?.*\r?\n?((http|https):\/\/\S+\.m3u8)/gi;
+                RegexIndex = [1,2,3];
+                break;
+            case 2:
+                reg = /((tvg-logo="([^"]*)")(.*?))?\,(.+?)(,)?(\n)?(?=((http|https):\/\/\S+\.m3u8))/gi;
+                RegexIndex = [3,5,8];
+                break;
+        }
+
+
         var array = [...urls.matchAll(reg)];
 
         if (array.length < 1) {
@@ -32,13 +64,11 @@ async function LoadM3U8(urls) {
 
 }
 
-
 function LoadVideo(urls) {
     for (var i = 0; i < urls.length; i++) {
         var tdiv = document.createElement("div");
         tdiv.className = "vlistItems";
         tdiv.innerHTML += "<p class='vlistItem whitetext' >直播信号  </p>";
-        document.querySelector('#testtest').appendChild(tdiv);
 
 
         //添加台标
@@ -48,16 +78,29 @@ function LoadVideo(urls) {
         tdiv2.style.float = "left";
 
         var tIMG = document.createElement("img");
-        if (urls[i][1] == "" || urls[i][1] == undefined) {
+        if (urls[i][RegexIndex[0]] == "" || urls[i][RegexIndex[0]] == undefined) {
             tIMG.src = "/img/TVSICON.png";
         }
         else {
-            tIMG.src = urls[i][1];
+            tIMG.src = urls[i][RegexIndex[0]];
         }
         tIMG.height = "30";
 
         tdiv2.appendChild(tIMG);
-        document.querySelectorAll('.vlistItems')[i].appendChild(tdiv2);
+        tdiv.appendChild(tdiv2);
+
+
+        var turls = urls[i][RegexIndex[2]];
+        //添加HTTPS标签
+        var thtag = document.createElement("img");
+
+        if (turls.includes("https://") == true) {
+            //thtag = document.createElement("img");
+            thtag.src = "/img/HTTPSTag.png";
+        }
+        thtag.width = "40";
+
+        tdiv.appendChild(thtag);
 
 
         //添加链接。
@@ -65,42 +108,87 @@ function LoadVideo(urls) {
         tlinks.href = "#";
         tlinks.style.textDecoration = "none";
 
-        if (urls[i][2] == "" || urls[i][2] == undefined) {
-            tlinks.innerText = "---   " + urls[i][3].substring(urls[i][3].lastIndexOf("/"));
+        if (urls[i][RegexIndex[1]] == "" || urls[i][RegexIndex[1]] == undefined) {
+            tlinks.innerText = "---   " + turls.substring(turls.lastIndexOf("/"));
         }
         else {
-            tlinks.innerText = urls[i][2];
+            tlinks.innerText = urls[i][RegexIndex[1]];
         }
 
-        //var link = urls[i][3].replace("http:", "https:");
-        tlinks.title = urls[i][3];
+        //var link = urls[i][RegexIndex[2]].replace("http:", "https:");
+        tlinks.title = turls;
         tlinks.onclick = function () {
             //window.open(this.title);
             var tdlink = this.title;
-            if (tdlink.includes("http://") == true) {
-                CopyText(tdlink);
-                alert("已复制M3U8链接到剪贴板。");
-            }
-            else {
-                var tForm = document.createElement("form");
-                tForm.action = tdlink;
-                tForm.target = "_blank";
-                tForm.method = "POST";
-                document.body.appendChild(tForm);
-                tForm.submit();
-                document.body.removeChild(tForm);
-            }
+
+            var tForm = document.createElement("form");
+            tForm.action = tdlink;
+            tForm.target = "_blank";
+            tForm.method = "POST";
+            document.body.appendChild(tForm);
+            tForm.submit();
+            document.body.removeChild(tForm);
+
+            /*
+                         if (tdlink.includes("http://") == true) {
+                            CopyText(tdlink);
+                            alert("已复制M3U8链接到剪贴板。");
+                        }
+                        else {
+                            var tForm = document.createElement("form");
+                            tForm.action = tdlink;
+                            tForm.target = "_blank";
+                            tForm.method = "POST";
+                            document.body.appendChild(tForm);
+                            tForm.submit();
+                            document.body.removeChild(tForm);
+                        }
+             */
         }
 
-        document.querySelectorAll('.vlistItems')[i].appendChild(tlinks);
+        tdiv.appendChild(tlinks);
 
 
-        //添加按钮
+        //添加失效标签
+/*
+         $.ajax({
+            type: "post",
+            url: turls,
+            dataType: "jsonp"
+        }).always(function (xhr) {
+            //alert(xhr.status)
+        });
+ */
+
+
+        //window.btoa(encodeURIComponent(urls[i][RegexIndex[1]])) + "@@@" + window.btoa(encodeURIComponent(urls[i][RegexIndex[0]])) + "@@@" + window.btoa(encodeURIComponent(urls[i][RegexIndex[2]]));
+        var tbta = window.btoa(encodeURIComponent(tlinks.innerText)) + "@@@" + window.btoa(encodeURIComponent(tIMG.src)) + "@@@" + window.btoa(encodeURIComponent(turls));
+        //添加删除按钮
+        var tdelBtn = document.createElement("input");
+        tdelBtn.className = "vlistDown dellogo";
+        tdelBtn.title = tbta;
+
+        tdelBtn.onclick = function () {
+            var tdel = abottoba(this.title);
+            currentvideo= currentvideo.replace(decodeURIComponent(tdel[2]), "");
+            this.parentElement.remove();
+        }
+
+        tdiv.appendChild(tdelBtn);
+
+
+        //添加编辑按钮
+/*
+         var tdelBtn = document.createElement("input");
+        tdelBtn.className = "vlistDown dellogo";
+ */
+
+
+        //添加预览按钮
         var tpreBtn = document.createElement("a");
-        tpreBtn.className = "vlistDown";
+        tpreBtn.className = "vlistDown prevlogo";
         tpreBtn.href = "#";
-        //tpreBtn.title = window.btoa(encodeURIComponent(urls[i][2])) + "@@@" + window.btoa(encodeURIComponent(urls[i][1])) + "@@@" + window.btoa(encodeURIComponent(urls[i][3]));
-        tpreBtn.title = window.btoa(encodeURIComponent(tlinks.innerText)) + "@@@" + window.btoa(encodeURIComponent(tIMG.src)) + "@@@" + window.btoa(encodeURIComponent(urls[i][3]));
+        tpreBtn.title = tbta;
 
         tpreBtn.onclick = function () {
             var myVideo = videojs('my-player');
@@ -109,13 +197,41 @@ function LoadVideo(urls) {
             myVideo.play();
         }
 
-        tpreBtn.innerText = "预览";
-        //tdownBtn.style.backgroundImage = "url('/img/Download.png')";
+        //tpreBtn.innerText = "预览";
+        //tpreBtn.style.backgroundImage = "url('/img/Download.png') no-repeat";
 
-        document.querySelectorAll('.vlistItems')[i].appendChild(tpreBtn);
+        tdiv.appendChild(tpreBtn);
 
+
+        document.querySelector('#testtest').appendChild(tdiv);
     }
 }
+
+function ChangeReadM3U(index,value) {
+    if (isNaN(index)) {
+        RM3UIndex = 1;
+    }
+    else {
+        RM3UIndex = index;
+    }
+    //document.querySelector(".RM3UBtnL").value = document.querySelectorAll(".RM3UList")[RM3UIndex-1].innerText;
+    document.querySelector(".RM3UBtnL").value = value;
+
+    if (currentvideo == "") {
+        return;
+    }
+    LoadM3U8(currentvideo);
+}
+
+function SaveToDownM3U() {
+    var tdown = document.createElement("a");
+    var blob = new Blob([currentvideo]);
+    tdown.download = DM3Ufilename;
+    tdown.href = URL.createObjectURL(blob);
+    tdown.click();
+    URL.revokeObjectURL(blob);
+}
+
 
 
 function CopyText(value) {
@@ -134,30 +250,7 @@ function RecentSetSource(value) {
     myVideo.src(value);
     myVideo.play();
 }
-/*
- function debounce(callBack, time) {
-    let timer;
 
-    return function () {
-        //this指向debounce
-        let context = this;
-        //即参数，func,wait
-        let args = arguments;
-
-        //如果timer不为null, 清除定时器
-        if (timer) clearTimeout(timer);
-
-        //定义callNow = !timer
-        var callNow = !timer;
-        //定义wait时间后把timer变为null，即在wait时间之后事件才会有效
-        timer = setTimeout(() => {
-            timer = null;
-        }, time)
-        //如果callNow为true,即原本timer为null，那么执行func函数
-        if (callNow) callBack.apply(context, args)
-    }
-}
- */
 
 function abottoba(value) {
     var tvalue = value.split("@@@");
