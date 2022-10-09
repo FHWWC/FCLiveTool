@@ -1,5 +1,5 @@
-﻿.RecentTable {
-    width: 250px;   
+.RecentTable {
+    width: 250px;
 }
 
     .RecentTable .RTWidth {
@@ -44,6 +44,68 @@
         background-color: lightblue;
     }
 
+.RM3UBtn {
+    position: relative;
+    float: left;
+    border: none;
+    background-color: lightgreen;
+    border-radius: 3px;
+    height: 30px;
+    width: 100%;
+}
+
+.RM3UBtnL {
+    width: 200px;
+    border-radius: 3px 0 0 3px;
+}
+
+.RM3UBtnR {
+    width: 25px;
+    border-radius: 0 3px 3px 0;
+    background-image: url('../img/ComboBoxD.png');
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: left;
+}
+
+.rmpdiv {
+    overflow: hidden;
+}
+    .rmpdiv:hover + .rmpdiv2 {
+        display: block;
+    }
+    .rmpdiv:hover .RM3UBtnR {
+        background-image: url('../img/ComboBoxU.png');
+    }
+.rmpdiv2 {
+    position: absolute;
+    display: none;
+    z-index:10;
+}
+
+    .rmpdiv2:hover {
+        display: block;
+    }
+
+.RM3UList {
+    position: relative;
+    border: none;
+    background-color: lightgreen;
+    height: 30px;
+    width: 225px;
+    padding:5px;
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+    .RM3UList:hover {
+        background-color: lightblue;
+        min-height: 30px;
+        height: auto;
+
+        white-space: normal;
+    }
+
 .whitetext {
     color: white;
 }
@@ -51,15 +113,70 @@
 .sorttext {
     margin-top: 20px;
 }
-
-#testtest .vlistItems {
-    overflow: hidden;
+.saveedit {
+    height: 35px;
+    width: 35px;
+    background-image: url('../img/SaveEM3U.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: lightblue;
+    border: none;
+    border-radius: 3px;
 }
 
-#testtest .vlistItem {
-    float: left;
-    margin-top: 5px;
+#RM3UPanel {
+    width: 100%;
 }
+
+    #RM3UPanel tbody {
+        float: right;
+        margin-top: -40px;
+    }
+
+    #RM3UPanel .dialog {
+        z-index: 10;
+        position: absolute;
+        display: none;
+        border-radius: 5px;
+        padding: 5px;
+        background-color: skyblue;
+    }
+
+    #RM3UPanel .quelogo:hover + .dialog {
+        display: block;
+    }
+
+    #RM3UPanel .dialog:hover {
+        display: block;
+    }
+
+.quelogo {
+    background-image: url('../img/Question.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    border: none;
+    background-color: transparent;
+    border-radius: 3px;
+    height: 25px;
+    width: 25px;
+}
+
+    .quelogo:hover {
+        background-color: lightblue;
+    }
+
+#testtest {
+    margin-top: 10px;
+}
+
+    #testtest .vlistItems {
+        overflow: hidden;
+    }
+
+    #testtest .vlistItem {
+        float: left;
+        margin-top: 5px;
+    }
 
 .vlistDown {
     height: 30px;
@@ -73,6 +190,22 @@
     border-radius: 5px;
     border: none;
     float: right;
+}
+.prevlogo {
+    background-image: url('../img/PrevM3U8.png');
+    background-repeat: no-repeat;
+    background-size:60%;
+    background-attachment: local;
+    background-position: center;
+}
+.dellogo {
+    background-image: url('../img/DeleteM3U8.png');
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-attachment: local;
+    background-position: center;
+    background-color: lightpink;
+    margin: 0 5px;
 }
 
 .aycBKG {
@@ -151,6 +284,7 @@
 .aboutayc {
     padding: 10px;
 }
-.tpvideo{
-    display:none;
+
+.tpvideo {
+    display: none;
 }
