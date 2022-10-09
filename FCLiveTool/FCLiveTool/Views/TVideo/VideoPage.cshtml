@@ -1,4 +1,4 @@
-﻿@model FCLiveTool.Models.VideoListModel.AllModel
+@model FCLiveTool.Models.VideoListModel.AllModel
 @using System.Text.RegularExpressions;
 @using System.Net.Http;
 @using FCLiveTool.Models;
@@ -81,7 +81,7 @@
         使用方法：下面提供了直播源，先选择其中一个，然后屏幕下方会加载出它包含的全部链接，点击即可在页面顶部的窗口中预览。
     </p>
 
-    <h3 class="whitetext sorttext">直播源列表</h3>
+    <h2 class="whitetext sorttext">直播源列表</h2>
 
     <div id="VList">
         @foreach (AllModel.VideoList videoList in Model.TVideos)
@@ -89,7 +89,7 @@
             <table>
                 <tr>
                     <td>
-                        <h3 style="text-align:center;color:white;margin-top: -10px;">@videoList.SourceName</h3>
+                        <h3 style="text-align:center;color:white;">@videoList.SourceName</h3>
                     </td>
                 </tr>
                 <tr>
@@ -99,29 +99,90 @@
                 </tr>
                 <tr>
                     <td>
-                        <input class="VListBtn" type="button" value="查看详情" onclick="LoadM3U8(String.raw`@await LoadVideos(videoList.SourceLink)`)" />
+                        <input class="VListBtn" type="button" value="查看详情" onclick="LoadM3U8(String.raw`@await LoadVideos(videoList.SourceLink)`,'@videoList.SourceLink')" />
                     </td>
-
+                </tr>
+                <tr>
+                    <td>
+                        <input class="VListBtn" style="background:lightblue;" type="button" value="复制链接" onclick="CopyText('@videoList.SourceLink')" />
+                    </td>
                 </tr>
             </table>
 
         }
     </div>
 
-    <h3 class="whitetext sorttext">视频列表</h3>
+    <h2 class="whitetext sorttext">视频列表</h2>
+    <p class="whitetext">温馨提示：由于浏览器的安全策略，仅部分前面标有"HTTPS"的直播信号才可以预览，请知悉</p>
+    <table id="RM3UPanel" hidden>
+        <tbody>
+            <tr>
+                <td>
+                    <p style="float:left;" class="whitetext">解析M3U文件的规则：</p>
+                    <input class="quelogo" disabled />
+                    <div class="dialog whitetext">
+                        <p>
+                            由于M3U文件里的数据格式各有不同，甚至一个文件内有多种不同的格式，因此本站提供了多种解析方案，来尽可能的完整解析M3U文件里的数据。
+                            如果您发现许多直播源没有名称，您可以尝试更换解析方案。
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div class="rmpdiv">
+                        <input class="RM3UBtn RM3UBtnL" type="button" value="默认规则"/>
+                        <input class="RM3UBtn RM3UBtnR" type="button" disabled />
+                    </div>
+                    <div class="rmpdiv2" onmouseover="RMLIn()" onmouseout="RMLOut()">
+                        <div class="RM3UList" onclick="ChangeReadM3U(1,this.innerText)">
+                            tvg-logo="台标"(可选) <br />
+                            tvg-name="台名"(可选) <br />
+                            \r或\n(可选) <br />
+                            http://或https://(+任意字符).m3u8(不带参数)
+                        </div>
+                        <div class="RM3UList" onclick="ChangeReadM3U(2,this.innerText)">
+                            tvg-logo="台标"(可选) <br />
+                            , <br />
+                            台名 <br />
+                            ,或\n(可选) <br />
+                            http://或https://(+任意字符).m3u8(不带参数)
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div style="width:100%;">
+        <div style="margin-right: 250px;text-align: right;">
+            <input class="saveedit" type="button" onclick="SaveToDownM3U()" hidden/>
+        </div>
+    </div>
     <div id="testtest" class="aycBKG allAyc"></div>
 
-/*
-此处代码已移除，其作用是下载M3U文件后读取里面的字符串，即一个个的m3u8直播信号。
-*/
+    /*
+    此处代码已移除，其作用是下载M3U文件后读取里面的字符串，即一个个的m3u8直播信号。
+    */
 
     <script>
         var myVideo = videojs('my-player');
         myVideo.on('error', function () {
-            myVideo.pause();
-            //document.getElementsByClassName('vjs-play-control vjs-control vjs-button vjs-playing')[0].click();
-            alert("该视频不支持预览!");
+            setTimeout(() => {
+                myVideo.pause();
+            }, 200);
+            document.querySelector('.vjs-loading-spinner').style.display = "none";
+            document.querySelector(".vjs-modal-dialog-content").innerText = "ERROR! 播放失败，该直播源无法预览";
         });
+
+        function RMLIn() {
+            document.querySelector(".RM3UBtnR").style.backgroundImage = 'url("/img/ComboBoxU.png")';
+        }
+        function RMLOut() {
+            document.querySelector(".RM3UBtnR").style.backgroundImage = "";
+        }
+
+        document.querySelectorAll(".RM3UList")[0].value = "tvg-logo=\"台标\"(可选) \ntvg-name=\"台名\"(可选) \n\\r或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
+        document.querySelectorAll(".RM3UList")[1].value = "tvg-logo=\"台标\"(可选) \n, \n台名 \n,或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
     </script>
 </body>
 </html>
