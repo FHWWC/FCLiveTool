@@ -1,3 +1,92 @@
+@media (max-width: 576px) {
+    html {
+        font-size: 12px;
+    }
+}
+
+.ScrollbarStyle {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+    .ScrollbarStyle::-webkit-scrollbar {
+        /*滚动条整体样式*/
+        width: 15px;
+        height: 1px;
+    }
+
+    .ScrollbarStyle::-webkit-scrollbar-thumb {
+        /*滚动条里面小方块*/
+        border-radius: 5px;
+        background-color: skyblue;
+        background-image: -webkit-linear-gradient( 45deg, deepskyblue 25%, transparent 25%, transparent 50%,deepskyblue 50%, deepskyblue 75%, transparent 75%, transparent );
+    }
+
+        .ScrollbarStyle::-webkit-scrollbar-thumb:hover {
+            border: solid 2px lightyellow;
+        }
+
+    .ScrollbarStyle::-webkit-scrollbar-track {
+        /*滚动条里面轨道*/
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+        background: lightgray;
+        border-radius: 5px;
+    }
+
+    .ScrollbarStyle::-webkit-scrollbar-button:single-button {
+        display: block;
+        height: 20px;
+        background: lightgreen;
+    }
+        /*顶部*/
+        .ScrollbarStyle::-webkit-scrollbar-button:single-button:vertical:increment {
+            background-image: url('../img/ComboBoxD.png');
+            background-repeat: no-repeat;
+            background-size: 100%;
+        }
+
+            .ScrollbarStyle::-webkit-scrollbar-button:single-button:vertical:increment:hover {
+                background-color: skyblue;
+            }
+        /*底部*/
+        .ScrollbarStyle::-webkit-scrollbar-button:single-button:vertical:decrement {
+            background-image: url('../img/ComboBoxU.png');
+            background-repeat: no-repeat;
+            background-size: 100%;
+        }
+
+            .ScrollbarStyle::-webkit-scrollbar-button:single-button:vertical:decrement:hover {
+                background-color: skyblue;
+            }
+
+.topvideo {
+    margin: 0 auto;
+}
+
+@media (max-width: 576px) {
+    .smlrecent {
+        display: block;
+    }
+
+    .topvideo {
+        display: none;
+    }
+}
+
+@media (min-width: 576px) {
+    .smlrecent {
+        display: none;
+    }
+}
+
+.RecentLists {
+    cursor: pointer;
+}
+
+    .RecentLists:hover {
+        background: lightblue;
+    }
+
 .RecentTable {
     width: 250px;
 }
@@ -13,8 +102,6 @@
 #VList {
     max-height: 1000px;
     width: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
 }
 
     #VList table {
@@ -30,6 +117,13 @@
         #VList table * :not(.VListBtn) {
             margin-left: 5px;
         }
+@media (max-width: 576px) {
+    #VList
+    {
+        margin-left:-10px;
+    }
+}
+
 
 .VListBtn {
     position: relative;
@@ -42,6 +136,17 @@
 
     .VListBtn:hover {
         background-color: lightblue;
+        box-shadow: 0px 0px 3px 3px lightblue;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+.VLCBtn {
+    background: lightblue;
+}
+
+    .VLCBtn:hover {
+        box-shadow: 0px 0px 3px 3px lightblue;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
 .RM3UBtn {
@@ -71,16 +176,19 @@
 .rmpdiv {
     overflow: hidden;
 }
+
     .rmpdiv:hover + .rmpdiv2 {
         display: block;
     }
+
     .rmpdiv:hover .RM3UBtnR {
         background-image: url('../img/ComboBoxU.png');
     }
+
 .rmpdiv2 {
     position: absolute;
     display: none;
-    z-index:10;
+    z-index: 10;
 }
 
     .rmpdiv2:hover {
@@ -93,17 +201,18 @@
     background-color: lightgreen;
     height: 30px;
     width: 225px;
-    padding:5px;
-    white-space:nowrap;
+    padding: 5px;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
     .RM3UList:hover {
         background-color: lightblue;
         min-height: 30px;
         height: auto;
-
         white-space: normal;
+        box-shadow: 0px 0px 3px 3px lightblue;
     }
 
 .whitetext {
@@ -113,15 +222,25 @@
 .sorttext {
     margin-top: 20px;
 }
-.saveedit {
-    height: 35px;
-    width: 35px;
-    background-image: url('../img/SaveEM3U.png');
-    background-repeat: no-repeat;
-    background-size: 100%;
-    background-color: lightblue;
-    border: none;
-    border-radius: 3px;
+
+@media (max-width: 576px) {
+    .maintip {
+        display: none;
+    }
+
+    .maintip2 {
+        display: block;
+    }
+}
+
+@media (min-width: 576px) {
+    .maintip {
+        display: block;
+    }
+
+    .maintip2 {
+        display: none;
+    }
 }
 
 #RM3UPanel {
@@ -150,6 +269,28 @@
         display: block;
     }
 
+@media (max-width: 576px) {
+    #RM3UPanel {
+        margin-top: 50px;
+    }
+}
+
+
+.saveedit {
+    height: 35px;
+    width: 35px;
+    background-image: url('../img/SaveEM3U.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: lightblue;
+    border: none;
+    border-radius: 3px;
+}
+
+    .saveedit:hover {
+        box-shadow: 0px 0px 3px 3px lightblue;
+    }
+
 .quelogo {
     background-image: url('../img/Question.png');
     background-repeat: no-repeat;
@@ -163,6 +304,7 @@
 
     .quelogo:hover {
         background-color: lightblue;
+        box-shadow: 0px 0px 3px 3px lightblue;
     }
 
 #testtest {
@@ -177,8 +319,54 @@
         float: left;
         margin-top: 5px;
     }
+@media (max-width: 576px) {
+    #testtest {
+margin-right:10px;
+    }
+}
 
-.vlistDown {
+
+@media (max-width: 576px) {
+    .vlistLogo {
+        width: 50px;
+    }
+}
+
+@media (min-width: 576px) {
+    .vlistLogo {
+        width: 200px;
+    }
+}
+
+.vlistLogo {
+    margin: 0 10px;
+    float: left;
+}
+
+
+.vlistlink {
+    text-decoration: none;
+    position: relative;
+}
+
+    .vlistlink:after {
+        position: absolute;
+        content: "";
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 2px;
+        background-color: lightyellow;
+        transform: scaleX(0);
+        transition: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        transform-origin: center;
+    }
+
+    .vlistlink:hover:after {
+        transform: scaleX(1);
+    }
+
+.vlistRight {
     height: 30px;
     width: 50px;
     color: black !important;
@@ -190,14 +378,27 @@
     border-radius: 5px;
     border: none;
     float: right;
+    margin: 5px;
 }
+
 .prevlogo {
     background-image: url('../img/PrevM3U8.png');
     background-repeat: no-repeat;
-    background-size:60%;
+    background-size: 60%;
     background-attachment: local;
     background-position: center;
 }
+
+    .prevlogo:hover {
+        box-shadow: 0px 0px 3px 3px lightblue;
+    }
+
+@media (max-width: 576px) {
+    .prevlogo {
+        display: none;
+    }
+}
+
 .dellogo {
     background-image: url('../img/DeleteM3U8.png');
     background-repeat: no-repeat;
@@ -205,8 +406,11 @@
     background-attachment: local;
     background-position: center;
     background-color: lightpink;
-    margin: 0 5px;
 }
+
+    .dellogo:hover {
+        box-shadow: 0px 0px 3px 3px lightpink;
+    }
 
 .aycBKG {
     overflow-x: hidden;
@@ -232,6 +436,12 @@
 .removeCMP {
     margin: 0 5px 0 30px;
     padding: 0;
+}
+/*顶部自适应*/
+@media (max-width: 576px) {
+    .removeCMP {
+        display: block !important;
+    }
 }
 
 .aboutCenter {
