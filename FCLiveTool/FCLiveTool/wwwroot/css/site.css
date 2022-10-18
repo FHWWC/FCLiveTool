@@ -1,4 +1,4 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
 
@@ -30,6 +30,8 @@ header {
 }
 
 .mainPageLogo {
+    float:left;
+
     background-repeat: no-repeat;
     height: 80px;
     margin-left: -40px;
@@ -59,6 +61,13 @@ header {
     .headerStyle h3,.headerStyle p {
         color: white;
     }
+
+/*顶部自适应*/
+@media (max-width: 576px) {
+    .headerStyle {
+        width: 100%;
+    }
+}
 
 /* Provide sufficient contrast against white background */
 a {
