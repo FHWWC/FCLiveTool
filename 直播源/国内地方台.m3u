@@ -4729,4 +4729,5 @@ http://39.130.202.77:6610/gitv_live/G_ZHENYUAN/G_ZHENYUAN.m3u8
 埋堆堆66,http://txtest-xp2p.p2p.huya.com/src/1199563488528-1199563488528-5444356138466279424-2399127100512-10057-A-0-1.xs
 埋堆堆67,http://txtest-xp2p.p2p.huya.com/src/1199561181026-1199561181026-5434445492840824832-2399122485508-10057-A-0-1.xs
 埋堆堆68,http://txtest-xp2p.p2p.huya.com/src/1199561158071-1199561158071-5434346901866545152-2399122439598-10057-A-0-1.xs
-测试直播源,https://pluslive.kangbatv.com/1/playlist.m3u8?auth_key=1666435560-0-0-d4106aed2049e42b795f219c1ff4bac5
+#EXTINF:-1 ,测试直播源
+https://pluslive.kangbatv.com/1/playlist.m3u8?auth_key=1666435560-0-0-d4106aed2049e42b795f219c1ff4bac5
