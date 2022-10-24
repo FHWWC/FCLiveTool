@@ -139,6 +139,10 @@
         box-shadow: 0px 0px 3px 3px lightblue;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+    .VListBtn:focus {
+        box-shadow: 0px 0px 3px 3px white;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
 
 .VLCBtn {
     background: lightblue;
@@ -146,6 +150,10 @@
 
     .VLCBtn:hover {
         box-shadow: 0px 0px 3px 3px lightblue;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .VLCBtn:focus {
+        box-shadow: 0px 0px 3px 3px white;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
@@ -289,18 +297,24 @@
 
     .saveedit:hover {
         box-shadow: 0px 0px 3px 3px lightblue;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .saveedit:focus {
+        box-shadow: 0px 0px 3px 3px white;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
-.quelogo {
-    background-image: url('../img/Question.png');
-    background-repeat: no-repeat;
-    background-size: 100%;
-    border: none;
-    background-color: transparent;
-    border-radius: 3px;
-    height: 25px;
-    width: 25px;
-}
+
+    .quelogo {
+        background-image: url('../img/Question.png');
+        background-repeat: no-repeat;
+        background-size: 100%;
+        border: none;
+        background-color: transparent;
+        border-radius: 3px;
+        height: 25px;
+        width: 25px;
+    }
 
     .quelogo:hover {
         background-color: lightblue;
@@ -391,6 +405,11 @@ margin-right:10px;
 
     .prevlogo:hover {
         box-shadow: 0px 0px 3px 3px lightblue;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .prevlogo:focus {
+        box-shadow: 0px 0px 3px 3px white;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
 @media (max-width: 576px) {
@@ -410,6 +429,11 @@ margin-right:10px;
 
     .dellogo:hover {
         box-shadow: 0px 0px 3px 3px lightpink;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .dellogo:focus {
+        box-shadow: 0px 0px 3px 3px white;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
 .aycBKG {
