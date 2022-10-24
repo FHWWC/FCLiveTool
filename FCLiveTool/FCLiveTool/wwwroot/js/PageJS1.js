@@ -33,11 +33,11 @@ async function LoadM3U8(urls,fname) {
         var reg;
         switch (RM3UIndex) {
             case 1:
-                reg = /(?:.*?tvg-logo="([^"]*)")?(?:.*?tvg-name="([^"]*)")?.*\r?\n?((http|https):\/\/\S+\.m3u8)/gi;
+                reg = /(?:.*?tvg-logo="([^"]*)")?(?:.*?tvg-name="([^"]*)")?.*\r?\n?((http|https):\/\/\S+\.m3u8?(.*?)(?=\n|,))/gi;
                 RegexIndex = [1,2,3];
                 break;
             case 2:
-                reg = /((tvg-logo="([^"]*)")(.*?))?\,(.+?)(,)?(\n)?(?=((http|https):\/\/\S+\.m3u8))/gi;
+                reg = /((tvg-logo="([^"]*)")(.*?))?\,(.+?)(,)?(\n)?(?=((http|https):\/\/\S+\.m3u8?(.*?)(?=\n|,)))/gi;
                 RegexIndex = [3,5,8];
                 break;
         }
