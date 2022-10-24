@@ -105,7 +105,8 @@
                 </tr>
                 <tr>
                     <td>
-                        <p>@videoList.Description</p>
+                        <!--根据壁纸调整-->
+                        <p style="color:lightblue">@videoList.Description</p>
                     </td>
                 </tr>
                 <tr>
@@ -153,14 +154,16 @@
                             tvg-logo="台标"(可选) <br />
                             tvg-name="台名"(可选) <br />
                             \r或\n(可选) <br />
-                            http://或https://(+任意字符).m3u8(不带参数)
+                            http://或https://(+任意字符).m3u8 <br />
+                            ?参数名=值&参数名=值...(全部可选)
                         </div>
                         <div class="RM3UList" onclick="ChangeReadM3U(2,this.innerText)">
                             tvg-logo="台标"(可选) <br />
                             , <br />
                             台名 <br />
                             ,或\n(可选) <br />
-                            http://或https://(+任意字符).m3u8(不带参数)
+                            http://或https://(+任意字符).m3u8 <br />
+                            ?参数名=值&参数名=值...(全部可选)
                         </div>
                     </div>
                 </td>
