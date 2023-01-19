@@ -21,6 +21,24 @@
     <link href="/css/PageCSS1.css" rel="stylesheet" />
 </head>
 <body>
+    <!--
+
+    <video-js id=vid1 width=600 height=300 class="vjs-default-skin" controls>
+        <source src="index.m3u8"
+                type="application/x-mpegURL">
+    </video-js>
+
+    <script>
+        var player = videojs('vid1');
+        player.play();
+    </script>
+    -->
+
+    <div class="shownotice">
+        <h2 id="NoticeTitle">提示信息</h2>
+        <p id="NoticeContent"></p>
+        <input class="sncn" type="button" value="关闭" onclick="CloseNotice()" />
+    </div>
 
     <table class="topvideo">
         <tr>
@@ -92,8 +110,20 @@
         使用方法：下面提供了直播源，先选择其中一个，然后屏幕下方会加载出它包含的全部链接，点击即可在页面顶部的窗口中预览。
     </p>
 
-    <h2 class="whitetext sorttext">直播源列表</h2>
 
+    <div class="shownotice loadingdialog">
+        <div class="loadingThree">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <h5 id="loadingdialogMSG">加载中，请稍后...</h5>
+    </div>
+
+    <h2 class="whitetext sorttext">直播源列表</h2>
+    <p class="whitetext sorttext">*所有直播源均来自于网络，本站不对直播里的内容负责，如有侵权请联系我们删除</p>
     <div id="VList" class="ScrollbarStyle">
         @foreach (AllModel.VideoList videoList in Model.TVideos)
         {
@@ -111,7 +141,7 @@
                 </tr>
                 <tr>
                     <td>
-                        <input class="VListBtn" type="button" value="查看详情" onclick="LoadM3U8(String.raw`@await LoadVideos(videoList.SourceLink)`,'@videoList.SourceLink')" />
+                        <input class="VListBtn" type="button" value="查看详情" onclick="GetVD('@videoList.SourceLink')" />
                     </td>
                 </tr>
                 <tr>
@@ -126,7 +156,8 @@
 
     <h2 class="whitetext sorttext">视频列表</h2>
     <p class="whitetext maintip">温馨提示：由于浏览器的安全策略，仅部分前面标有"HTTPS"的直播信号才可以预览，请知悉</p>
-    <p class="whitetext maintip2">温馨提示：请点击链接进行预览，如果浏览器提示不安全，请点"仍然发送"即可。<br/>
+    <p class="whitetext maintip2">
+        温馨提示：请点击链接进行预览，如果浏览器提示不安全，请点"仍然发送"即可。<br />
         只有在PC端视图中进行预览，才会被记录至最近播放中。
     </p>
     <table id="RM3UPanel" hidden>
@@ -146,7 +177,7 @@
             <tr>
                 <td>
                     <div class="rmpdiv">
-                        <input class="RM3UBtn RM3UBtnL" type="button" value="默认规则"/>
+                        <input class="RM3UBtn RM3UBtnL" type="button" value="默认规则" />
                         <input class="RM3UBtn RM3UBtnR" type="button" disabled />
                     </div>
                     <div class="rmpdiv2" onmouseover="RMLIn()" onmouseout="RMLOut()">
@@ -168,18 +199,29 @@
                     </div>
                 </td>
             </tr>
+            <tr class="whitetext">
+                <td>
+                    <p style="float:left;">当前规则下匹配出</p>
+                    <b id="M3U8Count" style="float:left;color:lightgreen;"></b>
+                    <p>条数据。</p>
+                </td>
+            </tr>
         </tbody>
     </table>
     <div style="width:100%;">
         <div style="margin-right: 250px;text-align: right;">
-            <input class="saveedit" type="button" onclick="SaveToDownM3U()" hidden/>
+            <input class="saveedit" type="button" onclick="SaveToDownM3U()" hidden />
         </div>
     </div>
     <div id="testtest" class="aycBKG allAyc ScrollbarStyle"></div>
-    
-    /*
-    此处代码已移除，其作用是下载M3U文件后读取里面的字符串，即一个个的m3u8直播信号。
-    */
+    <div class="CM3U8Panel">
+        <div class="CM3U8Btn">
+            <input id="CMGoBack" type="button" value="上一页" onclick="CMBack()" disabled />
+            <input id="CMPageText" style="width:50px;" type="number"/>
+            <input id="CMPageJump" type="button" value="跳转" onclick="CMPageJump()" />
+            <input id="CMGoNext" type="button" value="下一页" onclick="CMNext()" disabled />
+        </div>
+    </div>
 
     <script>
         var myVideo = videojs('my-player');
@@ -198,10 +240,10 @@
             document.querySelector(".RM3UBtnR").style.backgroundImage = "";
         }
 
-/*
-                document.querySelectorAll(".RM3UList")[0].innerText = "tvg-logo=\"台标\"(可选) \ntvg-name=\"台名\"(可选) \n\\r或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
-                document.querySelectorAll(".RM3UList")[1].innerText = "tvg-logo=\"台标\"(可选) \n, \n台名 \n,或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
-*/
-  </script>
+        /*
+                        document.querySelectorAll(".RM3UList")[0].innerText = "tvg-logo=\"台标\"(可选) \ntvg-name=\"台名\"(可选) \n\\r或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
+                        document.querySelectorAll(".RM3UList")[1].innerText = "tvg-logo=\"台标\"(可选) \n, \n台名 \n,或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
+        */
+    </script>
 </body>
 </html>
