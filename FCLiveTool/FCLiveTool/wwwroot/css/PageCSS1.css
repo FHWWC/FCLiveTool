@@ -59,6 +59,14 @@
                 background-color: skyblue;
             }
 
+#NoticeTitle {
+    margin-top: 40px;
+}
+
+#NoticeContent {
+    margin-top: 20px;
+}
+
 .topvideo {
     margin: 0 auto;
 }
@@ -117,10 +125,10 @@
         #VList table * :not(.VListBtn) {
             margin-left: 5px;
         }
+
 @media (max-width: 576px) {
-    #VList
-    {
-        margin-left:-10px;
+    #VList {
+        margin-left: -10px;
     }
 }
 
@@ -139,6 +147,7 @@
         box-shadow: 0px 0px 3px 3px lightblue;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
     .VListBtn:focus {
         box-shadow: 0px 0px 3px 3px white;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
@@ -152,6 +161,7 @@
         box-shadow: 0px 0px 3px 3px lightblue;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
     .VLCBtn:focus {
         box-shadow: 0px 0px 3px 3px white;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
@@ -231,6 +241,103 @@
     margin-top: 20px;
 }
 
+.shownotice {
+    background: lightpink;
+    z-index: 10;
+    position: fixed;
+    display: none;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 5px lightpink;
+    margin: 0 auto;
+    left: 10%;
+    right: 10%;
+    top: 50%;
+    text-align: center;
+}
+
+    .shownotice .sncn {
+        height: 30px;
+        position: relative;
+        border: none;
+        border-radius: 3px;
+        background-color: lightyellow;
+        margin-bottom: 10px;
+        bottom: 0;
+    }
+
+        .shownotice .sncn:hover {
+            box-shadow: 0px 0px 3px 3px lightyellow;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+        .shownotice .sncn:focus {
+            box-shadow: 0px 0px 3px 3px white;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+.loadingdialog {
+    color: white;
+    width: 200px;
+    text-align: center;
+    display:none;
+}
+
+#NoticeTitle {
+    margin-top: 0;
+}
+
+
+.loadingThree {
+    width: 150px;
+    height: 15px;
+    margin: 20px;
+}
+
+    .loadingThree span {
+        display: inline-block;
+        width: 15px;
+        height: 100%;
+        margin-right: 5px;
+        border-radius: 50%;
+        background: deepskyblue;
+        -webkit-animation: load 1.04s ease infinite;
+    }
+
+        .loadingThree span:last-child {
+            margin-right: 0px;
+        }
+
+@-webkit-keyframes load {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.loadingThree span:nth-child(1) {
+    -webkit-animation-delay: 0.13s;
+}
+
+.loadingThree span:nth-child(2) {
+    -webkit-animation-delay: 0.26s;
+}
+
+.loadingThree span:nth-child(3) {
+    -webkit-animation-delay: 0.39s;
+}
+
+.loadingThree span:nth-child(4) {
+    -webkit-animation-delay: 0.52s;
+}
+
+.loadingThree span:nth-child(5) {
+    -webkit-animation-delay: 0.65s;
+}
+
+
 @media (max-width: 576px) {
     .maintip {
         display: none;
@@ -299,22 +406,23 @@
         box-shadow: 0px 0px 3px 3px lightblue;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
     .saveedit:focus {
         box-shadow: 0px 0px 3px 3px white;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
 
-    .quelogo {
-        background-image: url('../img/Question.png');
-        background-repeat: no-repeat;
-        background-size: 100%;
-        border: none;
-        background-color: transparent;
-        border-radius: 3px;
-        height: 25px;
-        width: 25px;
-    }
+.quelogo {
+    background-image: url('../img/Question.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    border: none;
+    background-color: transparent;
+    border-radius: 3px;
+    height: 25px;
+    width: 25px;
+}
 
     .quelogo:hover {
         background-color: lightblue;
@@ -333,9 +441,10 @@
         float: left;
         margin-top: 5px;
     }
+
 @media (max-width: 576px) {
     #testtest {
-margin-right:10px;
+        margin-right: 10px;
     }
 }
 
@@ -407,6 +516,7 @@ margin-right:10px;
         box-shadow: 0px 0px 3px 3px lightblue;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
     .prevlogo:focus {
         box-shadow: 0px 0px 3px 3px white;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
@@ -431,10 +541,49 @@ margin-right:10px;
         box-shadow: 0px 0px 3px 3px lightpink;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
     .dellogo:focus {
         box-shadow: 0px 0px 3px 3px white;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
+
+.CM3U8Panel
+{
+    display:none;
+    width:100%;
+    margin-top:20px;
+}
+
+.CM3U8Btn
+{
+    margin:0 auto;
+    width:50%;
+}
+    .CM3U8Btn input {
+        margin-left: 20px;
+        height: 30px;
+        background: lightyellow;
+        border: none;
+        border-radius: 3px;
+    }
+        .CM3U8Btn input:hover {
+            box-shadow: 0px 0px 3px 3px lightyellow;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+        .CM3U8Btn input:focus {
+            box-shadow: 0px 0px 3px 3px white;
+            transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+@media (max-width: 576px) {
+    .CM3U8Btn {
+        margin: 0 auto;
+        width:auto;
+    }
+}
+
+
 
 .aycBKG {
     overflow-x: hidden;
