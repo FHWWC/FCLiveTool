@@ -576,6 +576,15 @@
             transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
 
+#CMFP, #CMLP {
+    background: lightpink;
+}
+
+    #CMFP:hover, #CMLP:hover {
+        box-shadow: 0px 0px 3px 3px lightpink;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
 @media (max-width: 576px) {
     .CM3U8Btn {
         margin: 0 auto;
