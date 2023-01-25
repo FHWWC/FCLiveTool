@@ -402,6 +402,29 @@ function DoRegex(urls) {
     return [...urls.matchAll(reg)];
 }
 
+function CMFPBtn() {
+    var pages = Math.ceil(mcount / 100);
+    M3U8PC = 1;
+    var array = DoRegex(currentvideo);
+
+    if (pages == 1) {
+        LoadVideo(array, 1, array.length);
+    }
+    else {
+        LoadVideo(array, 1, 100);
+    }
+
+}
+
+function CMLPBtn() {
+    var pages = Math.ceil(mcount / 100);
+    M3U8PC = pages;
+
+    var array = DoRegex(currentvideo);
+    LoadVideo(array, (M3U8PC - 1) * 100 + 1, array.length);
+
+}
+
 
 //以下是非主要函数
 function CopyText(value) {
