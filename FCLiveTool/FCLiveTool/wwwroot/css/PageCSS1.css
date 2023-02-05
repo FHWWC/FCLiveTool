@@ -232,10 +232,17 @@
         white-space: normal;
         box-shadow: 0px 0px 3px 3px lightblue;
     }
+    .RM3UList .rmnum
+    {
+        float:left;
+    }
+    .RM3UList .rmreg{
+        margin-left:35px;
+    }
 
-.whitetext {
-    color: white;
-}
+    .whitetext {
+        color: white;
+    }
 
 .sorttext {
     margin-top: 20px;
@@ -279,7 +286,7 @@
     color: white;
     width: 200px;
     text-align: center;
-    display:none;
+    display: none;
 }
 
 #NoticeTitle {
@@ -547,49 +554,58 @@
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
-.CM3U8Panel
-{
-    display:none;
-    width:100%;
-    margin-top:20px;
+.CM3U8Panel {
+    display: none;
+    width: 100%;
+    margin-top: 20px;
 }
 
-.CM3U8Btn
-{
-    margin:0 auto;
-    width:50%;
+ .CVListPanel {
+    width: 100%;
+    margin-top: 20px;
 }
-    .CM3U8Btn input {
+
+.CM3U8Btn, .CVListBtn {
+    margin: 0 auto;
+    width: 50%;
+}
+
+    .CM3U8Btn input, .CVListBtn input {
         margin-left: 20px;
         height: 30px;
         background: lightyellow;
         border: none;
         border-radius: 3px;
     }
-        .CM3U8Btn input:hover {
+
+        .CM3U8Btn input:hover, .CVListBtn input:hover {
             box-shadow: 0px 0px 3px 3px lightyellow;
             transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
 
-        .CM3U8Btn input:focus {
+        .CM3U8Btn input:focus, .CVListBtn input:focus {
             box-shadow: 0px 0px 3px 3px white;
             transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
 
-#CMFP, #CMLP {
+#CMFP, #CMLP, #CVListFP, #CVListLP {
     background: lightpink;
 }
 
-    #CMFP:hover, #CMLP:hover {
+    #CMFP:hover, #CMLP:hover, #CVListFP:hover, #CVListLP:hover {
         box-shadow: 0px 0px 3px 3px lightpink;
         transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
 @media (max-width: 576px) {
-    .CM3U8Btn {
+    .CM3U8Btn, .CVListBtn {
         margin: 0 auto;
-        width:auto;
+        width: auto;
     }
+        .CM3U8Btn input, .CVListBtn input {
+            margin-left: 5px;
+        }
+
 }
 
 
