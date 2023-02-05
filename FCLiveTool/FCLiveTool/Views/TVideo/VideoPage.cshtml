@@ -21,19 +21,6 @@
     <link href="/css/PageCSS1.css" rel="stylesheet" />
 </head>
 <body>
-    <!--
-
-    <video-js id=vid1 width=600 height=300 class="vjs-default-skin" controls>
-        <source src="index.m3u8"
-                type="application/x-mpegURL">
-    </video-js>
-
-    <script>
-        var player = videojs('vid1');
-        player.play();
-    </script>
-    -->
-
     <div class="shownotice">
         <h2 id="NoticeTitle">提示信息</h2>
         <p id="NoticeContent"></p>
@@ -154,6 +141,24 @@
         }
     </div>
 
+    @{
+        int CurrentPage = (int)Context.Session.GetInt32("VTempCurrentIndex");
+        string FirstPageTag = CurrentPage<2 ? "none" : "auto";
+        string LastPageTag = CurrentPage>=(int)Context.Session.GetInt32("VTempMaxPage") ? "none" : "auto";
+    }
+    <div class="CVListPanel">
+        <div class="CVListBtn">
+            <form asp-action="VideoPage" method="post">
+                <input id="CVListFP" asp-route-vtype="1" type="submit" value="首页" style="pointer-events:@FirstPageTag;" />
+                <input asp-route-vtype="3" type="submit" value="上一页" style="pointer-events:@FirstPageTag;" />
+                <input name="pagenum" style="width:50px;" type="number" value="@Context.Session.GetInt32("VTempCurrentIndex")" />
+                <input type="submit" value="跳转" />
+                <input asp-route-vtype="4" type="submit" value="下一页" style="pointer-events:@LastPageTag;" />
+                <input id="CVListLP" asp-route-vtype="2" type="submit" value="末页" style="pointer-events:@LastPageTag;" />
+            </form>
+        </div>
+    </div>
+
     <h2 class="whitetext sorttext">视频列表</h2>
     <p class="whitetext maintip">温馨提示：由于浏览器的安全策略，仅部分前面标有"HTTPS"的直播信号才可以预览，请知悉</p>
     <p class="whitetext maintip2">
@@ -182,19 +187,56 @@
                     </div>
                     <div class="rmpdiv2" onmouseover="RMLIn()" onmouseout="RMLOut()">
                         <div class="RM3UList" onclick="ChangeReadM3U(1,this.innerText)">
-                            tvg-logo="台标"(可选) <br />
-                            tvg-name="台名"(可选) <br />
-                            \r或\n(可选) <br />
-                            http://或https://(+任意字符).m3u8 <br />
-                            ?参数名=值&参数名=值...(全部可选)
+                            <div class="rmnum">
+                                1.
+                            </div>
+                            <div class="rmreg">
+                                tvg-logo="台标"(可选) <br />
+                                tvg-name="台名"(可选) <br />
+                                \r或\n(可选) <br />
+                                http://或https://(+任意字符).m3u8 <br />
+                                ?参数名=值&参数名=值...(全部可选)
+                            </div>
                         </div>
                         <div class="RM3UList" onclick="ChangeReadM3U(2,this.innerText)">
-                            tvg-logo="台标"(可选) <br />
-                            , <br />
-                            台名 <br />
-                            ,或\n(可选) <br />
-                            http://或https://(+任意字符).m3u8 <br />
-                            ?参数名=值&参数名=值...(全部可选)
+                            <div class="rmnum">
+                                2.
+                            </div>
+                            <div class="rmreg">
+                                tvg-logo="台标"(可选) <br />
+                                , <br />
+                                台名 <br />
+                                ,或\n(可选) <br />
+                                http://或https://(+任意字符).m3u8 <br />
+                                ?参数名=值&参数名=值...(全部可选)
+                            </div>
+                        </div>
+                        <div class="RM3UList" onclick="ChangeReadM3U(3,this.innerText)">
+                            <div class="rmnum">
+                                3.
+                            </div>
+                            <div class="rmreg">
+                                , <br />
+                                tvg-logo="台标"(可选) <br />
+                                , <br />
+                                台名 <br />
+                                ,或    \n(可选) <br />
+                                http://或https://(+任意字符).m3u8 <br />
+                                ?参数名=值&参数名=值...(全部可选)
+                            </div>
+                        </div>
+                        <div class="RM3UList" onclick="ChangeReadM3U(4,this.innerText)">
+                            <div class="rmnum">
+                                4.
+                            </div>
+                            <div class="rmreg">
+                                tvg-logo="台标"(可选) <br />
+                                , <br />
+                                台名 <br />
+                                ,或\n(可选) <br />
+                                http://或https://(+任意字符，不限.m3u8后缀) <br />
+                                ?参数名=值&参数名=值...(全部可选)
+                            </div>
                         </div>
                     </div>
                 </td>
@@ -216,12 +258,12 @@
     <div id="testtest" class="aycBKG allAyc ScrollbarStyle"></div>
     <div class="CM3U8Panel">
         <div class="CM3U8Btn">
-            <input id="CMFP" style="background-color:lightpink;" type="button" value="首页" onclick="CMFPBtn()" />
+            <input id="CMFP" type="button" value="首页" onclick="CMFPBtn()" />
             <input id="CMGoBack" type="button" value="上一页" onclick="CMBack()" disabled />
             <input id="CMPageText" style="width:50px;" type="number" />
             <input id="CMPageJump" type="button" value="跳转" onclick="CMPageJump()" />
             <input id="CMGoNext" type="button" value="下一页" onclick="CMNext()" disabled />
-            <input id="CMLP" style="background-color:lightpink;" type="button" value="末页" onclick="CMLPBtn()" />
+            <input id="CMLP" type="button" value="末页" onclick="CMLPBtn()" />
         </div>
     </div>
 
@@ -242,10 +284,6 @@
             document.querySelector(".RM3UBtnR").style.backgroundImage = "";
         }
 
-        /*
-                        document.querySelectorAll(".RM3UList")[0].innerText = "tvg-logo=\"台标\"(可选) \ntvg-name=\"台名\"(可选) \n\\r或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
-                        document.querySelectorAll(".RM3UList")[1].innerText = "tvg-logo=\"台标\"(可选) \n, \n台名 \n,或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
-        */
     </script>
 </body>
 </html>
