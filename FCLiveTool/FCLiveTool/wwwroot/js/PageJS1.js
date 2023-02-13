@@ -15,11 +15,23 @@ var M3U8PC = 1;
 
 
 //解析M3U8入口点
-async function LoadM3U8(urls, fname) {
+function LoadM3U8(urls, fname,recreg) {
     document.querySelector('#testtest').innerText = "";
     document.querySelector('#RM3UPanel').hidden = false;
     document.querySelector('.saveedit').hidden = false;
-    document.querySelector("#CMPageText").value=1;
+    document.querySelector("#CMPageText").value = 1;
+    M3U8PC = 1;
+    //查看是否有推荐的解析方案
+    if (recreg != undefined) {
+        if (isNaN(recreg)) {
+            RM3UIndex = 1;
+        }
+        else {
+            RM3UIndex = recreg;
+        }
+        //目前暂不处理匹配规则的相关复选框
+
+    }
 
     if (urls != "") {
         //给相关全局变量赋值
@@ -40,10 +52,10 @@ async function LoadM3U8(urls, fname) {
         mcount = array.length;
         if (mcount < 1) {
             document.querySelector('#testtest').innerText = "No M3U8 file!";
-            ShowNotice("无法解析", "当前表达式解析不到M3U8链接");
+            ShowNotice("无法解析", "当前表达式解析不到M3U8链接，请在右下的下拉框中更换其他解析方案！");
             HideCM3U8();
 
-            return;
+            return false;
         }
         else if (urls.length > 100) {
             document.querySelector(".CM3U8Panel").style.display = "block";
@@ -53,22 +65,17 @@ async function LoadM3U8(urls, fname) {
         document.querySelector("#loadingdialogMSG").innerText = "解析中，请稍后...";
         document.querySelector("#M3U8Count").innerText = " " + array.length + " ";
 
-        //async function
-        return new Promise(resolve => {
-            setTimeout(() => {
-                LoadVideo(array, 1, array.length);
-            }, 0);
-        });
+        LoadVideo(array, 1, array.length);
 
         //如果需要将所有内容加载完后隐藏提示，则在这里执行、
         //document.querySelector(".loadingdialog").style.display = "";
-
-
     }
     else {
         document.querySelector('#testtest').innerText = "Error!";
         ShowNotice("请勿修改源数据", "Error! 如果您什么也没做，请重新获取列表！");
         HideCM3U8();
+
+        return false;
     }
 
 }
@@ -231,8 +238,6 @@ function LoadVideo(urls, start, end) {
 
             tpreBtn.onclick = function () {
                 var myVideo = videojs('my-player');
-
-                var taa = abottoba(this.title);
                 myVideo.src(decodeURIComponent(taa[2]));
                 myVideo.play();
             }
@@ -254,15 +259,36 @@ function LoadVideo(urls, start, end) {
     document.querySelector(".loadingdialog").style.display = "";
 }
 
-function ChangeReadM3U(index, value) {
+function ChangeReadM3U(index) {
+    var rocb = document.querySelector("#ROCB").checked;
+
     if (isNaN(index)) {
-        RM3UIndex = 1;
+        if (rocb) {
+            RM3UIndex = 1;
+        }
+        else {
+            RM3UIndex = 1.2;
+        }
     }
     else {
-        RM3UIndex = index;
+        if (!rocb) {
+            if (index == 1) {
+                RM3UIndex = 1.2;
+            }
+            else if (index == 2) {
+                RM3UIndex = 2.2;
+            }
+            else {
+                RM3UIndex = index;
+            }
+        }
+        else {
+            RM3UIndex = index;
+        }
+
     }
     //document.querySelector(".RM3UBtnL").value = document.querySelectorAll(".RM3UList")[RM3UIndex-1].innerText;
-    document.querySelector(".RM3UBtnL").value = value;
+    document.querySelector(".RM3UBtnL").value = "规则 "+index;
 
     if (currentvideo == "") {
         return;
@@ -279,7 +305,7 @@ function SaveToDownM3U() {
     URL.revokeObjectURL(blob);
 }
 
-function GetVD(url) {
+function GetVD(url,recreg) {
     /*
          var v = RDRD();
         if (v == "" || v == undefined) {
@@ -310,8 +336,7 @@ function GetVD(url) {
                     break;
                 default:
 
-                    isfailed = false;
-                    LoadM3U8(value.replace(/\r\n/g, "\n"), url);
+                    LoadM3U8(value.replace(/\r\n/g, "\n"), url, recreg) == false ? isfailed = true : isfailed = false;
 
                     break;
             }
@@ -322,6 +347,9 @@ function GetVD(url) {
 
         if (isfailed) {
             document.querySelector(".loadingdialog").style.display = "";
+        }
+        else {
+            window.scrollTo(0, document.querySelector("#VLTT").offsetTop);
         }
 
     });
@@ -390,13 +418,32 @@ function DoRegex(urls) {
     var reg;
     switch (RM3UIndex) {
         case 1:
-            reg = /(?:.*?tvg-logo="([^"]*)")?(?:.*?tvg-name="([^"]*)")?.*\r?\n?((http|https):\/\/\S+\.m3u8?(.*?)(?=\n|,))/gi;
+            reg = /(?:.*?tvg-logo="([^"]*)")?(?:.*?tvg-name="([^"]*)")?.*\r?\n?((http|https):\/\/\S+\.m3u8(\?(.*?))?(?=\n|,))/gi;
+            RegexIndex = [1, 2, 3];
+            break;
+        //1.2为1的不限制M3U8后缀的版本
+        case 1.2:
+            reg = /(?:.*?tvg-logo="([^"]*)")?(?:.*?tvg-name="([^"]*)")?.*\r?\n?((http|https):\/\/\S+(.*?)(?=\n|,))/gi;
             RegexIndex = [1, 2, 3];
             break;
         case 2:
-            reg = /((tvg-logo="([^"]*)")(.*?))?\,(.+?)(,)?(\n)?(?=((http|https):\/\/\S+\.m3u8?(.*?)(?=\n|,)))/gi;
+            reg = /((tvg-logo="([^"]*)")(.*?))?\,(.+?)(,)?(\n)?(?=((http|https):\/\/\S+\.m3u8(\?(.*?))?(?=\n|,)))/gi;
             RegexIndex = [3, 5, 8];
             break;
+        //2.2为2的不限制M3U8后缀的版本
+        case 2.2:
+            reg = /((tvg-logo="([^"]*)")(.*?))?\,(.+?)(,)?(\n)?(?=((http|https):\/\/\S+(.*?)(?=\n|,)))/gi;
+            RegexIndex = [3, 5, 8];
+            break;
+        case 3:
+            reg = /\,?((tvg-logo="([^"]*)")(.*?))\,(.+?)(,)?(\n)?(?=((http|https):\/\/\S+(.*?)(?=\n|,)))/gi;
+            RegexIndex = [3, 5, 8];
+            break;
+        case 4:
+            reg = /(((http|https):\/\/\S+)(,))?(.*?)(,)((http|https):\/\/\S+(?=\n|,))/gi;
+            RegexIndex = [2, 5, 7];
+            break;
+
     }
 
     return [...urls.matchAll(reg)];
@@ -436,6 +483,7 @@ function CopyText(value) {
     document.execCommand("copy");
 
     document.body.removeChild(newTB);
+    ShowNotice("提示信息", "已复制下载链接到剪贴板");
 }
 
 function RecentSetSource(value) {
@@ -469,6 +517,31 @@ function CloseNotice() {
 function HideCM3U8() {
     document.querySelector(".CM3U8Panel").style.display = "";
 }
+
+/*
+ function debounce(callBack, time) {
+    let timer;
+
+    return function () {
+        //this指向debounce
+        let context = this;
+        //即参数，func,wait
+        let args = arguments;
+
+        //如果timer不为null, 清除定时器
+        if (timer) clearTimeout(timer);
+
+        //定义callNow = !timer
+        var callNow = !timer;
+        //定义wait时间后把timer变为null，即在wait时间之后事件才会有效
+        timer = setTimeout(() => {
+            timer = null;
+        }, time)
+        //如果callNow为true,即原本timer为null，那么执行func函数
+        if (callNow) callBack.apply(context, args)
+    }
+}
+ */
 
 function abottoba(value) {
     var tvalue = value.split("@@@");
