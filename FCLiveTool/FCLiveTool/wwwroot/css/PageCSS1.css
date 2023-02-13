@@ -67,6 +67,37 @@
     margin-top: 20px;
 }
 
+input[type=checkbox] {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+    input[type=checkbox]:hover {
+        box-shadow: 0px 0px 3px 3px lightyellow;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+    input[type=checkbox]:after {
+        content: "";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: solid 3px white;
+        background:lightyellow;
+        border-radius: 3px;
+    }
+
+    input[type=checkbox]:checked:after {
+        content: "";
+        background-image: url('/img/CheckedICON.png');
+        background-repeat: no-repeat;
+        background-size: 100%;
+        background-color: lightpink;
+        border: none;
+    }
+
+
 .topvideo {
     margin: 0 auto;
 }
@@ -128,7 +159,15 @@
 
 @media (max-width: 576px) {
     #VList {
-        margin-left: -10px;
+        margin-right: 5px;
+        width: auto;
+    }
+        #VList table {
+            height: 150px;
+            width: 150px;
+        }
+    .VListBtn {
+        height: 20px !important;
     }
 }
 
@@ -232,17 +271,26 @@
         white-space: normal;
         box-shadow: 0px 0px 3px 3px lightblue;
     }
-    .RM3UList .rmnum
+
+    .RM3UList .rmnum p
     {
-        float:left;
+        text-align:center;
     }
-    .RM3UList .rmreg{
-        margin-left:35px;
+    .RM3UList .rotable {
+        font-size: 0.8em;
+    }
+    .RM3UList .rotable p{
+margin:0 5px;
     }
 
-    .whitetext {
-        color: white;
+    .RM3UList .rmreg {
+        margin-left: 5px;
+        font-size: 0.8em;
     }
+
+.whitetext {
+    color: white;
+}
 
 .sorttext {
     margin-top: 20px;
@@ -369,7 +417,7 @@
     width: 100%;
 }
 
-    #RM3UPanel tbody {
+    #RM3UPanel .rpbody {
         float: right;
         margin-top: -40px;
     }
@@ -560,7 +608,7 @@
     margin-top: 20px;
 }
 
- .CVListPanel {
+.CVListPanel {
     width: 100%;
     margin-top: 20px;
 }
@@ -602,10 +650,10 @@
         margin: 0 auto;
         width: auto;
     }
+
         .CM3U8Btn input, .CVListBtn input {
             margin-left: 5px;
         }
-
 }
 
 
