@@ -128,12 +128,12 @@
                 </tr>
                 <tr>
                     <td>
-                        <input class="VListBtn" type="button" value="查看详情" onclick="GetVD('@videoList.SourceLink')" />
+                        <input class="VListBtn" type="button" value="查看详情" onclick="GetVD('@videoList.SourceLink',@videoList.RecommendReg)" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <input class="VListBtn VLCBtn" type="button" value="复制链接" onclick="CopyText('@videoList.SourceLink')" />
+                        <input class="VListBtn VLCBtn" type="button" value="复制下载链接" onclick="CopyText('@videoList.SourceLink')" />
                     </td>
                 </tr>
             </table>
@@ -159,14 +159,14 @@
         </div>
     </div>
 
-    <h2 class="whitetext sorttext">视频列表</h2>
+    <h2 id="VLTT" class="whitetext sorttext">视频列表</h2>
     <p class="whitetext maintip">温馨提示：由于浏览器的安全策略，仅部分前面标有"HTTPS"的直播信号才可以预览，请知悉</p>
     <p class="whitetext maintip2">
         温馨提示：请点击链接进行预览，如果浏览器提示不安全，请点"仍然发送"即可。<br />
         只有在PC端视图中进行预览，才会被记录至最近播放中。
     </p>
     <table id="RM3UPanel" hidden>
-        <tbody>
+        <tbody class="rpbody">
             <tr>
                 <td>
                     <p style="float:left;" class="whitetext">解析M3U文件的规则：</p>
@@ -182,17 +182,31 @@
             <tr>
                 <td>
                     <div class="rmpdiv">
-                        <input class="RM3UBtn RM3UBtnL" type="button" value="默认规则" />
+                        <input class="RM3UBtn RM3UBtnL" type="button" value="自动匹配规则" />
                         <input class="RM3UBtn RM3UBtnR" type="button" disabled />
                     </div>
                     <div class="rmpdiv2" onmouseover="RMLIn()" onmouseout="RMLOut()">
+                        <div class="RM3UList">
+                            <table class="rotable">
+                                <tr>
+                                    <td>
+                                        <input id="ROCB" type="checkbox" checked />
+                                    </td>
+                                    <td><p>仅匹配文件名为M3U8的URL</p></td>
+                                </tr>
+                            </table>
+                        </div>
                         <div class="RM3UList" onclick="ChangeReadM3U(1,this.innerText)">
                             <div class="rmnum">
-                                1.
+                                <p>
+                                    规则 1
+                                    <br />
+                                    匹配台标(tvg-logo)，台名(tvg-name)，URL
+                                </p>
                             </div>
                             <div class="rmreg">
                                 tvg-logo="台标"(可选) <br />
-                                tvg-name="台名"(可选) <br />
+                                tvg-name="台名"(可选，不建议为空) <br />
                                 \r或\n(可选) <br />
                                 http://或https://(+任意字符).m3u8 <br />
                                 ?参数名=值&参数名=值...(全部可选)
@@ -200,7 +214,11 @@
                         </div>
                         <div class="RM3UList" onclick="ChangeReadM3U(2,this.innerText)">
                             <div class="rmnum">
-                                2.
+                                <p>
+                                    规则2
+                                    <br />
+                                    匹配台标(tvg-logo)，台名(两逗号之间文本)，URL
+                                </p>
                             </div>
                             <div class="rmreg">
                                 tvg-logo="台标"(可选) <br />
@@ -213,29 +231,39 @@
                         </div>
                         <div class="RM3UList" onclick="ChangeReadM3U(3,this.innerText)">
                             <div class="rmnum">
-                                3.
+                                <p>
+                                    规则3
+                                    <br />
+                                    和第二项相同，区别在于#EXTINF字符和台标字符之间有多个逗号
+                                </p>
                             </div>
                             <div class="rmreg">
                                 , <br />
-                                tvg-logo="台标"(可选) <br />
-                                , <br />
-                                台名 <br />
-                                ,或    \n(可选) <br />
-                                http://或https://(+任意字符).m3u8 <br />
-                                ?参数名=值&参数名=值...(全部可选)
-                            </div>
-                        </div>
-                        <div class="RM3UList" onclick="ChangeReadM3U(4,this.innerText)">
-                            <div class="rmnum">
-                                4.
-                            </div>
-                            <div class="rmreg">
-                                tvg-logo="台标"(可选) <br />
+                                tvg-logo="台标" <br />
                                 , <br />
                                 台名 <br />
                                 ,或\n(可选) <br />
                                 http://或https://(+任意字符，不限.m3u8后缀) <br />
                                 ?参数名=值&参数名=值...(全部可选)
+                            </div>
+                        </div>
+                        <div class="RM3UList" onclick="ChangeReadM3U(4,this.innerText)">
+                            <div class="rmnum">
+                                <p>
+                                    规则4
+                                    <br />
+                                    简单粗暴，无附加格式，匹配：台标(可选)，台名，URL
+                                </p>
+                            </div>
+                            <div class="rmreg">
+                                台标(可选) <br />
+                                , <br />
+                                台名 <br />
+                                ，<br />
+                                http://或https://(+任意字符，不限.m3u8后缀) <br />
+                                ?参数名=值&参数名=值...(全部可选)
+                            </div>
+                            <div style="height:50px;">
                             </div>
                         </div>
                     </div>
@@ -284,6 +312,10 @@
             document.querySelector(".RM3UBtnR").style.backgroundImage = "";
         }
 
+        /*
+                        document.querySelectorAll(".RM3UList")[0].innerText = "tvg-logo=\"台标\"(可选) \ntvg-name=\"台名\"(可选) \n\\r或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
+                        document.querySelectorAll(".RM3UList")[1].innerText = "tvg-logo=\"台标\"(可选) \n, \n台名 \n,或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
+        */
     </script>
 </body>
 </html>
