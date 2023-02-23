@@ -128,12 +128,12 @@
                 </tr>
                 <tr>
                     <td>
-                        <input class="VListBtn" type="button" value="查看详情" onclick="GetVD('@videoList.SourceLink',@videoList.RecommendReg)" />
+                        <input class="VListBtn hover-lightblue focus-white" type="button" value="查看详情" onclick="GetVD('@videoList.SourceLink',@videoList.RecommendReg)" />
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        <input class="VListBtn VLCBtn" type="button" value="复制下载链接" onclick="CopyText('@videoList.SourceLink')" />
+                        <input class="VListBtn VLCBtn hover-lightblue focus-white" type="button" value="复制下载链接" onclick="CopyText('@videoList.SourceLink')" />
                     </td>
                 </tr>
             </table>
@@ -149,13 +149,31 @@
     <div class="CVListPanel">
         <div class="CVListBtn">
             <form asp-action="VideoPage" method="post">
-                <input id="CVListFP" asp-route-vtype="1" type="submit" value="首页" style="pointer-events:@FirstPageTag;" />
+                <input id="CVListFP" class="hover-lightpink focus-lightpink" asp-route-vtype="1" type="submit" value="首页" style="pointer-events:@FirstPageTag;" />
                 <input asp-route-vtype="3" type="submit" value="上一页" style="pointer-events:@FirstPageTag;" />
                 <input name="pagenum" style="width:50px;" type="number" value="@Context.Session.GetInt32("VTempCurrentIndex")" />
                 <input type="submit" value="跳转" />
                 <input asp-route-vtype="4" type="submit" value="下一页" style="pointer-events:@LastPageTag;" />
-                <input id="CVListLP" asp-route-vtype="2" type="submit" value="末页" style="pointer-events:@LastPageTag;" />
+                <input id="CVListLP" class="hover-lightpink focus-lightpink" asp-route-vtype="2" type="submit" value="末页" style="pointer-events:@LastPageTag;" />
             </form>
+        </div>
+    </div>
+
+    <div class="shownotice editpanel">
+        <div class="edittitle">
+            <p>将直播信号 </p>
+            <p id="OldM3U8Name"></p>
+            <p> 重命名为：</p>
+        </div>
+        <p id="EditTemp"></p>
+        <div>
+            <input class="m3u8editTb hover-lightblue focus-lightblue" type="text" placeholder="输入新名称" />
+            <p class="editerror"></p>
+        </div>
+
+        <div>
+            <input class="UpdM3U8Btn hover-lightblue focus-lightblue" type="button" value="确定" onclick="UpdateM3U8Name()" />
+            <input class="UpdM3U8Btn hover-lightpink focus-lightpink" type="button" value="取消" onclick="CancelUpdateMN()" />
         </div>
     </div>
 
@@ -279,19 +297,33 @@
         </tbody>
     </table>
     <div style="width:100%;">
-        <div style="margin-right: 250px;text-align: right;">
-            <input class="saveedit" type="button" onclick="SaveToDownM3U()" hidden />
-        </div>
+        <table class="MToolsPanel">
+            <tr>
+                <td>
+                    <div style="float:left;">
+                        <input class="m3u8searchTb hover-lightblue focus-white" type="text" placeholder="搜索M3U8直播源" />
+                    </div>
+                    <input class="m3u8searchBtn hover-lightblue focus-white" type="button" onclick="SearchM3U8()" />
+                    <input class="m3urestore hover-lightpink focus-white" type="button" onclick="RestoreMSearch()" />
+                </td>
+                <td>
+                    <div class="sblock">
+                        <p class="whitetext">保存修改后的M3U</p>
+                        <input class="saveedit hover-lightblue focus-white" type="button" onclick="SaveToDownM3U()" />
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
     <div id="testtest" class="aycBKG allAyc ScrollbarStyle"></div>
     <div class="CM3U8Panel">
         <div class="CM3U8Btn">
-            <input id="CMFP" type="button" value="首页" onclick="CMFPBtn()" />
+            <input id="CMFP" class="hover-lightpink focus-lightpink" type="button" value="首页" onclick="CMFPBtn()" />
             <input id="CMGoBack" type="button" value="上一页" onclick="CMBack()" disabled />
-            <input id="CMPageText" style="width:50px;" type="number" />
+            <input id="CMPageText" style="width:50px;outline: none;" type="number" />
             <input id="CMPageJump" type="button" value="跳转" onclick="CMPageJump()" />
             <input id="CMGoNext" type="button" value="下一页" onclick="CMNext()" disabled />
-            <input id="CMLP" type="button" value="末页" onclick="CMLPBtn()" />
+            <input id="CMLP" class="hover-lightpink focus-lightpink" type="button" value="末页" onclick="CMLPBtn()" />
         </div>
     </div>
 
@@ -312,10 +344,6 @@
             document.querySelector(".RM3UBtnR").style.backgroundImage = "";
         }
 
-        /*
-                        document.querySelectorAll(".RM3UList")[0].innerText = "tvg-logo=\"台标\"(可选) \ntvg-name=\"台名\"(可选) \n\\r或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
-                        document.querySelectorAll(".RM3UList")[1].innerText = "tvg-logo=\"台标\"(可选) \n, \n台名 \n,或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
-        */
     </script>
 </body>
 </html>
