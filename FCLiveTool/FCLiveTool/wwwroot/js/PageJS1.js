@@ -11,16 +11,21 @@ var RM3UIndex = 1;
 var RegexIndex = "";
 var DM3Ufilename = "";
 var mcount;
+var searchcount;
 var M3U8PC = 1;
+var SearchRList = new Array();
+var isSearchMode = false;
 
 
 //解析M3U8入口点
-function LoadM3U8(urls, fname,recreg) {
+function LoadM3U8(urls, fname, recreg) {
     document.querySelector('#testtest').innerText = "";
     document.querySelector('#RM3UPanel').hidden = false;
-    document.querySelector('.saveedit').hidden = false;
+    document.querySelector('.MToolsPanel').style.display = "block";
     document.querySelector("#CMPageText").value = 1;
     M3U8PC = 1;
+    isSearchMode = false;
+
     //查看是否有推荐的解析方案
     if (recreg != undefined) {
         if (isNaN(recreg)) {
@@ -65,7 +70,7 @@ function LoadM3U8(urls, fname,recreg) {
         document.querySelector("#loadingdialogMSG").innerText = "解析中，请稍后...";
         document.querySelector("#M3U8Count").innerText = " " + array.length + " ";
 
-        LoadVideo(array, 1, array.length);
+        LoadVideo(array, 1, array.length, false);
 
         //如果需要将所有内容加载完后隐藏提示，则在这里执行、
         //document.querySelector(".loadingdialog").style.display = "";
@@ -80,9 +85,10 @@ function LoadM3U8(urls, fname,recreg) {
 
 }
 
-function LoadVideo(urls, start, end) {
+function LoadVideo(urls, start, end, issearch) {
 
     document.querySelector('#testtest').innerText = "";
+
     //根据情况调整分页数
     if (urls.length <= 100) {
         HideCM3U8();
@@ -91,10 +97,14 @@ function LoadVideo(urls, start, end) {
     if (!Number.isInteger(start) || !Number.isInteger(end)) {
         return;
     }
-    if (end - start > 99) {
-        start = 1;
-        end = 100;
+
+    if (!issearch) {
+        if (end - start > 99) {
+            start = 1;
+            end = 100;
+        }
     }
+
 
     if (urls.length == end) {
         document.querySelector('#CMGoNext').disabled = true;
@@ -149,13 +159,27 @@ function LoadVideo(urls, start, end) {
             tdiv.appendChild(thtag);
 
 
-            //添加链接。
+
+            //如果是搜索模式，判断一下是否匹配搜索关键字
+            if (issearch) {
+                var tsearchv = document.querySelector(".m3u8searchTb").value;
+                if (tsearchv != "") {
+                    if (urls[i][RegexIndex[1]].includes(tsearchv)) {
+                        SearchRList.push(urls[i]);
+                    }
+
+                }
+
+            }
+
+
+            //添加台标文本以及链接。
             var tlinks = document.createElement("a");
             tlinks.className = "vlistlink";
             tlinks.href = "#";
 
             if (urls[i][RegexIndex[1]] == "" || urls[i][RegexIndex[1]] == undefined) {
-                tlinks.innerText = "---   " + turls.substring(turls.lastIndexOf("/"));
+                tlinks.innerText = "文件名:   " + turls.substring(turls.lastIndexOf("/"));
             }
             else {
                 tlinks.innerText = urls[i][RegexIndex[1]];
@@ -195,6 +219,7 @@ function LoadVideo(urls, start, end) {
             tdiv.appendChild(tlinks);
 
 
+
             //添加失效标签
             /*
                      $.ajax({
@@ -211,12 +236,14 @@ function LoadVideo(urls, start, end) {
             var tbta = window.btoa(encodeURIComponent(tlinks.innerText)) + "@@@" + window.btoa(encodeURIComponent(tIMG.src)) + "@@@" + window.btoa(encodeURIComponent(turls));
             //添加删除按钮
             var tdelBtn = document.createElement("input");
-            tdelBtn.className = "vlistRight dellogo";
+            tdelBtn.className = "vlistRight dellogo hover-lightpink focus-white";
             tdelBtn.title = tbta;
+            tdelBtn.type = "button";
 
             tdelBtn.onclick = function () {
                 var tdel = abottoba(this.title);
-                currentvideo = currentvideo.replace(decodeURIComponent(tdel[2]), "");
+
+                currentvideo = currentvideo.replace(decodeURIComponent(tdel[0]) + "\n" + decodeURIComponent(tdel[2]), "");
                 this.parentElement.remove();
             }
 
@@ -224,15 +251,24 @@ function LoadVideo(urls, start, end) {
 
 
             //添加编辑按钮
-            /*
-                     var tdelBtn = document.createElement("input");
-                    tdelBtn.className = "vlistRight dellogo";
-             */
+            var tediBtn = document.createElement("input");
+            tediBtn.className = "vlistRight editlogo hover-lightyellow focus-white";
+            tediBtn.title = tbta;
+            tediBtn.type = "button";
+
+            tediBtn.onclick = function () {
+                var tedi = abottoba(this.title);
+                document.querySelector("#OldM3U8Name").innerText = decodeURIComponent(tedi[0]);
+                document.querySelector("#EditTemp").innerText = this.title;
+                document.querySelector(".editpanel").style.display = "block";
+            }
+
+            tdiv.appendChild(tediBtn);
 
 
             //添加预览按钮
             var tpreBtn = document.createElement("a");
-            tpreBtn.className = "vlistRight prevlogo";
+            tpreBtn.className = "vlistRight prevlogo hover-lightblue focus-white";
             tpreBtn.href = "#";
             tpreBtn.title = tbta;
 
@@ -241,9 +277,6 @@ function LoadVideo(urls, start, end) {
                 myVideo.src(decodeURIComponent(taa[2]));
                 myVideo.play();
             }
-
-            //tpreBtn.innerText = "预览";
-            //tpreBtn.style.backgroundImage = "url('/img/Download.png') no-repeat";
 
             tdiv.appendChild(tpreBtn);
 
@@ -256,10 +289,20 @@ function LoadVideo(urls, start, end) {
         }
     }
 
+    //如果处于搜索状态，那么需要重新调用LoadVideo，读取通过关键词筛选出来的数据
+    if (issearch) {
+        LoadVideo(SearchRList, 1, SearchRList.length, false);
+        searchcount = SearchRList.length;
+    }
+
     document.querySelector(".loadingdialog").style.display = "";
 }
 
 function ChangeReadM3U(index) {
+    if (isSearchMode) {
+        ShowNotice("无法更改解析方案", "搜索结果不支持更改解析方案，如要更换表达式，请点击搜索框旁的重新加载列表按钮，然后再选择其他解析表达式");
+        return;
+    }
     var rocb = document.querySelector("#ROCB").checked;
 
     if (isNaN(index)) {
@@ -288,7 +331,7 @@ function ChangeReadM3U(index) {
 
     }
     //document.querySelector(".RM3UBtnL").value = document.querySelectorAll(".RM3UList")[RM3UIndex-1].innerText;
-    document.querySelector(".RM3UBtnL").value = "规则 "+index;
+    document.querySelector(".RM3UBtnL").value = "规则 " + index;
 
     if (currentvideo == "") {
         return;
@@ -297,6 +340,10 @@ function ChangeReadM3U(index) {
 }
 
 function SaveToDownM3U() {
+    if (currentvideo == "") {
+        return;
+    }
+
     var tdown = document.createElement("a");
     var blob = new Blob([currentvideo]);
     tdown.download = DM3Ufilename;
@@ -305,7 +352,7 @@ function SaveToDownM3U() {
     URL.revokeObjectURL(blob);
 }
 
-function GetVD(url,recreg) {
+function GetVD(url, recreg) {
     /*
          var v = RDRD();
         if (v == "" || v == undefined) {
@@ -363,8 +410,13 @@ function CMPageJump() {
 
 
     //根据情况调整分页数
-
-    var pages = Math.ceil(mcount / 100);
+    var pages;
+    if (isSearchMode) {
+        pages = Math.ceil(SearchRList.length / 100);
+    }
+    else {
+        pages = Math.ceil(mcount / 100);
+    }
     if (index > pages || index < 1) {
         ShowNotice("", "输入的页数不正确");
         return;
@@ -372,13 +424,19 @@ function CMPageJump() {
     //仅用作两个按钮
     M3U8PC = index;
 
-    var array = DoRegex(currentvideo);
-
-    if (pages == index) {
-        LoadVideo(array, (index - 1) * 100 + 1, array.length);
+    var array;
+    if (isSearchMode) {
+        array = SearchRList;
     }
     else {
-        LoadVideo(array, (index - 1) * 100 + 1, (index - 1) * 100 + 100);
+        array = DoRegex(currentvideo);
+    }
+
+    if (pages == index) {
+        LoadVideo(array, (index - 1) * 100 + 1, array.length, false);
+    }
+    else {
+        LoadVideo(array, (index - 1) * 100 + 1, (index - 1) * 100 + 100, false);
     }
 
 
@@ -389,24 +447,44 @@ function CMBack() {
 
         M3U8PC -= 1;
 
-        var array = DoRegex(currentvideo);
-        LoadVideo(array, (M3U8PC - 1) * 100 + 1, (M3U8PC - 1) * 100 + 100);
-    }
+        var array;
+        if (isSearchMode) {
+            array = SearchRList;
+        }
+        else {
+            array = DoRegex(currentvideo);
+        }
 
+        LoadVideo(array, (M3U8PC - 1) * 100 + 1, (M3U8PC - 1) * 100 + 100, false);
+    }
 }
 
 function CMNext() {
-    var pages = Math.ceil(mcount / 100);
+    var pages;
+    if (isSearchMode) {
+        pages = Math.ceil(SearchRList.length / 100);
+    }
+    else {
+        pages = Math.ceil(mcount / 100);
+    }
+
     if (M3U8PC < pages) {
 
         M3U8PC += 1;
 
-        var array = DoRegex(currentvideo);
-        if (M3U8PC == pages) {
-            LoadVideo(array, (M3U8PC - 1) * 100 + 1, array.length);
+        var array;
+        if (isSearchMode) {
+            array = SearchRList;
         }
         else {
-            LoadVideo(array, (M3U8PC - 1) * 100 + 1, (M3U8PC - 1) * 100 + 100);
+            array = DoRegex(currentvideo);
+        }
+
+        if (M3U8PC == pages) {
+            LoadVideo(array, (M3U8PC - 1) * 100 + 1, array.length, false);
+        }
+        else {
+            LoadVideo(array, (M3U8PC - 1) * 100 + 1, (M3U8PC - 1) * 100 + 100, false);
         }
 
     }
@@ -450,26 +528,101 @@ function DoRegex(urls) {
 }
 
 function CMFPBtn() {
-    var pages = Math.ceil(mcount / 100);
-    M3U8PC = 1;
-    var array = DoRegex(currentvideo);
-
-    if (pages == 1) {
-        LoadVideo(array, 1, array.length);
+    var pages;
+    if (isSearchMode) {
+        pages = Math.ceil(SearchRList.length / 100);
     }
     else {
-        LoadVideo(array, 1, 100);
+        pages = Math.ceil(mcount / 100);
+    }
+
+    M3U8PC = 1;
+
+    var array;
+    if (isSearchMode) {
+        array = SearchRList;
+    }
+    else {
+        array = DoRegex(currentvideo);
+    }
+
+    if (pages == 1) {
+        LoadVideo(array, 1, array.length, false);
+    }
+    else {
+        LoadVideo(array, 1, 100, false);
     }
 
 }
 
 function CMLPBtn() {
-    var pages = Math.ceil(mcount / 100);
+    var pages;
+    if (isSearchMode) {
+        pages = Math.ceil(SearchRList.length / 100);
+    }
+    else {
+        pages = Math.ceil(mcount / 100);
+    }
+
     M3U8PC = pages;
 
-    var array = DoRegex(currentvideo);
-    LoadVideo(array, (M3U8PC - 1) * 100 + 1, array.length);
+    var array;
+    if (isSearchMode) {
+        array = SearchRList;
+    }
+    else {
+        array = DoRegex(currentvideo);
+    }
 
+    LoadVideo(array, (M3U8PC - 1) * 100 + 1, array.length, false);
+
+}
+
+function SearchM3U8() {
+    var result = document.querySelector(".m3u8searchTb").value;
+    if (result.length < 3) {
+        ShowNotice("", "搜索的关键字不能小于3个字符!");
+        return;
+    }
+
+    SearchRList = new Array();
+    isSearchMode = true;
+
+    M3U8PC = 1;
+    var array = DoRegex(currentvideo);
+    LoadVideo(array, 1, array.length, isSearchMode);
+}
+
+function RestoreMSearch() {
+    isSearchMode = false;
+    LoadM3U8(currentvideo, DM3Ufilename, RM3UIndex)
+}
+
+function UpdateM3U8Name()
+{
+    var newname = document.querySelector(".m3u8editTb").value;
+    document.querySelector(".editerror").innerText = "";
+
+    if (newname == "") {
+        document.querySelector(".editerror").innerText = "名称不能为空！";
+        return;
+    }
+
+    //获取值并开始替换
+    var oldvalue = abottoba(document.querySelector("#EditTemp").innerText);
+    var newvalue = newname + "\n" + decodeURIComponent(oldvalue[2]);
+    currentvideo = currentvideo.replace(decodeURIComponent(oldvalue[0]) + "\n" + decodeURIComponent(oldvalue[2]), newvalue);
+
+    document.querySelector(".m3u8editTb").value="";
+    document.querySelector(".editpanel").style.display = "";
+    //重新加载当前页面
+    document.querySelector("#CMPageText").value = M3U8PC;
+    CMPageJump();
+}
+
+function CancelUpdateMN() {
+    document.querySelector(".editpanel").style.display = "";
+    document.querySelector(".editerror").innerText = "";
 }
 
 
