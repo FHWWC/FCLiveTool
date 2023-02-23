@@ -60,7 +60,7 @@
             }
 
 #NoticeTitle {
-    margin-top: 40px;
+    margin-top: 10px;
 }
 
 #NoticeContent {
@@ -183,28 +183,11 @@ input[type=checkbox] {
 
     .VListBtn:hover {
         background-color: lightblue;
-        box-shadow: 0px 0px 3px 3px lightblue;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .VListBtn:focus {
-        box-shadow: 0px 0px 3px 3px white;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     }
 
 .VLCBtn {
     background: lightblue;
 }
-
-    .VLCBtn:hover {
-        box-shadow: 0px 0px 3px 3px lightblue;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .VLCBtn:focus {
-        box-shadow: 0px 0px 3px 3px white;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
 
 .RM3UBtn {
     position: relative;
@@ -330,17 +313,13 @@ margin:0 5px;
             transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
         }
 
+
 .loadingdialog {
     color: white;
     width: 200px;
     text-align: center;
     display: none;
 }
-
-#NoticeTitle {
-    margin-top: 0;
-}
-
 
 .loadingThree {
     width: 150px;
@@ -413,6 +392,43 @@ margin:0 5px;
     }
 }
 
+.editpanel {
+    background: lightyellow;
+    box-shadow: 0px 0px 5px 5px lightyellow;
+    padding: 10px;
+    width: 500px;
+    text-align: center;
+    display: none;
+}
+    .editpanel table {
+        margin: 0 auto;
+    }
+.edittitle p
+{
+    display:unset;
+}
+#OldM3U8Name {
+    font-weight: bold;
+}
+#EditTemp{
+    display: none;
+}
+.m3u8editTb {
+    margin:20px 0;
+    height: 30px;
+    width: 150px;
+    background: lightblue;
+    border: none;
+    border-radius: 3px;
+    outline: none;
+}
+.UpdM3U8Btn {
+    border: none;
+    background: lightblue;
+    border-radius: 3px;
+    height: 30px;
+}
+
 #RM3UPanel {
     width: 100%;
 }
@@ -445,6 +461,45 @@ margin:0 5px;
     }
 }
 
+.MToolsPanel {
+    display: none;
+    margin:10px;
+}
+    .MToolsPanel .sblock {
+        margin-left: 40px;
+        text-align: center
+    }
+.m3u8searchTb {
+    height: 35px;
+    width: 200px;
+    background: lightblue;
+    border: none;
+    border-radius: 3px;
+    outline: none;
+}
+.m3u8searchBtn {
+    margin-left:10px;
+    height: 35px;
+    width: 35px;
+    background-image: url('../img/SearchM3U8.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: lightblue;
+    border: none;
+    border-radius: 3px;
+}
+.m3urestore {
+    margin-left: 10px;
+    height: 35px;
+    width: 35px;
+    background-image: url('../img/RestoreM3U.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-color: lightpink;
+    border: none;
+    border-radius: 3px;
+}
+
 
 .saveedit {
     height: 35px;
@@ -456,16 +511,6 @@ margin:0 5px;
     border: none;
     border-radius: 3px;
 }
-
-    .saveedit:hover {
-        box-shadow: 0px 0px 3px 3px lightblue;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .saveedit:focus {
-        box-shadow: 0px 0px 3px 3px white;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
 
 
 .quelogo {
@@ -566,17 +611,15 @@ margin:0 5px;
     background-attachment: local;
     background-position: center;
 }
-
-    .prevlogo:hover {
-        box-shadow: 0px 0px 3px 3px lightblue;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .prevlogo:focus {
-        box-shadow: 0px 0px 3px 3px white;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
+.editlogo {
+    background-image: url('../img/EditM3U8.png');
+    background-repeat: no-repeat;
+    background-size: 60%;
+    background-attachment: local;
+    background-position: center;
+    background-color: lightyellow;
+    outline: none;
+}
 @media (max-width: 576px) {
     .prevlogo {
         display: none;
@@ -590,17 +633,8 @@ margin:0 5px;
     background-attachment: local;
     background-position: center;
     background-color: lightpink;
+    outline: none;
 }
-
-    .dellogo:hover {
-        box-shadow: 0px 0px 3px 3px lightpink;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
-
-    .dellogo:focus {
-        box-shadow: 0px 0px 3px 3px white;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
 
 .CM3U8Panel {
     display: none;
@@ -639,11 +673,6 @@ margin:0 5px;
 #CMFP, #CMLP, #CVListFP, #CVListLP {
     background: lightpink;
 }
-
-    #CMFP:hover, #CMLP:hover, #CVListFP:hover, #CVListLP:hover {
-        box-shadow: 0px 0px 3px 3px lightpink;
-        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    }
 
 @media (max-width: 576px) {
     .CM3U8Btn, .CVListBtn {
@@ -743,4 +772,31 @@ margin:0 5px;
 
 .tpvideo {
     display: none;
+}
+
+
+.hover-lightblue:hover {
+    box-shadow: 0px 0px 3px 3px lightblue !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.hover-lightpink:hover {
+    box-shadow: 0px 0px 3px 3px lightpink !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.hover-lightyellow:hover {
+    box-shadow: 0px 0px 3px 3px lightyellow !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.focus-white:focus {
+    box-shadow: 0px 0px 3px 3px white !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.focus-lightpink:focus {
+    box-shadow: 0px 0px 3px 3px lightpink !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.focus-lightblue:focus {
+    box-shadow: 0px 0px 3px 3px lightblue !important;
+    transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
