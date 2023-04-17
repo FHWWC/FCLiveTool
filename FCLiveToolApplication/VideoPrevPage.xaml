@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FCLiveToolApplication.VideoPrevPage"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             Title="VideoPrevPage" Loaded="ContentPage_Loaded">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="RecentListStyle">
+            <ViewCell>
+                <StackLayout Margin="20,15">
+                    <HorizontalStackLayout>
+                        <Image HeightRequest="45" WidthRequest="45" Source="{Binding LogoLink}"/>
+                        <Label Text="{Binding SourceName}" FontAttributes="Bold"  Margin="10,10,0,0"/>
+                    </HorizontalStackLayout>
+                    <Label Text="{Binding Description}" LineBreakMode="WordWrap"/>
+                    <Label  Text="{Binding PastTime}" HorizontalOptions="End"/>
+                </StackLayout>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+    <Shell.TitleView>
+        <HorizontalStackLayout>
+            <Label Text="直播源预览" TextColor="#A0F0FFFF" FontSize="Large" VerticalTextAlignment="Center"/>
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+
+    <Grid x:Name="PageGrid" SizeChanged="PageGrid_SizeChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="{ OnPlatform Auto, Android= *}"/>
+        </Grid.ColumnDefinitions>
+        
+
+        <Grid Grid.Row="0" Margin="10">
+            <HorizontalStackLayout x:Name="VideoIfm">
+                <Label Text="当前正在播放："/>
+                <Label x:Name="NowPlayingTb" Text="CGTN (法语)" TextDecorations="Underline"/>
+            </HorizontalStackLayout>
+            <Button x:Name="CheckRecentBtn" Background="LightBlue" Text="大家都在看" HorizontalOptions="Center" VerticalOptions="Start" Margin="{ OnPlatform Android= '0,-5,0,0'}" Clicked="CheckRecentBtn_Clicked">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xF738;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                </Button.ImageSource>
+            </Button>
+        </Grid>
+
+        <toolkit:MediaElement x:Name="VideoWindow" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Grid.Row="1" Source="https://livefr.cgtn.com/1000f/prog_index.m3u8" ShouldKeepScreenOn="True" x:FieldModifier="Public" ShouldAutoPlay="True" />
+
+        <ScrollView x:Name="RecentPanel" Background="#A0F0FFFF" WidthRequest="0" Grid.Row="{ OnPlatform 1, Android= 2}">
+            <ListView x:Name="RecentList" ItemTemplate="{StaticResource RecentListStyle}" RowHeight="{ OnPlatform Android= 130}" HorizontalOptions="FillAndExpand" HorizontalScrollBarVisibility="Never" ItemTapped="RecentList_ItemTapped"/>
+        </ScrollView>
+    </Grid>
+    
+    
+    
+
+    
+</ContentPage>

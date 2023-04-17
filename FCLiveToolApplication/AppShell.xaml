@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="FCLiveToolApplication.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:FCLiveToolApplication"
+    Shell.NavBarIsVisible="{ OnPlatform False,Android=True}" Shell.BackgroundColor="LightSkyBlue" Title="FCLiveTool 直播源预览+下载"
+    Loaded="Shell_Loaded" Navigating="Shell_Navigating">
+
+
+    <!--  
+    <Shell.Resources>
+        <Style x:Key="BaseStyle" TargetType="Element">
+            <Setter Property="Shell.BackgroundColor" Value="Blue" />
+        </Style>
+    </Shell.Resources>
+    
+        <Shell.TitleView>
+        <HorizontalStackLayout>
+            <Label Text="FCLiveTool" TextColor="#A0D3D3D3" FontSize="Large" VerticalTextAlignment="Center"/>
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+    -->
+    
+    <Shell.TabBarBackgroundColor>
+        <Color>#A0F0FFFF</Color>
+    </Shell.TabBarBackgroundColor>
+    <Shell.FlyoutBackgroundColor>
+        <Color>#A0F0FFFF</Color>
+    </Shell.FlyoutBackgroundColor>
+    
+    <Shell.FlyoutHeader>
+        <VerticalStackLayout Padding="0,10,0,20">
+            <Image Source="fclive_logo.png" HeightRequest="100" />
+            <Label TextColor="White" HorizontalTextAlignment="Center">FCLiveTool 直播源预览+下载</Label>
+        </VerticalStackLayout>
+    </Shell.FlyoutHeader>
+
+
+    <ShellContent Title="直播源预览" Icon="video_page.png"
+        ContentTemplate="{DataTemplate local:VideoPrevPage}"
+        Route="VideoPrevPage"/>
+    <ShellContent Title="直播源列表" Icon="videoslist_page.png"
+        ContentTemplate="{DataTemplate local:VideoListPage}"
+        Route="VideoListPage"/>
+
+
+    <Shell.FlyoutFooter>
+        <VerticalStackLayout Padding="10">
+            <Button x:Name="AboutBtn" Background="#A0F0FFFF" Padding="{ OnPlatform '10,5,0,5',Android='0,5'}" Clicked="AboutBtn_Clicked">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xE946;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                </Button.ImageSource>
+            </Button>
+            <Button x:Name="SettingBtn" Background="#A0F0FFFF" Margin="0,5,0,0" Padding="{ OnPlatform '10,5,0,5',Android='0,5'}" Clicked="SettingBtn_Clicked">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xE713;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                </Button.ImageSource>
+            </Button>
+            <Label Text="© 2017-2022  FC Dev Team" HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+    </Shell.FlyoutFooter>
+    
+</Shell>

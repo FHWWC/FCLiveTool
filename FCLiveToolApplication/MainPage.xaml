@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FCLiveToolApplication.MainPage" Loaded="ContentPage_Loaded">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="HamListStyle">
+            <ViewCell>
+                <HorizontalStackLayout>
+                    <Image HeightRequest="45" WidthRequest="45" Source="{Binding ItemLogo}"/>
+                    <Label Text="{Binding ItemTitle}" VerticalOptions="Center" Margin="10,0,0,0"/>
+                </HorizontalStackLayout>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="50"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Button x:Name="NaviBtn" Background="#A0D3D3D3" CornerRadius="0" HorizontalOptions="Start" Clicked="NaviBtn_Clicked">
+            <Button.ImageSource>
+                <FontImageSource Glyph="&#xE700;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+            </Button.ImageSource>
+        </Button>
+        <!--
+                <ImageButton x:Name="NaviBtn" Background="#A0D3D3D3" CornerRadius="0" Source="navi_btn.png" HorizontalOptions="Start" Clicked="NaviBtn_Clicked"/>
+        -->
+        <HorizontalStackLayout Grid.Column="1">
+            <HorizontalStackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            </HorizontalStackLayout.GestureRecognizers>
+            
+            <Label FontSize="20" VerticalTextAlignment="Center" Margin="10,0,0,0">FCLiveTool</Label>
+        </HorizontalStackLayout>
+        <Grid x:Name="LeftPanel" WidthRequest="50" Background="#A0D3D3D3" HorizontalOptions="Start" Grid.Row="1" Grid.ColumnSpan="2">
+            <ListView x:Name="HamList" ItemTemplate="{StaticResource HamListStyle}" VerticalScrollBarVisibility="Never" ItemTapped="HamList_ItemTapped"/>
+            <VerticalStackLayout VerticalOptions="End" Margin="5">
+                <Button x:Name="AboutBtn" Background="LightGray" Padding="{ OnPlatform '10,5,0,5',Android='0,5'}" Clicked="AboutBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE946;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="SettingBtn" Background="LightGray" Margin="0,5,0,0" Padding="{ OnPlatform '10,5,0,5',Android='0,5'}" Clicked="SettingBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE713;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </VerticalStackLayout>
+        </Grid>
+        <Grid Grid.Row="1" Grid.Column="1" ZIndex="-1">
+            <Grid.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            </Grid.GestureRecognizers>
+
+            <Frame x:Name="NaviPage" BackgroundColor="Transparent" />
+        </Grid>
+    </Grid>
+    
+    
+</ContentPage>
