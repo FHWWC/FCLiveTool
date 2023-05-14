@@ -40,7 +40,7 @@
         <Grid Grid.Row="0" Margin="10">
             <HorizontalStackLayout x:Name="VideoIfm">
                 <Label Text="当前正在播放："/>
-                <Label x:Name="NowPlayingTb" Text="CGTN (法语)" TextDecorations="Underline"/>
+                <Label x:Name="NowPlayingTb" Text="CGTN (法语)" TextDecorations="Underline" x:FieldModifier="Public"/>
             </HorizontalStackLayout>
             <Button x:Name="CheckRecentBtn" Background="LightBlue" Text="大家都在看" HorizontalOptions="Center" VerticalOptions="Start" Margin="{ OnPlatform Android= '0,-5,0,0'}" Clicked="CheckRecentBtn_Clicked">
                 <Button.ImageSource>

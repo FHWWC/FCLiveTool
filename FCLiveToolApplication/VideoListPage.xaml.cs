@@ -68,11 +68,13 @@ public partial class VideoListPage : ContentPage
 
     private async void VideosList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-        VideoList videoList = e.Item as VideoList;
-
+        VideoDataListRing.IsRunning = true;
         try
         {
+            VideoList videoList = e.Item as VideoList;
             AllVideoData = await new HttpClient().GetStringAsync("https://fclivetool.com/api/APPGetVD?url="+videoList.SourceLink);
+
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, videoList.RecommendReg);
         }
         catch (Exception)
         {
@@ -92,8 +94,7 @@ public partial class VideoListPage : ContentPage
              */
         }
 
-        VideoDetailList.ItemsSource= DoRegex(AllVideoData, videoList.RecommendReg);
-
+        VideoDataListRing.IsRunning = false;
     }
 
     private void VideoDetailList_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -102,14 +103,24 @@ public partial class VideoListPage : ContentPage
 
         VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
         VideoPrevPage.videoPrevPage.VideoWindow.Play();
+        VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
     }
 
     public async void LoadVideos()
     {
-        string videodata = await new HttpClient().GetStringAsync("https://fclivetool.com/api/GetVList?pindex=1");
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<VideoList>));
+        try
+        {
+            string videodata = await new HttpClient().GetStringAsync("https://fclivetool.com/api/GetVList?pindex=1");
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<VideoList>));
 
-        VideosList.ItemsSource= (List<VideoList>)xmlSerializer.Deserialize(new StringReader(videodata));
+            VideosList.ItemsSource= (List<VideoList>)xmlSerializer.Deserialize(new StringReader(videodata));
+        }
+        catch (Exception)
+        {
+            await DisplayAlert("提示信息", "获取数据失败，请稍后重试！", "确定");
+        }
+
+        VideosListRing.IsRunning=false;
     }
 
     public List<VideoDetailList> DoRegex(string videodata, string recreg)

@@ -60,7 +60,9 @@
         </Grid>
 
         <ListView x:Name="VideosList" ItemTemplate="{StaticResource VideosListStyle}" HorizontalOptions="FillAndExpand" Margin="0,10" Grid.Row="1" HorizontalScrollBarVisibility="Never" ItemTapped="VideosList_ItemTapped"/>
-
+        <Grid HorizontalOptions="FillAndExpand" Margin="0,10" Grid.Row="1">
+            <ActivityIndicator x:Name="VideosListRing" IsRunning="True" HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Grid>
 
         <StackLayout Grid.Column="1">
             <Grid>
@@ -87,5 +89,8 @@
         </StackLayout>
 
         <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{ OnPlatform Android=100}" Margin="0,10" Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped"/>
+        <Grid HorizontalOptions="FillAndExpand" Margin="0,10" Grid.Row="1" Grid.Column="1">
+            <ActivityIndicator x:Name="VideoDataListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Grid>
     </Grid>
 </ContentPage>
