@@ -57,16 +57,24 @@
         <StackLayout>
             <Grid>
                 <Label Text="直播源列表：" FontSize="Medium"/>
-                <ImageButton x:Name="VideoListQue" Background="LightSkyBlue" HeightRequest="30" WidthRequest="30" CornerRadius="{ OnPlatform Android=5}" HorizontalOptions="End" VerticalOptions="Start" Source="question.png" Margin="{ OnPlatform '0,0,10,0',Android='0,0,5,0'}" Clicked="Question_Clicked"/>
+                <HorizontalStackLayout  HorizontalOptions="End" Margin="{ OnPlatform '0,0,10,0',Android='0,0,5,0'}">
+                    <Button x:Name="VLRefreshBtn" Background="LightPink" HeightRequest="30" WidthRequest="40" ContentLayout="0" Clicked="VLRefreshBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <ImageButton x:Name="VideoListQue" Background="LightSkyBlue" HeightRequest="30" WidthRequest="30" Margin="5,0,0,0" CornerRadius="{ OnPlatform Android=5}" Source="question.png" Clicked="Question_Clicked"/>
+                </HorizontalStackLayout>
+
             </Grid>
             <Grid Margin="5,10">
-                <Button x:Name="VLBackBtn" Background="LightPink" HeightRequest="40" WidthRequest="45" HorizontalOptions="Start" Clicked="VLBackBtn_Clicked">
+                <Button x:Name="VLBackBtn" Background="LightPink" HeightRequest="40" WidthRequest="45" ContentLayout="0" HorizontalOptions="Start" Clicked="VLBackBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Label x:Name="VLCurrentPage" Text="1/1" FontSize="24" HorizontalOptions="Center"/>
-                <Button x:Name="VLNextBtn" Background="LightPink" HeightRequest="40" WidthRequest="45" HorizontalOptions="End" Clicked="VLNextBtn_Clicked">
+                <Button x:Name="VLNextBtn" Background="LightPink" HeightRequest="40" WidthRequest="45" ContentLayout="0" HorizontalOptions="End" Clicked="VLNextBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
@@ -80,7 +88,7 @@
   
         <ListView x:Name="VideosList" ItemTemplate="{StaticResource VideosListStyle}" HorizontalOptions="FillAndExpand" Margin="0,10" Grid.Row="1" HorizontalScrollBarVisibility="Never" ItemTapped="VideosList_ItemTapped"/>
         <Grid HorizontalOptions="FillAndExpand" Margin="0,10" Grid.Row="1">
-            <ActivityIndicator x:Name="VideosListRing" IsRunning="True" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <ActivityIndicator x:Name="VideosListRing" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
 
         <StackLayout Grid.Column="1">

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using static Microsoft.Maui.Controls.Button.ButtonContentLayout;
+using static Microsoft.Maui.Controls.Button;
 using static System.Net.WebRequestMethods;
 
 namespace FCLiveToolApplication;
@@ -114,6 +116,8 @@ public partial class VideoListPage : ContentPage
 
     public async void LoadVideos()
     {
+        VideosListRing.IsRunning=true;
+        //未加载成功不覆盖数据，仍可操作原来的数据
         try
         {
             //暂时不在API里获取分页数据
@@ -292,5 +296,10 @@ public partial class VideoListPage : ContentPage
             VLBackBtn.IsEnabled = true;
             VLNextBtn.IsEnabled = true;
         }
+    }
+
+    private void VLRefreshBtn_Clicked(object sender, EventArgs e)
+    {
+        LoadVideos();
     }
 }
