@@ -302,4 +302,59 @@ public partial class VideoListPage : ContentPage
     {
         LoadVideos();
     }
+
+    private void VideosList_Refreshing(object sender, EventArgs e)
+    {
+        LoadVideos();
+
+        //不使用ListView自己的加载圈
+        VideosList.IsRefreshing=false;
+    }
+
+    private void VLToolbarBtn_Clicked(object sender, EventArgs e)
+    {
+        //收回
+        if (VideosListPanel.TranslationY==0)
+        {
+            var animation = new Animation(v => VideosListPanel.TranslationY  = v, 0, -1000);
+            animation.Commit(this, "VLPAnimation", 16, 500, Easing.CubicInOut);
+
+            VideosList.IsEnabled = true;
+        }
+        //展开
+        else
+        {
+            var animation = new Animation(v => VideosListPanel.TranslationY  = v, -1000, 0);
+            animation.Commit(this, "VLPAnimation", 16, 500, Easing.CubicOut);
+
+            VideosList.IsEnabled = false;
+        }
+
+    }
+
+    private void VDLRefreshBtn_Clicked(object sender, EventArgs e)
+    {
+
+    }
+
+    private void VDLToolbarBtn_Clicked(object sender, EventArgs e)
+    {
+
+        //收回
+        if (VideoDataListPanel.TranslationY==0)
+        {
+            var animation = new Animation(v => VideoDataListPanel.TranslationY  = v, 0, -1000);
+            animation.Commit(this, "VLPAnimation", 16, 500, Easing.CubicInOut);
+
+            VideoDetailList.IsEnabled=true;
+        }
+        //展开
+        else
+        {
+            var animation = new Animation(v => VideoDataListPanel.TranslationY  = v, -1000, 0);
+            animation.Commit(this, "VLPAnimation", 16, 500, Easing.CubicOut);
+
+            VideoDetailList.IsEnabled=false;
+        }
+    }
 }
