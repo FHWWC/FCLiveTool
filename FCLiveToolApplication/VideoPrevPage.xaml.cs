@@ -99,7 +99,7 @@ public partial class VideoPrevPage : ContentPage
 
         if (selectitem.SourceLink=="")
         {
-            DisplayAlert("错误", "无法播放该直播源，请更换一个试试", "确定");
+            DisplayAlert("提示信息", "无法播放该直播源，请更换一个试试", "确定");
             return;
         }
 
@@ -108,14 +108,25 @@ public partial class VideoPrevPage : ContentPage
     }
     public async void LoadRecent()
     {
-        string videodata = await new HttpClient().GetStringAsync("https://fclivetool.com/api/GetRecent");
-        videodata= videodata.Replace("/img/TVSICON.png", "fclive_tvicon.png");
+        RecentListRing.IsRunning=true;
+        //未加载成功不覆盖数据，仍可操作原来的数据
+        try
+        {
+            string videodata = await new HttpClient().GetStringAsync("https://fclivetool.com/api/GetRecent");
+            videodata= videodata.Replace("/img/TVSICON.png", "fclive_tvicon.png");
 
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<RecentVList>));
-        List<RecentVList> list = (List<RecentVList>)xmlSerializer.Deserialize(new StringReader(videodata));
-        list.ForEach(p => p.PastTime=GetPastTime(p.AddDT));
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<RecentVList>));
+            List<RecentVList> list = (List<RecentVList>)xmlSerializer.Deserialize(new StringReader(videodata));
+            list.ForEach(p => p.PastTime=GetPastTime(p.AddDT));
 
-        RecentList.ItemsSource =list;
+            RecentList.ItemsSource =list;
+        }
+        catch (Exception)
+        {
+            await DisplayAlert("提示信息", "获取最近播放数据失败，请稍后重试！", "确定");
+        }
+
+        RecentListRing.IsRunning=false;
     }
     public string GetPastTime(DateTime dt)
     {
@@ -166,5 +177,18 @@ public partial class VideoPrevPage : ContentPage
             var animation = new Animation(v => RecentPanel.WidthRequest = v, RecentPanel.Width, 0);
             animation.Commit(this, "HiddenRec", 16, 500, Easing.CubicInOut);
         }
+    }
+
+    private void RecentList_Refreshing(object sender, EventArgs e)
+    {
+        LoadRecent();
+
+        //不使用ListView自己的加载圈
+        RecentList.IsRefreshing=false;
+    }
+
+    private void RLRefreshBtn_Clicked(object sender, EventArgs e)
+    {
+        LoadRecent();
     }
 }
