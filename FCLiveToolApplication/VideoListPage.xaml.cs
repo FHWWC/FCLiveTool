@@ -19,6 +19,7 @@ public partial class VideoListPage : ContentPage
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
         LoadVideos();
+        InitRegexList();
         DeviceDisplay.MainDisplayInfoChanged+=DeviceDisplay_MainDisplayInfoChanged;
     }
 
@@ -37,12 +38,24 @@ public partial class VideoListPage : ContentPage
 #endif
     }
 
+    public void InitRegexList()
+    {
+        RegexSelectBox.BindingContext = this;
+        RegexOption = new List<string>() { "自动匹配", "规则1", "规则2", "规则3", "规则4" ,"规则5"};
+        RegexSelectBox.ItemsSource = RegexOption;
+
+        //RegexSelectBox.SelectedIndex = 0;
+    }
+
     public int VLCurrentPageIndex = 1;
     public int VLMaxPageIndex;
     public const int VL_COUNT_PER_PAGE = 15;
     public string AllVideoData;
     public int[] UseGroup;
     public List<VideoList> CurrentVideosList;
+    public string CurrentVURL="";
+    public string RecommendReg="0";
+    public List<string> RegexOption;
 
     private void Question_Clicked(object sender, EventArgs e)
     {
@@ -85,35 +98,10 @@ public partial class VideoListPage : ContentPage
         string buttonName = button.StyleId.Replace("DELB", "");
     }
 
-    private async void VideosList_ItemTapped(object sender, ItemTappedEventArgs e)
+    private void VideosList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-        VideoDataListRing.IsRunning = true;
-        try
-        {
-            VideoList videoList = e.Item as VideoList;
-            AllVideoData = await new HttpClient().GetStringAsync("https://fclivetool.com/api/APPGetVD?url="+videoList.SourceLink);
-
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, videoList.RecommendReg);
-        }
-        catch (Exception)
-        {
-            await DisplayAlert("提示信息", "获取数据失败，请稍后重试！", "确定");
-
-            /*
-                        var link = videoList.SourceLink;
-                        if (link.Contains("githubusercontent.com")||link.Contains("github.com"))
-                        {
-                            await DisplayAlert("提示信息", "您所在的地区访问GitHub可能不顺畅", "确定");
-                        }
-                        else
-                        {
-                            await DisplayAlert("提示信息", "获取数据失败，请稍后重试！", "确定");
-                        }
-            
-             */
-        }
-
-        VideoDataListRing.IsRunning = false;
+        VideoList videoList = e.Item as VideoList;
+        LoadVideoDetail(videoList.SourceLink, videoList.RecommendReg);
     }
 
     private void VideoDetailList_ItemTapped(object sender, ItemTappedEventArgs e)
@@ -152,6 +140,72 @@ public partial class VideoListPage : ContentPage
         }
 
         VideosListRing.IsRunning=false;
+    }
+    public async void LoadVideoDetail(string url,string reg)
+    {
+        VideoDataListRing.IsRunning = true;
+        try
+        {
+            AllVideoData = await new HttpClient().GetStringAsync("https://fclivetool.com/api/APPGetVD?url="+url);
+
+            RecommendReg=reg;
+            CurrentVURL =url;
+            RegexSelectBox.SelectedIndex = 0;
+
+            //上面更改索引会触发SelectionChanged
+            //VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+        }
+        catch (Exception)
+        {
+            await DisplayAlert("提示信息", "获取数据失败，请稍后重试！", "确定");
+
+            /*
+                        var link = videoList.SourceLink;
+                        if (link.Contains("githubusercontent.com")||link.Contains("github.com"))
+                        {
+                            await DisplayAlert("提示信息", "您所在的地区访问GitHub可能不顺畅", "确定");
+                        }
+                        else
+                        {
+                            await DisplayAlert("提示信息", "获取数据失败，请稍后重试！", "确定");
+                        }
+            
+             */
+        }
+
+        VideoDataListRing.IsRunning = false;
+    }
+    public string GetRegexOptionIndex()
+    {
+        bool isOnlyM3U8 = RegexOptionCB.IsChecked;
+        switch (RegexSelectBox.SelectedIndex.ToString())
+        {
+            case "1":
+                if(!isOnlyM3U8)
+                {
+                    return "1.2";
+                }
+                return "1";
+            case "2":
+                if (!isOnlyM3U8)
+                {
+                    return "2.2";
+                }
+                return "2";
+            case "3":
+                if (!isOnlyM3U8)
+                {
+                    return "3.2";
+                }
+                return "3";
+            case "4":
+                return "4";
+            case "5":
+                return "5";
+            default:
+                return "0";
+        }
+
     }
 
     public List<VideoDetailList> DoRegex(string videodata, string recreg)
@@ -345,7 +399,12 @@ public partial class VideoListPage : ContentPage
 
     private void VDLRefreshBtn_Clicked(object sender, EventArgs e)
     {
+        if(CurrentVURL=="")
+        {
+            return;
+        }
 
+        LoadVideoDetail(CurrentVURL, RecommendReg);
     }
 
     private void VDLToolbarBtn_Clicked(object sender, EventArgs e)
@@ -367,5 +426,31 @@ public partial class VideoListPage : ContentPage
 
             VideoDetailList.IsEnabled=false;
         }
+    }
+
+    private void RegexSelectBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (CurrentVURL=="")
+        {
+            DisplayAlert("提示信息", "当前列表为空！", "确定");
+            return;
+        }
+
+        string regexIndex = GetRegexOptionIndex();
+        if(regexIndex!="0")
+        {
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
+        }
+        else
+        {
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+        }
+
+
+
+
+
+
+
     }
 }

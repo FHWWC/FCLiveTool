@@ -115,17 +115,8 @@
             </Button>
         </Grid>
 
-        <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" Margin="5,10,0,0" RowHeight="{ OnPlatform Android=100}" Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped"/>
-        <StackLayout x:Name="VideoDataListPanel" Background="#A0F0FFFF" Grid.Row="1" Grid.Column="1" Margin="5,10,0,0" Padding="5" TranslationY="-1000">
+        <StackLayout Margin="5,10,0,0" Grid.Row="1" Grid.Column="1" >
             <HorizontalStackLayout HorizontalOptions="End">
-                <Button x:Name="VDLRefreshBtn" Background="LightPink" HeightRequest="30" WidthRequest="40" ContentLayout="Top,-3" Clicked="VDLRefreshBtn_Clicked">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                    </Button.ImageSource>
-                </Button>
-                <ImageButton x:Name="VideosQue" Background="LightSkyBlue" HeightRequest="30" WidthRequest="40" Margin="5,0,0,0" CornerRadius="{ OnPlatform Android=5}" HorizontalOptions="End" VerticalOptions="Start" Source="question.png" Clicked="Question_Clicked"/>
-            </HorizontalStackLayout>
-            <HorizontalStackLayout HorizontalOptions="End" Margin="0,15,0,0">
                 <Button x:Name="DownloadBtn" Background="LightBlue" HeightRequest="40" Text="下载" Clicked="DownloadBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
@@ -141,9 +132,30 @@
                         <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
-                
             </HorizontalStackLayout>
-            
+            <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{ OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped"/>
+      
+        </StackLayout>
+        <StackLayout x:Name="VideoDataListPanel" Background="#A0F0FFFF" Grid.Row="1" Grid.Column="1" Margin="5,10,0,0" Padding="5" TranslationY="-1000">
+            <HorizontalStackLayout HorizontalOptions="End">
+                <Button x:Name="VDLRefreshBtn" Background="LightPink" HeightRequest="30" WidthRequest="40" ContentLayout="Top,-3" Clicked="VDLRefreshBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <ImageButton x:Name="VideosQue" Background="LightSkyBlue" HeightRequest="30" WidthRequest="40" Margin="5,0,0,0" CornerRadius="{ OnPlatform Android=5}" HorizontalOptions="End" VerticalOptions="Start" Source="question.png" Clicked="Question_Clicked"/>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout Margin="0,15,0,0">
+                <Picker x:Name="RegexSelectBox" Title="选择解析方案：" ItemsSource="{Binding RegexOption}" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
+                <StackLayout VerticalOptions="Center">
+                    <HorizontalStackLayout>
+                        <CheckBox x:Name="RegexOptionCB" />
+                        <Label Text="仅匹配M3U8文件名" VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </StackLayout>
+            </HorizontalStackLayout>
+
         </StackLayout>
         <Grid HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1">
             <ActivityIndicator x:Name="VideoDataListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
