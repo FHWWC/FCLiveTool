@@ -22,7 +22,6 @@ public partial class VideoListPage : ContentPage
         InitRegexList();
         DeviceDisplay.MainDisplayInfoChanged+=DeviceDisplay_MainDisplayInfoChanged;
     }
-
     private void DeviceDisplay_MainDisplayInfoChanged(object sender, DisplayInfoChangedEventArgs e)
     {
 #if ANDROID
@@ -37,11 +36,13 @@ public partial class VideoListPage : ContentPage
         }
 #endif
     }
-
+    /// <summary>
+    /// 初始化规则列表
+    /// </summary>
     public void InitRegexList()
     {
         RegexSelectBox.BindingContext = this;
-        RegexOption = new List<string>() { "自动匹配", "规则1", "规则2", "规则3", "规则4" ,"规则5"};
+        RegexOption = new List<string>() { "自动匹配", "规则1", "规则2", "规则3", "规则4", "规则5" };
         RegexSelectBox.ItemsSource = RegexOption;
 
         //RegexSelectBox.SelectedIndex = 0;
@@ -53,8 +54,8 @@ public partial class VideoListPage : ContentPage
     public string AllVideoData;
     public int[] UseGroup;
     public List<VideoList> CurrentVideosList;
-    public string CurrentVURL="";
-    public string RecommendReg="0";
+    public string CurrentVURL = "";
+    public string RecommendReg = "0";
     public List<string> RegexOption;
 
     private void Question_Clicked(object sender, EventArgs e)
@@ -98,12 +99,21 @@ public partial class VideoListPage : ContentPage
         string buttonName = button.StyleId.Replace("DELB", "");
     }
 
+    /// <summary>
+    /// 左侧M3U列表点击事件
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void VideosList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         VideoList videoList = e.Item as VideoList;
         LoadVideoDetail(videoList.SourceLink, videoList.RecommendReg);
     }
-
+    /// <summary>
+    /// 右侧M3U8列表点击事件
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void VideoDetailList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         VideoDetailList detail = e.Item as VideoDetailList;
@@ -112,7 +122,9 @@ public partial class VideoListPage : ContentPage
         VideoPrevPage.videoPrevPage.VideoWindow.Play();
         VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
     }
-
+    /// <summary>
+    /// 加载M3U数据
+    /// </summary>
     public async void LoadVideos()
     {
         VideosListRing.IsRunning=true;
@@ -141,7 +153,10 @@ public partial class VideoListPage : ContentPage
 
         VideosListRing.IsRunning=false;
     }
-    public async void LoadVideoDetail(string url,string reg)
+    /// <summary>
+    /// 加载M3U8数据
+    /// </summary>
+    public async void LoadVideoDetail(string url, string reg)
     {
         VideoDataListRing.IsRunning = true;
         try
@@ -154,6 +169,8 @@ public partial class VideoListPage : ContentPage
 
             //上面更改索引会触发SelectionChanged
             //VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+
+            VDLIfmText.Text="";
         }
         catch (Exception)
         {
@@ -175,13 +192,17 @@ public partial class VideoListPage : ContentPage
 
         VideoDataListRing.IsRunning = false;
     }
+    /// <summary>
+    /// 获取当前选择的规则索引
+    /// </summary>
+    /// <returns></returns>
     public string GetRegexOptionIndex()
     {
         bool isOnlyM3U8 = RegexOptionCB.IsChecked;
         switch (RegexSelectBox.SelectedIndex.ToString())
         {
             case "1":
-                if(!isOnlyM3U8)
+                if (!isOnlyM3U8)
                 {
                     return "1.2";
                 }
@@ -207,7 +228,12 @@ public partial class VideoListPage : ContentPage
         }
 
     }
-
+    /// <summary>
+    /// 使用正则表达式解析直播源数据，直播源数据是包含若干个M3U8直播源的字符串
+    /// </summary>
+    /// <param name="videodata">直播源数据</param>
+    /// <param name="recreg">正则表达式</param>
+    /// <returns>正则表达式匹配出的列表</returns>
     public List<VideoDetailList> DoRegex(string videodata, string recreg)
     {
         MatchCollection match = Regex.Matches(videodata, UseRegex(recreg));
@@ -230,6 +256,11 @@ public partial class VideoListPage : ContentPage
 
         return result;
     }
+    /// <summary>
+    /// 根据提供的索引来获取对应的正则表达式
+    /// </summary>
+    /// <param name="index">索引</param>
+    /// <returns>索引对应的正则表达式</returns>
     public string UseRegex(string index)
     {
         switch (index)
@@ -290,6 +321,11 @@ public partial class VideoListPage : ContentPage
             VLBackBtn.IsEnabled = false;
             VLNextBtn.IsEnabled = true;
         }
+        else
+        {
+            VLBackBtn.IsEnabled = true;
+            VLNextBtn.IsEnabled = true;
+        }
     }
 
     private void VLNextBtn_Clicked(object sender, EventArgs e)
@@ -316,18 +352,23 @@ public partial class VideoListPage : ContentPage
             VLBackBtn.IsEnabled = true;
             VLNextBtn.IsEnabled = false;
         }
+        else
+        {
+            VLBackBtn.IsEnabled = true;
+            VLNextBtn.IsEnabled = true;
+        }
     }
 
     private async void VLJumpBtn_Clicked(object sender, EventArgs e)
     {
 
         int TargetPage = 1;
-        if(!int.TryParse(VLPageTb.Text,out TargetPage))
+        if (!int.TryParse(VLPageTb.Text, out TargetPage))
         {
             await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
             return;
         }
-        if(TargetPage<1||TargetPage>VLMaxPageIndex)
+        if (TargetPage<1||TargetPage>VLMaxPageIndex)
         {
             await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
             return;
@@ -399,7 +440,7 @@ public partial class VideoListPage : ContentPage
 
     private void VDLRefreshBtn_Clicked(object sender, EventArgs e)
     {
-        if(CurrentVURL=="")
+        if (CurrentVURL=="")
         {
             return;
         }
@@ -427,7 +468,6 @@ public partial class VideoListPage : ContentPage
             VideoDetailList.IsEnabled=false;
         }
     }
-
     private void RegexSelectBox_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (CurrentVURL=="")
@@ -436,8 +476,9 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
+        VDLIfmText.Text="";
         string regexIndex = GetRegexOptionIndex();
-        if(regexIndex!="0")
+        if (regexIndex!="0")
         {
             VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
         }
@@ -447,9 +488,10 @@ public partial class VideoListPage : ContentPage
         }
 
 
-
-
-
+        if (VideoDetailList.ItemsSource.Cast<VideoDetailList>().Count()<1)
+        {
+            VDLIfmText.Text="这里空空如也，请更换一个解析方案吧~";
+        }
 
 
     }

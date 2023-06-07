@@ -133,7 +133,12 @@
                     </Button.ImageSource>
                 </Button>
             </HorizontalStackLayout>
-            <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{ OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped"/>
+
+            <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{ OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped"/>
+                <Label x:Name="VDLIfmText" Text="这里空空如也，先在左侧列表里选择一项吧~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+
       
         </StackLayout>
         <StackLayout x:Name="VideoDataListPanel" Background="#A0F0FFFF" Grid.Row="1" Grid.Column="1" Margin="5,10,0,0" Padding="5" TranslationY="-1000">
