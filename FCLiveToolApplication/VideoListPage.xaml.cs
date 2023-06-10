@@ -500,15 +500,62 @@ public partial class VideoListPage : ContentPage
 
     private void RegexSelectIfmBtn_Clicked(object sender, EventArgs e)
     {
-        using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("FCLiveToolApplication.Resources.Raw.regex_option_help"))
-        {
-            using (var reader = new StreamReader(stream))
-            {
-                DisplayAlert("帮助信息", reader.ReadToEnd(), "关闭");
-            }
-        }
-;
-        //stringshoustr="以下是所有规则的解释：\n\n"+"规则1\n"+"匹配：台标(tvg-logo)，台名(tvg-name)，URL\n";
+        //以文件读取复杂的文本
+        /*
+                 using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("FCLiveToolApplication.Resources.Raw.regex_option_help"))
+                {
+                    using (var reader = new StreamReader(stream))
+                    {
+                        DisplayAlert("帮助信息", reader.ReadToEnd(), "关闭");
+                    }
+                }
+         */
+        ;
+        string showmsg = "由于不同的M3U文件里的数据格式各有不同，甚至一个文件内有多种不同的格式，因此本程序提供了多种解析方案，来尽可能的完整解析M3U文件里的数据。"+"\n"
+        +"如果您发现许多直播源没有名称，无法播放以及URL有错误等情况，您可以尝试更换解析方案。"+"\n\n\n"
+        +"以下是所有复选框的解释："+"\n\n"
+        +"“仅匹配M3U8文件名”：勾选则表示，仅匹配直播源URL的文件名为“M3U8”后缀的文件，其他文件则不获取。"+"\n\n\n"
+        +"以下是所有规则的解释："+"\n\n"
+        +"规则1"+"\n"
+        +"匹配：台标(tvg-logo)，台名(tvg-name)，URL"+"\n\n"
+        +"tvg-logo=\"台标\"(可选)"+"\n"
+        +"tvg-name=\"台名\"(可选，不建议为空)"+"\n"
+        +"\\r或\\n(可选)"+"\n"
+        +"http://或https://(+任意字符).m3u8?参数名=值&参数名=值...(全部可选)"+"\n\n"
+        +"****************************************"+"\n\n"
+        +"规则2"+"\n"
+        +"与第一条相反，匹配：台名(tvg-name)，台标(tvg-logo)，URL"+"\n\n"
+        +"tvg-name=\"台名\""+"\n"
+        +"tvg-logo=\"台标\"(可选)"+"\n"
+        +"\\r或\\n(可选)"+"\n"
+        +"http://或https://(+任意字符).m3u8?参数名=值&参数名=值...(全部可选)"+"\n\n"
+        +"****************************************"+"\n\n"
+        +"规则3"+"\n"
+        +"匹配：台标(tvg-logo)，台名(两逗号之间文本)，URL"+"\n\n"
+        +"tvg-logo=\"台标\"(可选)"+"\n"
+        +","+"\n"
+        +"台名"+"\n"
+        +",或\\n(可选)"+"\n"
+        +"http://或https://(+任意字符).m3u8?参数名=值&参数名=值...(全部可选)"+"\n\n"
+        +"****************************************"+"\n\n"
+        +"规则4"+"\n"
+        +"和第三项相同，区别在于#EXTINF字符和台标字符之间有多个逗号"+"\n\n"
+        +","+"\n"
+        +"tvg-logo=\"台标\""+"\n"
+        +","+"\n"
+        +"台名"+"\n"
+        +",或\\n(可选)"+"\n"
+        +"http://或https://(+任意字符，不限.m3u8后缀)?参数名=值&参数名=值...(全部可选)"+"\n\n"
+        +"****************************************"+"\n\n"
+        +"规则5"+"\n"
+        +"简单粗暴，无附加格式，匹配：台标，台名，URL"+"\n\n"
+        +"台标(可选)"+"\n"
+        +","+"\n"
+        +"台名"+"\n"
+        +","+"\n"
+        +"http://或https://(+任意字符，不限.m3u8后缀)?参数名=值&参数名=值...(全部可选)";
+
+        DisplayAlert("帮助信息", showmsg, "关闭");
 
     }
 }
