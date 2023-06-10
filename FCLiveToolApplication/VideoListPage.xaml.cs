@@ -7,6 +7,8 @@ using System.Xml.Serialization;
 using static Microsoft.Maui.Controls.Button.ButtonContentLayout;
 using static Microsoft.Maui.Controls.Button;
 using static System.Net.WebRequestMethods;
+using System.IO;
+using System.Reflection.PortableExecutable;
 
 namespace FCLiveToolApplication;
 
@@ -493,6 +495,20 @@ public partial class VideoListPage : ContentPage
             VDLIfmText.Text="这里空空如也，请更换一个解析方案吧~";
         }
 
+
+    }
+
+    private void RegexSelectIfmBtn_Clicked(object sender, EventArgs e)
+    {
+        using (Stream stream = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("FCLiveToolApplication.Resources.Raw.regex_option_help"))
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                DisplayAlert("帮助信息", reader.ReadToEnd(), "关闭");
+            }
+        }
+;
+        //stringshoustr="以下是所有规则的解释：\n\n"+"规则1\n"+"匹配：台标(tvg-logo)，台名(tvg-name)，URL\n";
 
     }
 }
