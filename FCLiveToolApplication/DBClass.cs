@@ -44,4 +44,50 @@ namespace FCLiveToolApplication
         public string PastTime { get; set; }
     }
 
+    public class APPPermissions
+    {
+        /// <summary>
+        /// 检查是否有文件读取的权限
+        /// </summary>
+        /// <returns>状态码。0：已经有权限或已成功获取到权限；1：读取没有权限；2：写入没有权限；3：读写都没有权限；</returns>
+        public async Task<int> CheckAndReqPermissions()
+        {
+            //Windows操作系统不需要这种单独获取权限
+#if WINDOWS
+            return 0;
+#else
+            var checkRead = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+            var checkWrite = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+
+            if (checkRead == PermissionStatus.Granted&&checkWrite == PermissionStatus.Granted)
+            {
+                return 0;
+            }
+            else
+            {
+                var reqRead = await Permissions.RequestAsync<Permissions.StorageRead>();
+                var reqWrite = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+                if (reqRead == PermissionStatus.Granted&&reqWrite == PermissionStatus.Granted)
+                {
+                    return 0;
+                }
+                else if (reqRead != PermissionStatus.Granted &&reqWrite == PermissionStatus.Granted)
+                {
+                    return 1;
+                }
+                else if (reqRead == PermissionStatus.Granted &&reqWrite != PermissionStatus.Granted)
+                {
+                    return 2;
+                }
+                else
+                {
+                    return 3;
+                }
+
+            }
+#endif
+        }
+
+    }
 }
