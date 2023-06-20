@@ -116,24 +116,29 @@
         </Grid>
 
         <StackLayout Margin="5,10,0,0" Grid.Row="1" Grid.Column="1">
-            <HorizontalStackLayout HorizontalOptions="End">
-                <Button x:Name="DownloadBtn" Background="LightBlue" HeightRequest="40" Text="下载" Clicked="DownloadBtn_Clicked">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button x:Name="EditBtn" Background="LightYellow" HeightRequest="40" Text="编辑" Margin="10,0,0,0" Clicked="EditBtn_Clicked">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button x:Name="DeleteBtn" Background="LightPink" HeightRequest="40" Text="删除" Margin="10,0,0,0" Clicked="DeleteBtn_Clicked">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                    </Button.ImageSource>
-                </Button>
-            </HorizontalStackLayout>
-
+            <Grid>
+                <StackLayout VerticalOptions="Start">
+                    <Label Text="编辑模式"/>
+                    <Switch x:Name="VDLToogleBtn" IsToggled="False" />
+                </StackLayout>
+                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start" IsVisible="{Binding Source={x:Reference VDLToogleBtn}, Path=IsToggled}">
+                    <Button x:Name="DownloadBtn" Background="LightBlue" HeightRequest="40" Text="下载" Clicked="DownloadBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Button x:Name="EditBtn" Background="LightYellow" HeightRequest="40" Text="编辑" Margin="10,0,0,0" Clicked="EditBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Button x:Name="DeleteBtn" Background="LightPink" HeightRequest="40" Text="删除" Margin="10,0,0,0" Clicked="DeleteBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </HorizontalStackLayout>
+            </Grid>
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
                 <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped"/>
                 <Label x:Name="VDLIfmText" Text="这里空空如也，先在左侧列表里选择一项吧~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
@@ -153,7 +158,7 @@
 
             <HorizontalStackLayout Margin="0,15,0,0">
                 <Picker x:Name="RegexSelectBox" Title="选择解析方案：" ItemsSource="{Binding RegexOption}" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
-                <Button x:Name="RegexSelectIfmBtn" Background="LightGray" HeightRequest="30" WidthRequest="30" Margin="5,0,0,0" ContentLayout="Top,-3" Clicked="RegexSelectIfmBtn_Clicked">
+                <Button x:Name="RegexSelectIfmBtn" Background="LightGray" HeightRequest="30" WidthRequest="40" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectIfmBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE946;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>

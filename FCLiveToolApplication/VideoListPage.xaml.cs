@@ -9,6 +9,18 @@ using static Microsoft.Maui.Controls.Button;
 using static System.Net.WebRequestMethods;
 using System.IO;
 using System.Reflection.PortableExecutable;
+using Microsoft.Maui.Storage;
+using Microsoft.Maui.Controls.PlatformConfiguration;
+using CommunityToolkit.Maui.Storage;
+using System.Text;
+using Encoding = System.Text.Encoding;
+using System.Net;
+
+
+#if WINDOWS
+using Windows.Storage.Pickers;
+using Windows.Media.Protection.PlayReady;
+#endif
 
 namespace FCLiveToolApplication;
 
@@ -59,6 +71,7 @@ public partial class VideoListPage : ContentPage
     public string CurrentVURL = "";
     public string RecommendReg = "0";
     public List<string> RegexOption;
+    public bool IgnoreSelectionEvents = false;
 
     private void Question_Clicked(object sender, EventArgs e)
     {
@@ -85,20 +98,116 @@ public partial class VideoListPage : ContentPage
                 break;
         }
     }
-    private void DownloadBtn_Clicked(object sender, EventArgs e)
+
+    private async void DownloadBtn_Clicked(object sender, EventArgs e)
     {
-        Button button = sender as Button;
-        string buttonName = button.StyleId.Replace("DOWNB", "");
+        if (VideoDetailList.SelectedItem==null)
+        {
+            await DisplayAlert("提示信息", "请先在列表里选择一条直播源！", "确定");
+            return;
+        }
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要保存文件！", "确定");
+            return;
+        }
+
+
+        int statusCode;
+        VideoDetailList selectVDL = VideoDetailList.SelectedItem as VideoDetailList;
+
+        using (HttpClient httpClient = new HttpClient())
+        {
+
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+            /*
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, selectVDL.SourceLink);
+            request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+           */
+
+            HttpResponseMessage response=null;
+
+            try
+            {
+                response = await httpClient.GetAsync(selectVDL.SourceLink);
+
+                statusCode=(int)response.StatusCode;
+                if (!response.IsSuccessStatusCode)
+                {
+                    await DisplayAlert("提示信息", "下载文件失败，请稍后重试！", "确定");
+                    return;
+                }
+            }
+            catch(Exception)
+            {
+                await DisplayAlert("提示信息", "连接对方服务器失败，请检查网络！", "确定");
+                return;
+            }
+
+            //var httpstream = await httpClient.GetStreamAsync(selectVDL.SourceLink)
+            using (var httpstream = await response.Content.ReadAsStreamAsync())
+            {
+                var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, selectVDL.SourceName+".m3u8", httpstream, CancellationToken.None);
+
+                if (fileSaver.IsSuccessful)
+                {
+                    await DisplayAlert("提示信息", "文件已成功下载至：\n"+fileSaver.FilePath, "确定");
+                }
+                else
+                {
+                    await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
+                }
+            }
+
+        }
+
+
+
+        /*
+        using (var ms = new MemoryStream(Encoding.UTF8.GetBytes("")))
+         */
+
     }
-    private void EditBtn_Clicked(object sender, EventArgs e)
+    /*
+             var fileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+{
+    { DevicePlatform.iOS, new[] { "com.apple.mpegurl", "public.m3u8-playlist" , "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.macOS, new[] { "public.m3u8", "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.Android, new[] { "application/x-mpegURL" , "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.WinUI, new[] { ".m3u8" ,".m3u"} }
+});
+
+        var filePicker = await FilePicker.PickAsync(new PickOptions()
+        {
+            PickerTitle="",
+            FileTypes=fileTypes
+        });
+
+        if (filePicker is not null)
+        {
+            await DisplayAlert("", filePicker.FullPath, "确定");
+        }
+
+     */
+    private async void EditBtn_Clicked(object sender, EventArgs e)
     {
-        Button button = sender as Button;
-        string buttonName = button.StyleId.Replace("EB", "");
+        if (VideoDetailList.SelectedItem==null)
+        {
+            await DisplayAlert("提示信息", "请先在列表里选择一条直播源！", "确定");
+            return;
+        }
+
+        //string appDataDirectory = FileSystem.AppDataDirectory;
     }
-    private void DeleteBtn_Clicked(object sender, EventArgs e)
+    private async void DeleteBtn_Clicked(object sender, EventArgs e)
     {
-        Button button = sender as Button;
-        string buttonName = button.StyleId.Replace("DELB", "");
+        if (VideoDetailList.SelectedItem==null)
+        {
+            await DisplayAlert("提示信息", "请先在列表里选择一条直播源！", "确定");
+            return;
+        }
+
     }
 
     /// <summary>
@@ -118,11 +227,14 @@ public partial class VideoListPage : ContentPage
     /// <param name="e"></param>
     private void VideoDetailList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
-        VideoDetailList detail = e.Item as VideoDetailList;
+        if (!VDLToogleBtn.IsToggled)
+        {
+            VideoDetailList detail = e.Item as VideoDetailList;
 
-        VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
-        VideoPrevPage.videoPrevPage.VideoWindow.Play();
-        VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
+            VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
+            VideoPrevPage.videoPrevPage.VideoWindow.Play();
+            VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
+        }
     }
     /// <summary>
     /// 加载M3U数据
@@ -167,10 +279,13 @@ public partial class VideoListPage : ContentPage
 
             RecommendReg=reg;
             CurrentVURL =url;
-            RegexSelectBox.SelectedIndex = 0;
 
-            //上面更改索引会触发SelectionChanged
-            //VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+            //更改索引会触发SelectedIndexChanged事件，所以在仅刷新列表的时候选择不执行事件内后续代码
+            IgnoreSelectionEvents=true;
+            RegexSelectBox.SelectedIndex = 0;
+            IgnoreSelectionEvents=false;
+
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
 
             VDLIfmText.Text="";
         }
@@ -300,7 +415,10 @@ public partial class VideoListPage : ContentPage
         }
 
     }
-
+    /// <summary>
+    /// 重置M3U列表的页码
+    /// </summary>
+    /// <param name="index"></param>
     public void SetPage(int index)
     {
         VLCurrentPageIndex=index;
@@ -475,6 +593,10 @@ public partial class VideoListPage : ContentPage
         if (CurrentVURL=="")
         {
             DisplayAlert("提示信息", "当前列表为空！", "确定");
+            return;
+        }
+        if(IgnoreSelectionEvents)
+        {
             return;
         }
 
