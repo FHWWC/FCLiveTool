@@ -126,7 +126,7 @@ public partial class VideoListPage : ContentPage
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
            */
 
-            HttpResponseMessage response=null;
+            HttpResponseMessage response = null;
 
             try
             {
@@ -135,26 +135,35 @@ public partial class VideoListPage : ContentPage
                 statusCode=(int)response.StatusCode;
                 if (!response.IsSuccessStatusCode)
                 {
-                    await DisplayAlert("提示信息", "下载文件失败，请稍后重试！", "确定");
+                    await DisplayAlert("提示信息", "下载文件失败，请稍后重试！\n"+"HTTP错误代码："+statusCode, "确定");
                     return;
                 }
             }
-            catch(Exception)
+            catch (Exception)
             {
-                await DisplayAlert("提示信息", "连接对方服务器失败，请检查网络！", "确定");
+                await DisplayAlert("提示信息", "无法连接到对方服务器，请检查您的网络或者更换一个直播源！", "确定");
                 return;
             }
 
             //var httpstream = await httpClient.GetStreamAsync(selectVDL.SourceLink)
             using (var httpstream = await response.Content.ReadAsStreamAsync())
             {
-                var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, selectVDL.SourceName+".m3u8", httpstream, CancellationToken.None);
-
-                if (fileSaver.IsSuccessful)
+                try
                 {
-                    await DisplayAlert("提示信息", "文件已成功下载至：\n"+fileSaver.FilePath, "确定");
+                    selectVDL.SourceName=selectVDL.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                    var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, selectVDL.SourceName+".m3u8", httpstream, CancellationToken.None);
+
+                    if (fileSaver.IsSuccessful)
+                    {
+                        await DisplayAlert("提示信息", "文件已成功下载至：\n"+fileSaver.FilePath, "确定");
+                    }
+                    else
+                    {
+                        //暂时判断为用户在选择目录时点击了取消按钮
+                        await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                    }
                 }
-                else
+                catch (Exception)
                 {
                     await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
                 }
@@ -595,7 +604,7 @@ public partial class VideoListPage : ContentPage
             DisplayAlert("提示信息", "当前列表为空！", "确定");
             return;
         }
-        if(IgnoreSelectionEvents)
+        if (IgnoreSelectionEvents)
         {
             return;
         }
