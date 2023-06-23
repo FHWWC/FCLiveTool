@@ -6,7 +6,6 @@ using System.Xml.Linq;
 using System.Xml.Serialization;
 using static Microsoft.Maui.Controls.Button.ButtonContentLayout;
 using static Microsoft.Maui.Controls.Button;
-using static System.Net.WebRequestMethods;
 using System.IO;
 using System.Reflection.PortableExecutable;
 using Microsoft.Maui.Storage;
@@ -15,7 +14,13 @@ using CommunityToolkit.Maui.Storage;
 using System.Text;
 using Encoding = System.Text.Encoding;
 using System.Net;
+using System;
 
+#if ANDROID
+using Android.Content;
+using Java.Security;
+using Android.Provider;
+#endif
 
 #if WINDOWS
 using Windows.Storage.Pickers;
@@ -234,12 +239,101 @@ public partial class VideoListPage : ContentPage
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void VideoDetailList_ItemTapped(object sender, ItemTappedEventArgs e)
+    private async void VideoDetailList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
         if (!VDLToogleBtn.IsToggled)
         {
             VideoDetailList detail = e.Item as VideoDetailList;
 
+            //根据不同平台选择不同的缓存方式
+#if WINDOWS
+
+#elif ANDROID
+            int permResult = await new APPPermissions().CheckAndReqPermissions();
+            if (permResult!=0)
+            {
+                await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要保存文件！", "确定");
+                return;
+            }
+
+            //var test= Directory.CreateDirectory(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DataDirectory.AbsolutePath)+"/LiveStreamCache");
+            string cachePath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"/LiveStreamCache");
+
+            try
+            {
+                Directory.CreateDirectory(cachePath);
+            }
+            catch (Exception)
+            {
+                await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
+                return;
+            }
+
+
+            int statusCode;
+            using (HttpClient httpClient = new HttpClient())
+            {
+
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                HttpResponseMessage response = null;
+                string serverhost;
+
+                try
+                {
+                    response = await httpClient.GetAsync(detail.SourceLink);
+
+                    statusCode=(int)response.StatusCode;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        await DisplayAlert("提示信息", "获取文件失败，请稍后重试！\n"+"HTTP错误代码："+statusCode, "确定");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    await DisplayAlert("提示信息", "无法连接到对方服务器，请检查您的网络或者更换一个直播源！", "确定");
+                    return;
+                }
+
+
+                try
+                {
+                    detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                    File.WriteAllText(cachePath+"/"+detail.SourceName+".m3u8", await response.Content.ReadAsStringAsync());
+
+                    string[] result = File.ReadAllLines(cachePath+"/"+detail.SourceName+".m3u8");
+                    for (int i = 0; i<result.Length; i++)
+                    {
+                        if (result[i].StartsWith("#")||String.IsNullOrEmpty(result[i])||String.IsNullOrWhiteSpace(result[i]))
+                            continue;
+                        else if (!result[i].Contains("://"))
+                        {
+                            result[i]=detail.SourceLink.Substring(0, detail.SourceLink.LastIndexOf("/")+1)+result[i];
+                        }
+                    }
+
+                    File.WriteAllLines(cachePath+"/"+detail.SourceName+".m3u8", result);
+                }
+                catch (Exception)
+                {
+                    await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
+                    return;
+                }
+
+
+                VideoPrevPage.videoPrevPage.VideoWindow.Source=cachePath+"/"+detail.SourceName+".m3u8";
+                VideoPrevPage.videoPrevPage.VideoWindow.Play();
+                VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
+
+            }
+
+
+#else
+//暂时不对苹果设备进行直播源缓存
+#endif
+
+
+            return;
             VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
             VideoPrevPage.videoPrevPage.VideoWindow.Play();
             VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
