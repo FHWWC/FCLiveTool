@@ -245,10 +245,8 @@ public partial class VideoListPage : ContentPage
         {
             VideoDetailList detail = e.Item as VideoDetailList;
 
-            //根据不同平台选择不同的缓存方式
-#if WINDOWS
 
-#elif ANDROID
+
             int permResult = await new APPPermissions().CheckAndReqPermissions();
             if (permResult!=0)
             {
@@ -256,8 +254,23 @@ public partial class VideoListPage : ContentPage
                 return;
             }
 
+            //根据不同平台选择不同的缓存方式
+            string cachePath;
+#if WINDOWS
+             cachePath = Path.Combine(FileSystem.AppDataDirectory+"\\LiveStreamCache");
+#elif ANDROID
             //var test= Directory.CreateDirectory(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DataDirectory.AbsolutePath)+"/LiveStreamCache");
-            string cachePath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"/LiveStreamCache");
+            cachePath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"\\LiveStreamCache");
+#else
+            //暂时不对苹果设备以及其他平台进行直播源缓存
+
+            VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
+            VideoPrevPage.videoPrevPage.VideoWindow.Play();
+            VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
+
+            return;
+#endif
+
 
             try
             {
@@ -276,7 +289,6 @@ public partial class VideoListPage : ContentPage
 
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
                 HttpResponseMessage response = null;
-                string serverhost;
 
                 try
                 {
@@ -296,12 +308,13 @@ public partial class VideoListPage : ContentPage
                 }
 
 
+                detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                string FullM3U8Path = cachePath+"\\"+detail.SourceName+".m3u8";
                 try
                 {
-                    detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
-                    File.WriteAllText(cachePath+"/"+detail.SourceName+".m3u8", await response.Content.ReadAsStringAsync());
+                    File.WriteAllText(FullM3U8Path, await response.Content.ReadAsStringAsync());
 
-                    string[] result = File.ReadAllLines(cachePath+"/"+detail.SourceName+".m3u8");
+                    string[] result = File.ReadAllLines(FullM3U8Path);
                     for (int i = 0; i<result.Length; i++)
                     {
                         if (result[i].StartsWith("#")||String.IsNullOrEmpty(result[i])||String.IsNullOrWhiteSpace(result[i]))
@@ -312,7 +325,7 @@ public partial class VideoListPage : ContentPage
                         }
                     }
 
-                    File.WriteAllLines(cachePath+"/"+detail.SourceName+".m3u8", result);
+                    File.WriteAllLines(FullM3U8Path, result);
                 }
                 catch (Exception)
                 {
@@ -321,22 +334,13 @@ public partial class VideoListPage : ContentPage
                 }
 
 
-                VideoPrevPage.videoPrevPage.VideoWindow.Source=cachePath+"/"+detail.SourceName+".m3u8";
+                VideoPrevPage.videoPrevPage.VideoWindow.Source=FullM3U8Path;
                 VideoPrevPage.videoPrevPage.VideoWindow.Play();
                 VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
 
             }
 
 
-#else
-//暂时不对苹果设备进行直播源缓存
-#endif
-
-
-            return;
-            VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
-            VideoPrevPage.videoPrevPage.VideoWindow.Play();
-            VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
         }
     }
     /// <summary>
