@@ -257,7 +257,7 @@ public partial class VideoListPage : ContentPage
             //根据不同平台选择不同的缓存方式
             string cachePath;
 #if WINDOWS
-             cachePath = Path.Combine(FileSystem.AppDataDirectory+"\\LiveStreamCache");
+            cachePath = Path.Combine(FileSystem.AppDataDirectory+"\\LiveStreamCache");
 #elif ANDROID
             //var test= Directory.CreateDirectory(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DataDirectory.AbsolutePath)+"/LiveStreamCache");
             cachePath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"\\LiveStreamCache");
@@ -307,8 +307,8 @@ public partial class VideoListPage : ContentPage
                     return;
                 }
 
-
-                detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                /*
+                                 detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
                 string FullM3U8Path = cachePath+"\\"+detail.SourceName+".m3u8";
                 try
                 {
@@ -332,9 +332,11 @@ public partial class VideoListPage : ContentPage
                     await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
                     return;
                 }
+                 */
 
 
-                VideoPrevPage.videoPrevPage.VideoWindow.Source=FullM3U8Path;
+
+                VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
                 VideoPrevPage.videoPrevPage.VideoWindow.Play();
                 VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
 
