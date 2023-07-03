@@ -77,6 +77,7 @@ public partial class VideoListPage : ContentPage
     public string RecommendReg = "0";
     public List<string> RegexOption;
     public bool IgnoreSelectionEvents = false;
+    public List<string[]> M3U8PlayList = new List<string[]>();
 
     private void Question_Clicked(object sender, EventArgs e)
     {
@@ -244,9 +245,112 @@ public partial class VideoListPage : ContentPage
         if (!VDLToogleBtn.IsToggled)
         {
             VideoDetailList detail = e.Item as VideoDetailList;
+            M3U8PlayList.Clear();
+
+            int statusCode;
+            using (HttpClient httpClient = new HttpClient())
+            {
+
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                HttpResponseMessage response = null;
+
+                try
+                {
+                    response = await httpClient.GetAsync(detail.SourceLink);
+
+                    statusCode=(int)response.StatusCode;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        await DisplayAlert("提示信息", "获取文件失败，请稍后重试！\n"+"HTTP错误代码："+statusCode, "确定");
+                        return;
+                    }
+                }
+                catch (Exception)
+                {
+                    await DisplayAlert("提示信息", "无法连接到对方服务器，请检查您的网络或者更换一个直播源！", "确定");
+                    return;
+                }
+
+
+                detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                try
+                {
+                    using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                    {
+                        string r = "";
+                        string tProperties = "";
+                        while ((r= sr.ReadLine())!=null)
+                        {
+                            if (r.StartsWith("#"))
+                            {
+                                tProperties=r;
+                                continue;
+                            }
+                            else if (String.IsNullOrWhiteSpace(r))
+                                continue;
+                            else if (r.Contains(".m3u8"))
+                            {
+                                if (!r.Contains("://"))
+                                {
+                                    r=detail.SourceLink.Substring(0, detail.SourceLink.LastIndexOf("/")+1)+r;
+                                }
+
+
+                                //string m3u8name = r.Substring(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5);
+                                string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
+
+                                Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");
+
+                                M3U8PlayList.Add(new string[] { m3u8name, r,
+                                    tPResult.Groups[1].Value.Replace("\"","")
+                                });
+
+                            }
+                            else if (r.Contains(".ts"))
+                            {
+                                //备用
+                            }
+                        }
+                    }
+
+                }
+                catch (Exception)
+                {
+
+                    return;
+                }
+
+
+                string WantPlayURL = detail.SourceLink;
+                if (M3U8PlayList.Count > 1)
+                {
+
+                    string[] MOptions = new string[M3U8PlayList.Count];
+                    for (int i = 0; i<M3U8PlayList.Count; i++)
+                    {
+                        MOptions[i]="【"+(i+1)+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
+                    }
+
+                    string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
+                    if (MSelectResult != "取消"&&MSelectResult !=null)
+                    {
+                        int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0])-1;
+                        WantPlayURL=M3U8PlayList[tmindex][1];
+                    }
+
+                }
+
+
+                VideoPrevPage.videoPrevPage.VideoWindow.Source=WantPlayURL;
+                VideoPrevPage.videoPrevPage.VideoWindow.Play();
+                VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
+
+            }
 
 
 
+            /*
+             
             int permResult = await new APPPermissions().CheckAndReqPermissions();
             if (permResult!=0)
             {
@@ -257,10 +361,10 @@ public partial class VideoListPage : ContentPage
             //根据不同平台选择不同的缓存方式
             string cachePath;
 #if WINDOWS
-            cachePath = Path.Combine(FileSystem.AppDataDirectory+"\\LiveStreamCache");
+            cachePath = Path.Combine(FileSystem.AppDataDirectory+"/LiveStreamCache");
 #elif ANDROID
             //var test= Directory.CreateDirectory(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DataDirectory.AbsolutePath)+"/LiveStreamCache");
-            cachePath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"\\LiveStreamCache");
+            cachePath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"/LiveStreamCache");
 #else
             //暂时不对苹果设备以及其他平台进行直播源缓存
 
@@ -307,9 +411,9 @@ public partial class VideoListPage : ContentPage
                     return;
                 }
 
-                /*
-                                 detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
-                string FullM3U8Path = cachePath+"\\"+detail.SourceName+".m3u8";
+
+                detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                string FullM3U8Path = cachePath+"/"+detail.SourceName+".m3u8";
                 try
                 {
                     File.WriteAllText(FullM3U8Path, await response.Content.ReadAsStringAsync());
@@ -332,8 +436,6 @@ public partial class VideoListPage : ContentPage
                     await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
                     return;
                 }
-                 */
-
 
 
                 VideoPrevPage.videoPrevPage.VideoWindow.Source=detail.SourceLink;
@@ -341,6 +443,8 @@ public partial class VideoListPage : ContentPage
                 VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
 
             }
+
+             */
 
 
         }
