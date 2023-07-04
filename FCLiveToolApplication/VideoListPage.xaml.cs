@@ -300,10 +300,9 @@ public partial class VideoListPage : ContentPage
                                 string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
 
                                 Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");
+                                string tpr = tPResult.Groups[1].Value.Replace("\"", "");
 
-                                M3U8PlayList.Add(new string[] { m3u8name, r,
-                                    tPResult.Groups[1].Value.Replace("\"","")
-                                });
+                                M3U8PlayList.Add(new string[] { m3u8name, r,tpr==""?"---":tpr});
 
                             }
                             else if (r.Contains(".ts"))
@@ -324,15 +323,19 @@ public partial class VideoListPage : ContentPage
                 string WantPlayURL = detail.SourceLink;
                 if (M3U8PlayList.Count > 1)
                 {
-
-                    string[] MOptions = new string[M3U8PlayList.Count];
+                    string[] MOptions = new string[M3U8PlayList.Count+1];
+                    MOptions[0]="默认\n";
                     for (int i = 0; i<M3U8PlayList.Count; i++)
                     {
-                        MOptions[i]="【"+(i+1)+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
+                        MOptions[i+1]="【"+(i+1)+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
                     }
 
                     string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
-                    if (MSelectResult != "取消"&&MSelectResult !=null)
+                    if (MSelectResult == "取消"||MSelectResult is null)
+                    {
+                        return;
+                    }
+                    else if(!MSelectResult.Contains("默认"))
                     {
                         int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0])-1;
                         WantPlayURL=M3U8PlayList[tmindex][1];
