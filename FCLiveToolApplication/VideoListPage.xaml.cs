@@ -35,8 +35,11 @@ public partial class VideoListPage : ContentPage
     {
         InitializeComponent();
     }
+    public static VideoListPage videoListPage;
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
+        videoListPage=this;
+
         LoadVideos();
         InitRegexList();
         DeviceDisplay.MainDisplayInfoChanged+=DeviceDisplay_MainDisplayInfoChanged;
