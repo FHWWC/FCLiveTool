@@ -99,7 +99,7 @@ public partial class VideoPrevPage : ContentPage
 
         if (selectitem.SourceLink=="")
         {
-            DisplayAlert("提示信息", "无法播放该直播源，请更换一个试试", "确定");
+            DisplayAlert("提示信息", "无法播放该直播源，请更换一个试试。", "确定");
             return;
         }
 
@@ -190,5 +190,57 @@ public partial class VideoPrevPage : ContentPage
     private void RLRefreshBtn_Clicked(object sender, EventArgs e)
     {
         LoadRecent();
+    }
+
+    private async void PlaylistBtn_Clicked(object sender, EventArgs e)
+    {
+        List<string[]> M3U8PlayList = new List<string[]>();
+        string MSelectResult;
+
+        if (VideoListPage.videoListPage != null)
+        {
+            M3U8PlayList = VideoListPage.videoListPage.M3U8PlayList;
+        }
+
+        if (M3U8PlayList.Count<2)
+        {
+            MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, new string[] { "默认\n" });
+            if (MSelectResult == "取消"||MSelectResult is null)
+            {
+                return;
+            }
+            else
+            {
+                VideoWindow.Stop();
+                VideoWindow.Source=VideoWindow.Source;
+            }
+        }
+        else
+        {
+            string[] MOptions = new string[M3U8PlayList.Count+1];
+            MOptions[0]="默认\n";
+            for (int i = 0; i<M3U8PlayList.Count; i++)
+            {
+                MOptions[i+1]="【"+(i+1)+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
+            }
+
+            MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
+            if (MSelectResult == "取消"||MSelectResult is null)
+            {
+                return;
+            }
+            else if (!MSelectResult.Contains("默认"))
+            {
+                int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0])-1;
+                VideoWindow.Source=M3U8PlayList[tmindex][1];
+            }
+            else
+            {
+                VideoWindow.Stop();
+                VideoWindow.Source=VideoWindow.Source;
+            }
+        }
+
+        VideoWindow.Play();
     }
 }

@@ -38,7 +38,7 @@
         
 
         <Grid Grid.Row="0" Margin="10">
-            <HorizontalStackLayout x:Name="VideoIfm">
+            <HorizontalStackLayout x:Name="VideoIfm"  Margin="{ OnPlatform WinUI= '0,5,0,0'}">
                 <Label Text="当前正在播放："/>
                 <Label x:Name="NowPlayingTb" Text="CGTN (法语)" TextDecorations="Underline" x:FieldModifier="Public"/>
             </HorizontalStackLayout>
@@ -47,6 +47,7 @@
                     <FontImageSource Glyph="&#xF738;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
             </Button>
+            <ImageButton x:Name="PlaylistBtn" Background="LightPink" HeightRequest="30"  CornerRadius="{OnPlatform Android=5}"  HorizontalOptions="End" VerticalOptions="Start"  Margin="{ OnPlatform Android= '0,-5,0,0'}" Source="m3u8_playlist.png" Clicked="PlaylistBtn_Clicked"/>
         </Grid>
 
         <toolkit:MediaElement x:Name="VideoWindow" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Grid.Row="1" Source="https://livefr.cgtn.com/1000f/prog_index.m3u8" ShouldKeepScreenOn="True" x:FieldModifier="Public" ShouldAutoPlay="True" />
