@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Views;
 using Microsoft.Maui.Controls;
 using System.Linq.Expressions;
 using System.Security;
@@ -12,6 +13,7 @@ public partial class VideoPrevPage : ContentPage
         InitializeComponent();
     }
     public static VideoPrevPage videoPrevPage;
+    public string CurrentURL;
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
         videoPrevPage=this;
@@ -21,6 +23,7 @@ public partial class VideoPrevPage : ContentPage
 #if ANDROID
         RecentPanel.WidthRequest=PageGrid.Width;
 #endif
+        CurrentURL=(VideoWindow.Source as UriMediaSource).Uri.ToString();
     }
     private void PageGrid_SizeChanged(object sender, EventArgs e)
     {
@@ -237,7 +240,7 @@ public partial class VideoPrevPage : ContentPage
             else
             {
                 VideoWindow.Stop();
-                VideoWindow.Source=VideoWindow.Source;
+                VideoWindow.Source=CurrentURL;
             }
         }
 

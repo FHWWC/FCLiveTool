@@ -323,7 +323,7 @@ public partial class VideoListPage : ContentPage
                 }
 
 
-                string WantPlayURL = detail.SourceLink;
+                string WantPlayURL = VideoPrevPage.videoPrevPage.CurrentURL= detail.SourceLink;
                 if (M3U8PlayList.Count > 1)
                 {
                     string[] MOptions = new string[M3U8PlayList.Count+1];
