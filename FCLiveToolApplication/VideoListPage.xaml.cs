@@ -259,6 +259,7 @@ public partial class VideoListPage : ContentPage
 
                 try
                 {
+                    //detail.SourceLink 不清除\n和\r符可能会带来影响，这里暂时不清除
                     response = await httpClient.GetAsync(detail.SourceLink);
 
                     statusCode=(int)response.StatusCode;
@@ -305,7 +306,7 @@ public partial class VideoListPage : ContentPage
                                 Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");
                                 string tpr = tPResult.Groups[1].Value.Replace("\"", "");
 
-                                M3U8PlayList.Add(new string[] { m3u8name, r,tpr==""?"---":tpr});
+                                M3U8PlayList.Add(new string[] { m3u8name, r, tpr=="" ? "---" : tpr });
 
                             }
                             else if (r.Contains(".ts"))
@@ -323,14 +324,16 @@ public partial class VideoListPage : ContentPage
                 }
 
 
-                string WantPlayURL = VideoPrevPage.videoPrevPage.CurrentURL= detail.SourceLink;
-                if (M3U8PlayList.Count > 1)
+                M3U8PlayList.Insert(0, new string[] { "默认", detail.SourceLink });
+                string[] MOptions = new string[M3U8PlayList.Count];
+                MOptions[0]="默认\n";
+                string WantPlayURL = detail.SourceLink;
+
+                if (M3U8PlayList.Count > 2)
                 {
-                    string[] MOptions = new string[M3U8PlayList.Count+1];
-                    MOptions[0]="默认\n";
-                    for (int i = 0; i<M3U8PlayList.Count; i++)
+                    for (int i = 1; i<M3U8PlayList.Count; i++)
                     {
-                        MOptions[i+1]="【"+(i+1)+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
+                        MOptions[i]="【"+i+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
                     }
 
                     string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
@@ -338,12 +341,11 @@ public partial class VideoListPage : ContentPage
                     {
                         return;
                     }
-                    else if(!MSelectResult.Contains("默认"))
+                    else if (!MSelectResult.Contains("默认"))
                     {
-                        int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0])-1;
+                        int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
                         WantPlayURL=M3U8PlayList[tmindex][1];
                     }
-
                 }
 
 

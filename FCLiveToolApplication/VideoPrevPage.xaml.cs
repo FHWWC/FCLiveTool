@@ -13,7 +13,6 @@ public partial class VideoPrevPage : ContentPage
         InitializeComponent();
     }
     public static VideoPrevPage videoPrevPage;
-    public string CurrentURL;
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
         videoPrevPage=this;
@@ -23,7 +22,7 @@ public partial class VideoPrevPage : ContentPage
 #if ANDROID
         RecentPanel.WidthRequest=PageGrid.Width;
 #endif
-        CurrentURL=(VideoWindow.Source as UriMediaSource).Uri.ToString();
+        //CurrentURL=(VideoWindow.Source as UriMediaSource).Uri.ToString();
     }
     private void PageGrid_SizeChanged(object sender, EventArgs e)
     {
@@ -205,7 +204,7 @@ public partial class VideoPrevPage : ContentPage
             M3U8PlayList = VideoListPage.videoListPage.M3U8PlayList;
         }
 
-        if (M3U8PlayList.Count<2)
+        if (M3U8PlayList.Count<=2)
         {
             MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, new string[] { "默认\n" });
             if (MSelectResult == "取消"||MSelectResult is null)
@@ -220,11 +219,11 @@ public partial class VideoPrevPage : ContentPage
         }
         else
         {
-            string[] MOptions = new string[M3U8PlayList.Count+1];
+            string[] MOptions = new string[M3U8PlayList.Count];
             MOptions[0]="默认\n";
-            for (int i = 0; i<M3U8PlayList.Count; i++)
+            for (int i = 1; i<M3U8PlayList.Count; i++)
             {
-                MOptions[i+1]="【"+(i+1)+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
+                MOptions[i]="【"+i+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
             }
 
             MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
@@ -234,13 +233,13 @@ public partial class VideoPrevPage : ContentPage
             }
             else if (!MSelectResult.Contains("默认"))
             {
-                int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0])-1;
+                int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
                 VideoWindow.Source=M3U8PlayList[tmindex][1];
             }
             else
             {
                 VideoWindow.Stop();
-                VideoWindow.Source=CurrentURL;
+                VideoWindow.Source=M3U8PlayList[0][1];
             }
         }
 
