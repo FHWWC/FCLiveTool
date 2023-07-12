@@ -40,6 +40,10 @@ public partial class VideoListPage : ContentPage
     {
         videoListPage=this;
 
+        //让主页的播放列表引用当前页的播放列表
+        //（由于用户可能会在弹窗上点取消按钮，所以不使用这种引用方法）
+        //VideoPrevPage.videoPrevPage.M3U8PlayList=M3U8PlayList;
+
         LoadVideos();
         InitRegexList();
         DeviceDisplay.MainDisplayInfoChanged+=DeviceDisplay_MainDisplayInfoChanged;
@@ -250,10 +254,9 @@ public partial class VideoListPage : ContentPage
             VideoDetailList detail = e.Item as VideoDetailList;
             M3U8PlayList.Clear();
 
-            int statusCode;
             using (HttpClient httpClient = new HttpClient())
             {
-
+                int statusCode;
                 httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
                 HttpResponseMessage response = null;
 
@@ -346,9 +349,11 @@ public partial class VideoListPage : ContentPage
                         int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
                         WantPlayURL=M3U8PlayList[tmindex][1];
                     }
+
                 }
 
 
+                UpdatePrevPagePlaylist(M3U8PlayList);
                 VideoPrevPage.videoPrevPage.VideoWindow.Source=WantPlayURL;
                 VideoPrevPage.videoPrevPage.VideoWindow.Play();
                 VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
@@ -644,6 +649,18 @@ public partial class VideoListPage : ContentPage
     {
         VLCurrentPageIndex=index;
         VLCurrentPage.Text=index+"/"+VLMaxPageIndex;
+    }
+    /// <summary>
+    /// 将当前播放列表更新到直播源预览页面
+    /// </summary>
+    /// <param name="playlist">播放列表</param>
+    public void UpdatePrevPagePlaylist(List<string[]> playlist)
+    {
+        VideoPrevPage.videoPrevPage.M3U8PlayList.Clear();
+        playlist.ForEach(p =>
+        {
+            VideoPrevPage.videoPrevPage.M3U8PlayList.Add(p);
+        });
     }
     private void VLBackBtn_Clicked(object sender, EventArgs e)
     {

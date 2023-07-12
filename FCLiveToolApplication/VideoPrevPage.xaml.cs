@@ -13,6 +13,7 @@ public partial class VideoPrevPage : ContentPage
         InitializeComponent();
     }
     public static VideoPrevPage videoPrevPage;
+    public List<string[]> M3U8PlayList = new List<string[]>();
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
         videoPrevPage=this;
@@ -196,13 +197,7 @@ public partial class VideoPrevPage : ContentPage
 
     private async void PlaylistBtn_Clicked(object sender, EventArgs e)
     {
-        List<string[]> M3U8PlayList = new List<string[]>();
         string MSelectResult;
-
-        if (VideoListPage.videoListPage != null)
-        {
-            M3U8PlayList = VideoListPage.videoListPage.M3U8PlayList;
-        }
 
         if (M3U8PlayList.Count<=2)
         {
