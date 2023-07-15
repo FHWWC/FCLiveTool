@@ -252,114 +252,45 @@ public partial class VideoListPage : ContentPage
         if (!VDLToogleBtn.IsToggled)
         {
             VideoDetailList detail = e.Item as VideoDetailList;
-            M3U8PlayList.Clear();
 
-            using (HttpClient httpClient = new HttpClient())
+            string readresult = await new VideoManager().DownloadAndReadM3U8File(M3U8PlayList, new string[] {detail.SourceName,detail.SourceLink });
+            if(readresult!="")
             {
-                int statusCode;
-                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
-                HttpResponseMessage response = null;
+                await DisplayAlert("提示信息",readresult, "确定");
+                return;
+            }
 
-                try
+
+            M3U8PlayList.Insert(0, new string[] { "默认", detail.SourceLink });
+            string[] MOptions = new string[M3U8PlayList.Count];
+            MOptions[0]="默认\n";
+            string WantPlayURL = detail.SourceLink;
+
+            if (M3U8PlayList.Count > 2)
+            {
+                for (int i = 1; i<M3U8PlayList.Count; i++)
                 {
-                    //detail.SourceLink 不清除\n和\r符可能会带来影响，这里暂时不清除
-                    response = await httpClient.GetAsync(detail.SourceLink);
-
-                    statusCode=(int)response.StatusCode;
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        await DisplayAlert("提示信息", "获取文件失败，请稍后重试！\n"+"HTTP错误代码："+statusCode, "确定");
-                        return;
-                    }
+                    MOptions[i]="【"+i+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
                 }
-                catch (Exception)
+
+                string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
+                if (MSelectResult == "取消"||MSelectResult is null)
                 {
-                    await DisplayAlert("提示信息", "无法连接到对方服务器，请检查您的网络或者更换一个直播源！", "确定");
                     return;
                 }
-
-
-                detail.SourceName=detail.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
-                try
+                else if (!MSelectResult.Contains("默认"))
                 {
-                    using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
-                    {
-                        string r = "";
-                        string tProperties = "";
-                        while ((r= sr.ReadLine())!=null)
-                        {
-                            if (r.StartsWith("#"))
-                            {
-                                tProperties=r;
-                                continue;
-                            }
-                            else if (String.IsNullOrWhiteSpace(r))
-                                continue;
-                            else if (r.Contains(".m3u8"))
-                            {
-                                if (!r.Contains("://"))
-                                {
-                                    r=detail.SourceLink.Substring(0, detail.SourceLink.LastIndexOf("/")+1)+r;
-                                }
-
-
-                                //string m3u8name = r.Substring(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5);
-                                string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
-
-                                Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");
-                                string tpr = tPResult.Groups[1].Value.Replace("\"", "");
-
-                                M3U8PlayList.Add(new string[] { m3u8name, r, tpr=="" ? "---" : tpr });
-
-                            }
-                            else if (r.Contains(".ts"))
-                            {
-                                //备用
-                            }
-                        }
-                    }
-
+                    int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
+                    WantPlayURL=M3U8PlayList[tmindex][1];
                 }
-                catch (Exception)
-                {
-
-                    return;
-                }
-
-
-                M3U8PlayList.Insert(0, new string[] { "默认", detail.SourceLink });
-                string[] MOptions = new string[M3U8PlayList.Count];
-                MOptions[0]="默认\n";
-                string WantPlayURL = detail.SourceLink;
-
-                if (M3U8PlayList.Count > 2)
-                {
-                    for (int i = 1; i<M3U8PlayList.Count; i++)
-                    {
-                        MOptions[i]="【"+i+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
-                    }
-
-                    string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
-                    if (MSelectResult == "取消"||MSelectResult is null)
-                    {
-                        return;
-                    }
-                    else if (!MSelectResult.Contains("默认"))
-                    {
-                        int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
-                        WantPlayURL=M3U8PlayList[tmindex][1];
-                    }
-
-                }
-
-
-                UpdatePrevPagePlaylist(M3U8PlayList);
-                VideoPrevPage.videoPrevPage.VideoWindow.Source=WantPlayURL;
-                VideoPrevPage.videoPrevPage.VideoWindow.Play();
-                VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
 
             }
 
+
+            new VideoManager().UpdatePrevPagePlaylist(M3U8PlayList);
+            VideoPrevPage.videoPrevPage.VideoWindow.Source=WantPlayURL;
+            VideoPrevPage.videoPrevPage.VideoWindow.Play();
+            VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
 
 
             /*
@@ -650,18 +581,7 @@ public partial class VideoListPage : ContentPage
         VLCurrentPageIndex=index;
         VLCurrentPage.Text=index+"/"+VLMaxPageIndex;
     }
-    /// <summary>
-    /// 将当前播放列表更新到直播源预览页面
-    /// </summary>
-    /// <param name="playlist">播放列表</param>
-    public void UpdatePrevPagePlaylist(List<string[]> playlist)
-    {
-        VideoPrevPage.videoPrevPage.M3U8PlayList.Clear();
-        playlist.ForEach(p =>
-        {
-            VideoPrevPage.videoPrevPage.M3U8PlayList.Add(p);
-        });
-    }
+
     private void VLBackBtn_Clicked(object sender, EventArgs e)
     {
         if (VLCurrentPageIndex<=1)

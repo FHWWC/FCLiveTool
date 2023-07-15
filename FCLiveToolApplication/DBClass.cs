@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
@@ -89,5 +90,106 @@ namespace FCLiveToolApplication
 #endif
         }
 
+    }
+    public class VideoManager:ContentPage
+    {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="M3U8PlayList"></param>
+        /// <param name="VideoIfm">1：名称；2：URL；</param>
+        /// <returns></returns>
+        public async Task<string> DownloadAndReadM3U8File(List<string[]> M3U8PlayList, string[] VideoIfm)
+        {
+            M3U8PlayList.Clear();
+            using (HttpClient httpClient = new HttpClient())
+            {
+                int statusCode;
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                HttpResponseMessage response = null;
+
+                try
+                {
+                    //detail.SourceLink 不清除\n和\r符可能会带来影响，这里暂时不清除
+                    response = await httpClient.GetAsync(VideoIfm[1]);
+
+                    statusCode=(int)response.StatusCode;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return "获取文件失败，请稍后重试！\n"+"HTTP错误代码："+statusCode;
+                    }
+                }
+                catch (Exception)
+                {
+                    return "无法连接到对方服务器，请检查您的网络或者更换一个直播源！";
+                }
+
+
+                VideoIfm[0]=VideoIfm[0].Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                try
+                {
+                    using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                    {
+                        string r = "";
+                        string tProperties = "";
+                        while ((r= sr.ReadLine())!=null)
+                        {
+                            if (r.StartsWith("#"))
+                            {
+                                tProperties=r;
+                                continue;
+                            }
+                            else if (String.IsNullOrWhiteSpace(r))
+                                continue;
+                            else if (r.Contains(".m3u8"))
+                            {
+                                if (!r.Contains("://"))
+                                {
+                                    r=VideoIfm[1].Substring(0, VideoIfm[1].LastIndexOf("/")+1)+r;
+                                }
+
+
+                                //string m3u8name = r.Substring(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5);
+                                string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
+
+                                Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");
+                                string tpr = tPResult.Groups[1].Value.Replace("\"", "");
+
+                                M3U8PlayList.Add(new string[] { m3u8name, r, tpr=="" ? "---" : tpr });
+
+                            }
+                            else if (r.Contains(".ts"))
+                            {
+                                //备用
+                            }
+                        }
+                    }
+
+                }
+                catch (Exception)
+                {
+                    return "解析出现问题，可能是M3U8文件数据格式有问题。";
+                }
+
+
+            }
+
+
+            return "";
+        }
+
+        /// <summary>
+        /// 将当前播放列表更新到直播源预览页面
+        /// </summary>
+        /// <param name="playlist">播放列表</param>
+        public void UpdatePrevPagePlaylist(List<string[]> playlist)
+        {
+            VideoPrevPage.videoPrevPage.M3U8PlayList.Clear();
+            playlist.ForEach(p =>
+            {
+                VideoPrevPage.videoPrevPage.M3U8PlayList.Add(p);
+            });
+        }
     }
 }

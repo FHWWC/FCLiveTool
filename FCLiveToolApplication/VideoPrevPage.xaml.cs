@@ -96,17 +96,52 @@ public partial class VideoPrevPage : ContentPage
         }
 #endif
     }
-    private void RecentList_ItemTapped(object sender, ItemTappedEventArgs e)
+    private async void RecentList_ItemTapped(object sender, ItemTappedEventArgs e)
     {
+        List<string[]> tmlist = new List<string[]>();
+        M3U8PlayList.ForEach(tmlist.Add);
+
+
         var selectitem = e.Item as RecentVList;
 
-        if (selectitem.SourceLink=="")
+        string readresult = await new VideoManager().DownloadAndReadM3U8File(M3U8PlayList, new string[] { selectitem.SourceName, selectitem.SourceLink });
+        if (readresult!="")
         {
-            DisplayAlert("提示信息", "无法播放该直播源，请更换一个试试。", "确定");
+            M3U8PlayList=tmlist;
+            await DisplayAlert("提示信息", readresult, "确定");
             return;
         }
 
-        VideoWindow.Source=selectitem.SourceLink;
+
+        M3U8PlayList.Insert(0, new string[] { "默认", selectitem.SourceLink });
+        string[] MOptions = new string[M3U8PlayList.Count];
+        MOptions[0]="默认\n";
+        string WantPlayURL = selectitem.SourceLink;
+
+        if (M3U8PlayList.Count > 2)
+        {
+            for (int i = 1; i<M3U8PlayList.Count; i++)
+            {
+                MOptions[i]="【"+i+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
+            }
+
+            string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
+            if (MSelectResult == "取消"||MSelectResult is null)
+            {
+                M3U8PlayList=tmlist;
+                return;
+            }
+            else if (!MSelectResult.Contains("默认"))
+            {
+                int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
+                WantPlayURL=M3U8PlayList[tmindex][1];
+            }
+
+        }
+
+
+        VideoWindow.Source=WantPlayURL;
+        VideoWindow.Play();
         NowPlayingTb.Text=selectitem.SourceName;
     }
     public async void LoadRecent()
