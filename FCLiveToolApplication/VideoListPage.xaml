@@ -119,9 +119,9 @@
             <Grid>
                 <StackLayout VerticalOptions="Start">
                     <Label Text="编辑模式"/>
-                    <Switch x:Name="VDLToogleBtn" IsToggled="False" />
+                    <Switch x:Name="VDLToogleBtn" IsToggled="False" HorizontalOptions="Start"/>
                 </StackLayout>
-                <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Start" IsVisible="{Binding Source={x:Reference VDLToogleBtn}, Path=IsToggled}">
+                <HorizontalStackLayout x:Name="EditModeRightPanel" HorizontalOptions="End" VerticalOptions="Start" Margin="{ OnPlatform Android='0,60,0,0'}" IsVisible="{Binding Source={x:Reference VDLToogleBtn}, Path=IsToggled}">
                     <Button x:Name="DownloadBtn" Background="LightBlue" HeightRequest="40" Text="下载" Clicked="DownloadBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
@@ -132,7 +132,7 @@
                             <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
-                    <Button x:Name="DeleteBtn" Background="LightPink" HeightRequest="40" Text="删除" Margin="10,0,0,0" Clicked="DeleteBtn_Clicked">
+                    <Button x:Name="DeleteBtn" Background="LightPink" HeightRequest="40"  Text="删除" Margin="10,0,0,0" Clicked="DeleteBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
