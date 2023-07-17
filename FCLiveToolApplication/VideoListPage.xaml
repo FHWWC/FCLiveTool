@@ -57,7 +57,7 @@
         <Grid Margin="0,0,5,0">
             <Label Text="直播源列表：" FontSize="Medium"/>
 
-            <Button x:Name="VLToolbarBtn" Background="LightPink" HeightRequest="30" WidthRequest="40" ContentLayout="Top,-3" HorizontalOptions="End" Clicked="VLToolbarBtn_Clicked">
+            <Button x:Name="VLToolbarBtn" Background="LightPink" ContentLayout="Top,-3" HorizontalOptions="End" Clicked="VLToolbarBtn_Clicked">
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xE90F;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
@@ -68,7 +68,7 @@
         <ListView x:Name="VideosList" ItemTemplate="{StaticResource VideosListStyle}" HorizontalOptions="FillAndExpand" Margin="0,10,5,0" Grid.Row="1" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never" ItemTapped="VideosList_ItemTapped" Refreshing="VideosList_Refreshing"/>
         <StackLayout x:Name="VideosListPanel" Background="#A0F0FFFF" Padding="5" Margin="0,10,5,0" Grid.Row="1" TranslationY="-1000">
             <HorizontalStackLayout HorizontalOptions="End">
-                <Button x:Name="VLRefreshBtn" Background="LightPink" HeightRequest="30" WidthRequest="40" ContentLayout="Top,-3" Clicked="VLRefreshBtn_Clicked">
+                <Button x:Name="VLRefreshBtn" Background="LightPink"  ContentLayout="Top,-3" Clicked="VLRefreshBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
@@ -81,13 +81,13 @@
                     <RowDefinition/>
                     <RowDefinition Height="{ OnPlatform WinUI=0}"/>
                 </Grid.RowDefinitions>
-                <Button x:Name="VLBackBtn" Background="LightPink" HeightRequest="40" WidthRequest="45" ContentLayout="0" HorizontalOptions="Start" Clicked="VLBackBtn_Clicked">
+                <Button x:Name="VLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" Clicked="VLBackBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Label x:Name="VLCurrentPage" Text="1/1" FontSize="24" HorizontalOptions="Center" Grid.Row="{ OnPlatform Android=1}"/>
-                <Button x:Name="VLNextBtn" Background="LightPink" HeightRequest="40" WidthRequest="45" ContentLayout="0" HorizontalOptions="End" Clicked="VLNextBtn_Clicked">
+                <Button x:Name="VLNextBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="End" Clicked="VLNextBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
@@ -96,7 +96,7 @@
 
             <StackLayout Orientation="{ OnPlatform Horizontal,Android=Vertical}" HorizontalOptions="Center" Margin="0,5,0,0">
                 <Entry x:Name="VLPageTb" MaxLength="3" Placeholder="输入页码" Keyboard="Numeric"/>
-                <Button x:Name="VLJumpBtn" Background="LightBlue" HeightRequest="40" Text="跳转" Margin="{ OnPlatform '5,0,0,0', Android=0}" Clicked="VLJumpBtn_Clicked"/>
+                <Button x:Name="VLJumpBtn" Background="LightBlue" HeightRequest="35" Text="跳转" Margin="{ OnPlatform '5,0,0,0', Android=0}" Clicked="VLJumpBtn_Clicked"/>
             </StackLayout>
 
         </StackLayout>
@@ -108,7 +108,7 @@
         <Grid Grid.Column="1" Margin="5,0,0,0">
             <Label Text="视频列表：" FontSize="Medium"/>
 
-            <Button x:Name="VDLToolbarBtn" Background="LightPink" HeightRequest="30" WidthRequest="40" ContentLayout="Top,-3" HorizontalOptions="End" Clicked="VDLToolbarBtn_Clicked">
+            <Button x:Name="VDLToolbarBtn" Background="LightPink" ContentLayout="Top,-3" HorizontalOptions="End" Clicked="VDLToolbarBtn_Clicked">
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xE90F;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
@@ -122,7 +122,7 @@
                     <Switch x:Name="VDLToogleBtn" IsToggled="False" HorizontalOptions="Start"/>
                 </StackLayout>
                 <HorizontalStackLayout x:Name="EditModeRightPanel" HorizontalOptions="End" VerticalOptions="Start" Margin="{ OnPlatform Android='0,60,0,0'}" IsVisible="{Binding Source={x:Reference VDLToogleBtn}, Path=IsToggled}">
-                    <Button x:Name="DownloadBtn" Background="LightBlue" HeightRequest="40" Text="下载" Clicked="DownloadBtn_Clicked">
+                    <Button x:Name="DownloadBtn" Background="LightBlue" HeightRequest="40"  Text="下载" Clicked="DownloadBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
@@ -148,7 +148,7 @@
         </StackLayout>
         <StackLayout x:Name="VideoDataListPanel" Background="#A0F0FFFF" Grid.Row="1" Grid.Column="1" Margin="5,10,0,0" Padding="5" TranslationY="-1000">
             <HorizontalStackLayout HorizontalOptions="End">
-                <Button x:Name="VDLRefreshBtn" Background="LightPink" HeightRequest="30" WidthRequest="40" ContentLayout="Top,-3" Clicked="VDLRefreshBtn_Clicked">
+                <Button x:Name="VDLRefreshBtn" Background="LightPink" ContentLayout="Top,-3" Clicked="VDLRefreshBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
@@ -158,7 +158,7 @@
 
             <HorizontalStackLayout Margin="0,15,0,0">
                 <Picker x:Name="RegexSelectBox" Title="选择解析方案：" ItemsSource="{Binding RegexOption}" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
-                <Button x:Name="RegexSelectIfmBtn" Background="LightGray" HeightRequest="30" WidthRequest="40" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectIfmBtn_Clicked">
+                <Button x:Name="RegexSelectIfmBtn" Background="LightGray" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectIfmBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE946;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
