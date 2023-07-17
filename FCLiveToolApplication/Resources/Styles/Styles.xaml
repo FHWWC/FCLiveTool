@@ -32,7 +32,8 @@
                 <Setter Property="BackgroundColor" Value="{AppThemeBinding Light={StaticResource Primary}, Dark={StaticResource White}}" />
         -->
         <Setter Property="FontFamily" Value="OpenSansRegular"/>
-        <Setter Property="FontSize" Value="Default"/>
+        <Setter Property="FontSize" Value="{ OnPlatform Default, Android=Micro}"/>
+        <Setter Property="HeightRequest" Value="30"/>
         <Setter Property="CornerRadius" Value="5"/>
         <Setter Property="VisualStateManager.VisualStateGroups">
             <VisualStateGroupList>
