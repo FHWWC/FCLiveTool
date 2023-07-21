@@ -1,6 +1,9 @@
 #EXTM3U
 #EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv1.png",CCTV1
 http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000018602&livemode=1&stbId=2&channel-id=ystenlive
+#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv1.png",测试
+http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000018602&livemode=1&stbId=2&channel-id=ystenlive
+
 #EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv2.png",CCTV2
 http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000012442&livemode=1&stbId=2&channel-id=ystenlive
 #EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv3.png",CCTV3
