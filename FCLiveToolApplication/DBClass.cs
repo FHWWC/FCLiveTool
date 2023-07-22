@@ -96,7 +96,6 @@ namespace FCLiveToolApplication
         /// <summary>
         /// 
         /// </summary>
-        /// <typeparam name="T"></typeparam>
         /// <param name="M3U8PlayList"></param>
         /// <param name="VideoIfm">1：名称；2：URL；</param>
         /// <returns></returns>
@@ -151,6 +150,7 @@ namespace FCLiveToolApplication
 
 
                                 //string m3u8name = r.Substring(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5);
+                                //该处准备改为正则表达式匹配，因为某些直播源的URL比较复杂会匹配出错
                                 string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
 
                                 Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");

@@ -15,6 +15,7 @@ using System.Text;
 using Encoding = System.Text.Encoding;
 using System.Net;
 using System;
+using CommunityToolkit.Maui.Views;
 
 #if ANDROID
 using Android.Content;
@@ -52,13 +53,14 @@ public partial class VideoListPage : ContentPage
     {
 #if ANDROID
 
+        //横屏
         if (DeviceDisplay.Current.MainDisplayInfo.Orientation==DisplayOrientation.Landscape)
         {
-
+            EditModeRightPanel.Margin=new Thickness(0, 0, 0, 0);
         }
         else
         {
-
+            EditModeRightPanel.Margin=new Thickness(0, 60, 0, 0);
         }
 #endif
     }
@@ -220,7 +222,36 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
-        //string appDataDirectory = FileSystem.AppDataDirectory;
+        VideoDetailList selectVDL = VideoDetailList.SelectedItem as VideoDetailList;
+        if (string.IsNullOrWhiteSpace(selectVDL.SourceName))
+        {
+            await DisplayAlert("提示信息", "无法编辑该直播源，这不是你的原因，因为在解析时未能解析到直播源名称。", "确定");
+            return;
+        }
+        string vname = selectVDL.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+
+        string newvalue = await DisplayPromptAsync("编辑直播源", "当前直播源名称："+vname+"\n"+"请输入新的直播源名称：", "更新", "取消", "Name", -1, null, vname);
+        if (string.IsNullOrWhiteSpace(newvalue))
+        {
+            if (newvalue !=null)
+                await DisplayAlert("提示信息", "名称不能为空或空白字符！", "确定");
+            return;
+        }
+
+        var tresult = GetOLDStr(AllVideoData, vname, selectVDL.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
+        if (tresult is null||tresult.Contains("#EXTINF"))
+        {
+            await DisplayAlert("提示信息", "无法更新当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
+            return;
+        }
+
+        AllVideoData=AllVideoData.Replace(tresult, tresult.Replace(vname, newvalue));
+        await DisplayAlert("提示信息", "更新成功！", "确定");
+
+        VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+        //MAUI的ListView的坑，重新赋值数据源，SelectedItem竟然不会自动清除
+        VideoDetailList.SelectedItem=null;
+
     }
     private async void DeleteBtn_Clicked(object sender, EventArgs e)
     {
@@ -232,6 +263,38 @@ public partial class VideoListPage : ContentPage
 
     }
 
+    public string GetOLDStr(string videodata, string name, string link)
+    {
+        string oldvalue;
+        try
+        {
+            Match tVResult = Regex.Match(videodata, Regex.Escape(name)+@"(?s)([\s\S]*?)"+Regex.Escape(link));
+            oldvalue = tVResult.Value;
+            int tncount = oldvalue.Split(name).Length;
+            int tlcount = oldvalue.Split(link).Length;
+
+            if (tncount>2&&tlcount>2)
+            {
+                return null;
+            }
+            if (tncount>2)
+            {
+                string tvdata = oldvalue.Remove(oldvalue.IndexOf(name), name.Length);
+                return GetOLDStr(tvdata, name, link);
+            }
+            if (tlcount>2)
+            {
+                string tvdata = oldvalue.Remove(oldvalue.LastIndexOf(link), link.Length);
+                return GetOLDStr(tvdata, name, link);
+            }
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+
+        return oldvalue;
+    }
     /// <summary>
     /// 左侧M3U列表点击事件
     /// </summary>
@@ -253,10 +316,10 @@ public partial class VideoListPage : ContentPage
         {
             VideoDetailList detail = e.Item as VideoDetailList;
 
-            string readresult = await new VideoManager().DownloadAndReadM3U8File(M3U8PlayList, new string[] {detail.SourceName,detail.SourceLink });
-            if(readresult!="")
+            string readresult = await new VideoManager().DownloadAndReadM3U8File(M3U8PlayList, new string[] { detail.SourceName, detail.SourceLink });
+            if (readresult!="")
             {
-                await DisplayAlert("提示信息",readresult, "确定");
+                await DisplayAlert("提示信息", readresult, "确定");
                 return;
             }
 
