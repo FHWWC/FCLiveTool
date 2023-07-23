@@ -492,7 +492,7 @@ public partial class VideoListPage : ContentPage
     /// </summary>
     public async void LoadVideoDetail(string url, string reg)
     {
-        VideoDataListRing.IsRunning = true;
+        VideoDetailListRing.IsRunning = true;
         try
         {
             AllVideoData = await new HttpClient().GetStringAsync("https://fclivetool.com/api/APPGetVD?url="+url);
@@ -527,7 +527,7 @@ public partial class VideoListPage : ContentPage
              */
         }
 
-        VideoDataListRing.IsRunning = false;
+        VideoDetailListRing.IsRunning = false;
     }
     /// <summary>
     /// 获取当前选择的规则索引
@@ -789,6 +789,14 @@ public partial class VideoListPage : ContentPage
         LoadVideoDetail(CurrentVURL, RecommendReg);
     }
 
+    private void VideoDetailList_Refreshing(object sender, EventArgs e)
+    {
+        LoadVideoDetail(CurrentVURL, RecommendReg);
+
+        //不使用ListView自己的加载圈
+        VideoDetailList.IsRefreshing=false;
+    }
+
     private void VDLToolbarBtn_Clicked(object sender, EventArgs e)
     {
 
@@ -901,4 +909,5 @@ public partial class VideoListPage : ContentPage
         DisplayAlert("帮助信息", showmsg, "关闭");
 
     }
+
 }
