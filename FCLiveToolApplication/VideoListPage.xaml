@@ -140,7 +140,7 @@
                 </HorizontalStackLayout>
             </Grid>
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
-                <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped" Refreshing="VideoDetailList_Refreshing"/>
+                <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{OnPlatform Android=100}" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped" Refreshing="VideoDetailList_Refreshing"/>
                 <Label x:Name="VDLIfmText" Text="这里空空如也，先在左侧列表里选择一项吧~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Grid>
 

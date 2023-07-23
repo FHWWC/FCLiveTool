@@ -149,9 +149,10 @@ namespace FCLiveToolApplication
                                 }
 
 
-                                //string m3u8name = r.Substring(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5);
+                                //string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
                                 //该处准备改为正则表达式匹配，因为某些直播源的URL比较复杂会匹配出错
-                                string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
+                                Match m3u8nameResult = Regex.Match(r, @"\/([^\/]+\.m3u8)");
+                                string m3u8name =m3u8nameResult.Groups[1].Value;
 
                                 Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");
                                 string tpr = tPResult.Groups[1].Value.Replace("\"", "");
