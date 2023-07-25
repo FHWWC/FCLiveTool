@@ -91,7 +91,7 @@ namespace FCLiveToolApplication
         }
 
     }
-    public class VideoManager:ContentPage
+    public class VideoManager
     {
         /// <summary>
         /// 
@@ -149,15 +149,28 @@ namespace FCLiveToolApplication
                                 }
 
 
-                                //string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
-                                //该处准备改为正则表达式匹配，因为某些直播源的URL比较复杂会匹配出错
+                                //string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];                                
                                 Match m3u8nameResult = Regex.Match(r, @"\/([^\/]+\.m3u8)");
-                                string m3u8name =m3u8nameResult.Groups[1].Value;
+                                string m3u8name = m3u8nameResult.Groups[1].Value=="" ? "未解析到文件名" : m3u8nameResult.Groups[1].Value;
 
-                                Match tPResult = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n)");
-                                string tpr = tPResult.Groups[1].Value.Replace("\"", "");
+                                Match tPResult = Regex.Match(tProperties, @"(?:,|:)BANDWIDTH=(.*?)(,|\n|$)");
+                                string tBandwidth = tPResult.Groups[1].Value.Replace("\"", "");
+                                tBandwidth=tBandwidth=="" ? "---" : tBandwidth;
+                                Match tPResult2 = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n|$)");
+                                string tResolution = tPResult2.Groups[1].Value.Replace("\"", "");
+                                tResolution=tResolution=="" ? "---" : tResolution;
+                                Match tPResult3 = Regex.Match(tProperties, @"FRAME-RATE=(.*?)(,|\n|$)");
+                                string tFrameRate = tPResult3.Groups[1].Value.Replace("\"", "");
+                                tFrameRate=tFrameRate=="" ? "---" : tFrameRate;
+                                Match tPResult4 = Regex.Match(tProperties, @"CODECS=""(.*?)""(,|\n|$)");
+                                string tCodecs = tPResult4.Groups[1].Value.Replace("\"", "");
+                                tCodecs=tCodecs=="" ? "---" : tCodecs;
+                                Match tPResult5 = Regex.Match(tProperties, @"NAME=(.*?)(,|\n|$)");
+                                string tName = tPResult5.Groups[1].Value.Replace("\"", "");
+                                tName=tName=="" ? "---" : tName;
 
-                                M3U8PlayList.Add(new string[] { m3u8name, r, tpr=="" ? "---" : tpr });
+
+                                M3U8PlayList.Add(new string[] { m3u8name, r, tBandwidth, tResolution, tFrameRate, tCodecs, tName });
 
                             }
                             else if (r.Contains(".ts"))

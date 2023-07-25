@@ -122,7 +122,7 @@ public partial class VideoPrevPage : ContentPage
         {
             for (int i = 1; i<M3U8PlayList.Count; i++)
             {
-                MOptions[i]="【"+i+"】\n直播源名称："+M3U8PlayList[i][0]+"\n分辨率："+M3U8PlayList[i][2]+"\n";
+                MOptions[i]="【"+i+"】\n文件名："+M3U8PlayList[i][0]+"\n位率："+M3U8PlayList[i][2]+"\n分辨率："+M3U8PlayList[i][3]+"\n帧率："+M3U8PlayList[i][4]+"\n编解码器："+M3U8PlayList[i][5]+"\n标签："+M3U8PlayList[i][6]+"\n";
             }
 
             string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
