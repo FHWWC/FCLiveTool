@@ -132,7 +132,7 @@ namespace FCLiveToolApplication
                     {
                         string r = "";
                         string tProperties = "";
-                        while ((r= sr.ReadLine())!=null)
+                        while ((r=await sr.ReadLineAsync())!=null)
                         {
                             if (r.StartsWith("#"))
                             {
