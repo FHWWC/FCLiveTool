@@ -114,7 +114,7 @@
                         <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
-                <Button x:Name="VDLToolbarBtn" Background="LightPink" ContentLayout="Top,-3" Margin="10,0,0,0" Clicked="VDLToolbarBtn_Clicked">
+                <Button x:Name="VDLToolbarBtn" Background="LightPink" ContentLayout="Top,-3" Margin="{ OnPlatform '10,0,0,0', Android='5,0,0,0'}" Clicked="VDLToolbarBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE90F;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
