@@ -108,11 +108,18 @@
         <Grid Grid.Column="1" Margin="5,0,0,0">
             <Label Text="视频列表：" FontSize="Medium"/>
 
-            <Button x:Name="VDLToolbarBtn" Background="LightPink" ContentLayout="Top,-3" HorizontalOptions="End" Clicked="VDLToolbarBtn_Clicked">
-                <Button.ImageSource>
-                    <FontImageSource Glyph="&#xE90F;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                </Button.ImageSource>
-            </Button>
+            <StackLayout Orientation="Horizontal"  HorizontalOptions="End">
+                <Button x:Name="SaveM3UFileBtn" Background="LightBlue"  Text="保存M3U文件" Clicked="SaveM3UFileBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="VDLToolbarBtn" Background="LightPink" ContentLayout="Top,-3" Margin="10,0,0,0" Clicked="VDLToolbarBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE90F;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </StackLayout>
         </Grid>
 
         <StackLayout Margin="5,10,0,0" Grid.Row="1" Grid.Column="1">

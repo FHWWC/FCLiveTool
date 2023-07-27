@@ -261,6 +261,32 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
+        VideoDetailList selectVDL = VideoDetailList.SelectedItem as VideoDetailList;
+        if (string.IsNullOrWhiteSpace(selectVDL.SourceName))
+        {
+            await DisplayAlert("提示信息", "无法编辑该直播源，这不是你的原因，因为在解析时未能解析到直播源名称。", "确定");
+            return;
+        }
+        string vname = selectVDL.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+
+        bool readydel = await DisplayAlert("你确定要移除该直播源吗？", vname, "确定", "取消");
+        if (readydel)
+        {
+            var tresult = GetOLDStr(AllVideoData, vname, selectVDL.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
+            if (tresult is null||tresult.Contains("#EXTINF"))
+            {
+                await DisplayAlert("提示信息", "无法移除当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
+                return;
+            }
+
+            AllVideoData=AllVideoData.Replace(tresult, "");
+            await DisplayAlert("提示信息", "移除成功！", "确定");
+
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+            //MAUI的ListView的坑，重新赋值数据源，SelectedItem竟然不会自动清除
+            VideoDetailList.SelectedItem=null;
+        }
+
     }
 
     public string GetOLDStr(string videodata, string name, string link)
@@ -472,6 +498,8 @@ public partial class VideoListPage : ContentPage
             //暂时忽略小于15的情况
             CurrentVideosList = (List<VideoList>)xmlSerializer.Deserialize(new StringReader(videodata));
             VideosList.ItemsSource= CurrentVideosList.Take(15);
+            //更新数据源后需手动清除选中的项信息
+            VideosList.SelectedItem=null;
 
             //暂时忽略页数小于1的情况
             VLMaxPageIndex= (int)Math.Ceiling(CurrentVideosList.Count/15.0);
@@ -506,7 +534,8 @@ public partial class VideoListPage : ContentPage
             IgnoreSelectionEvents=false;
 
             VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
-
+            //更新数据源后需手动清除选中的项信息
+            VideoDetailList.SelectedItem=null;
             VDLIfmText.Text="";
         }
         catch (Exception)
@@ -910,4 +939,63 @@ public partial class VideoListPage : ContentPage
 
     }
 
+    private async void SaveM3UFileBtn_Clicked(object sender, EventArgs e)
+    {     
+        /*
+                 if (CurrentVURL=="")
+                {
+                    await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
+                    return;
+                }
+         */
+        //如果刷新了左侧列表，则暂不支持保存M3U文件
+        if (VideosList.SelectedItem is null)
+        {
+            await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
+            return;
+        }
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要保存文件！", "确定");
+            return;
+        }
+
+
+        using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(AllVideoData)))
+        {
+            try
+            {
+                /*
+                                 string sname;
+                                if (VideosList.SelectedItem is null)
+                                {
+                                    sname="FileName";
+                                }
+                                else
+                                {
+                                    VideoList selectVL = VideosList.SelectedItem as VideoList;
+                                    sname=selectVL.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                                }
+                 */
+                VideoList selectVL = VideosList.SelectedItem as VideoList;
+                selectVL.SourceName=selectVL.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, selectVL.SourceName+".m3u", ms, CancellationToken.None);
+
+                if (fileSaver.IsSuccessful)
+                {
+                    await DisplayAlert("提示信息", "文件已成功保存至：\n"+fileSaver.FilePath, "确定");
+                }
+                else
+                {
+                    //暂时判断为用户在选择目录时点击了取消按钮
+                    await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                }
+            }
+            catch (Exception)
+            {
+                await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
+            }
+        }
+    }
 }
