@@ -1,4 +1,4 @@
-![示例图片](FCLiveToolApplication/Resources/Images/fclive_big_logo.png)  
+![FCLiveToolLogo](FCLiveToolApplication/Resources/Images/fclive_big_logo.png)  
   
 # FCLiveTool  
 网页端程序
@@ -6,6 +6,8 @@
 FCLiveTool 是一个可以在线预览，下载直播源的网站，为有需要的人提供方便。您可以在线查看您想看的直播信号，也可以将直播源下载后导入到您的播放软件里。  
 该服务完全免费，且无广告。  
 **网址  https://fclivetool.com**  
+![FCLiveToolSS1](GitMPIMG/IMG4.png)  
+![FCLiveToolSS2](GitMPIMG/IMG5.png)  
   
 **本Web项目下载下来后并不能直接运行，需要您自行配置您的数据库，以及编写控制器代码，以及数据模型仅供参考，以上内容请根据自己的需求进行修改**  
 //建议有编程能力的人下载项目。  
