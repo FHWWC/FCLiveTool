@@ -31,6 +31,9 @@ namespace FCLiveToolApplication
         public string LogoLink { get; set; }
         public string SourceName { get; set; }
         public string SourceLink { get; set; }
+        //客户端专用
+        public bool isHTTPS { get; set; }
+        public string FileName { get; set; }
     }
     public class RecentVList
     {

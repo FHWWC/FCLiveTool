@@ -26,8 +26,11 @@
                         <Label Text="{Binding SourceName}" FontAttributes="Bold"  Margin="20"/>
                     </HorizontalStackLayout>
 
-                    <StackLayout Grid.Row="1">
-
+                    <StackLayout Orientation="Horizontal" Grid.Row="1">
+                        <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" Padding="5,0">
+                            <Label TextColor="White" Text="HTTPS"/>
+                        </StackLayout>
+                        <Label Text="{Binding FileName}" Margin="10,0,0,0"/>
                     </StackLayout>
 
                 </Grid>

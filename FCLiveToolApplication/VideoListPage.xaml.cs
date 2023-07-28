@@ -613,7 +613,9 @@ public partial class VideoListPage : ContentPage
                 Id=i,
                 LogoLink=match[i].Groups[UseGroup[0]].Value=="" ? "fclive_tvicon.png" : match[i].Groups[UseGroup[0]].Value,
                 SourceName=match[i].Groups[UseGroup[1]].Value,
-                SourceLink=match[i].Groups[UseGroup[2]].Value
+                SourceLink=match[i].Groups[UseGroup[2]].Value,
+                isHTTPS=match[i].Groups[UseGroup[2]].Value.ToLower().StartsWith("https://") ? true : false,
+                FileName=Regex.Match(match[i].Groups[UseGroup[2]].Value, @"\/([^\/]+\.m3u8)").Groups[1].Value
             };
             //videoDetail.LogoLink=videoDetail.LogoLink=="" ? "fclive_tvicon.png" : videoDetail.LogoLink;
 
