@@ -24,13 +24,15 @@ public partial class AppShell : Shell
 
     private void Shell_Navigating(object sender, ShellNavigatingEventArgs e)
     {
-        if(!e.Target.Location.ToString().Contains("VideoPrevPage"))
-        {
-            if (VideoPrevPage.videoPrevPage!=null)
-            {
-                VideoPrevPage.videoPrevPage.VideoWindow.Pause();
-            }
-        }
+        /*
+                 if (!e.Target.Location.ToString().Contains("VideoPrevPage"))
+                {
+                    if (VideoPrevPage.videoPrevPage!=null)
+                    {
+                        VideoPrevPage.videoPrevPage.VideoWindow.Stop();
+                    }
+                }
+         */
 
     }
 
