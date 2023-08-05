@@ -34,6 +34,8 @@ namespace FCLiveToolApplication
         //客户端专用
         public bool isHTTPS { get; set; }
         public string FileName { get; set; }
+        public string HTTPStatusCode { get; set; }
+        public Color HTTPStatusTextBKG { get; set; }
     }
     public class RecentVList
     {

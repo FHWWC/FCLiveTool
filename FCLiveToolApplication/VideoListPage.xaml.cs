@@ -87,6 +87,9 @@ public partial class VideoListPage : ContentPage
     public List<string> RegexOption;
     public bool IgnoreSelectionEvents = false;
     public List<string[]> M3U8PlayList = new List<string[]>();
+    public bool isFinishMValidCheck = true;
+
+    CancellationTokenSource M3U8ValidChckCTS;
 
     private void Question_Clicked(object sender, EventArgs e)
     {
@@ -523,6 +526,9 @@ public partial class VideoListPage : ContentPage
         VideoDetailListRing.IsRunning = true;
         try
         {
+            //重置直播源检测标记
+            isFinishMValidCheck=true;
+
             AllVideoData = await new HttpClient().GetStringAsync("https://fclivetool.com/api/APPGetVD?url="+url);
 
             RecommendReg=reg;
@@ -605,7 +611,7 @@ public partial class VideoListPage : ContentPage
         MatchCollection match = Regex.Matches(videodata, UseRegex(recreg));
 
         List<VideoDetailList> result = new List<VideoDetailList>();
-        for (int i = 0; i<match.Count(); i++)
+        for (int i = 0; i<match.Count; i++)
         {
             VideoDetailList videoDetail = new VideoDetailList()
             {
@@ -942,7 +948,7 @@ public partial class VideoListPage : ContentPage
     }
 
     private async void SaveM3UFileBtn_Clicked(object sender, EventArgs e)
-    {     
+    {
         /*
                  if (CurrentVURL=="")
                 {
@@ -998,6 +1004,207 @@ public partial class VideoListPage : ContentPage
             {
                 await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
             }
+        }
+    }
+
+    private async void M3U8ValidBtn_Clicked(object sender, EventArgs e)
+    {
+        if (CurrentVURL=="")
+        {
+            await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
+            return;
+        }
+
+        var vdlcount = VideoDetailList.ItemsSource.Cast<VideoDetailList>().Count();
+        if (vdlcount<1)
+        {
+            await DisplayAlert("提示信息", "当前列表里没有直播源，请尝试更换一个解析方案！", "确定");
+            return;
+        }
+        if (!isFinishMValidCheck)
+        {
+            await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
+            return;
+        }
+        bool tSelect= await DisplayAlert("提示信息", "本次将要检测"+vdlcount+"个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定","取消");
+        if (!tSelect)
+        {
+            return;
+        }
+
+        M3U8ValidChckCTS=new CancellationTokenSource();
+        isFinishMValidCheck=false;
+        M3U8ValidStopBtn.IsEnabled=true;
+
+        int finishcheck = 0;
+        VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList().ForEach(async p =>
+        {
+            Thread thread = new Thread(async ()=>
+                {
+                    using (HttpClient httpClient = new HttpClient())
+                    {
+                        int statusCode;
+                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                        HttpResponseMessage response = null;
+                        //取消操作
+                        M3U8ValidChckCTS.Token.ThrowIfCancellationRequested();
+
+                        try
+                        {
+                            p.HTTPStatusCode="Checking...";
+                            p.HTTPStatusTextBKG=Colors.Gray;
+
+                            response = await httpClient.GetAsync(p.SourceLink,M3U8ValidChckCTS.Token);
+
+                            statusCode=(int)response.StatusCode;
+                            await MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                if (response.IsSuccessStatusCode)
+                                {
+                                    p.HTTPStatusCode="OK";
+                                    p.HTTPStatusTextBKG=Colors.Green;
+                                }
+                                else
+                                {
+                                    p.HTTPStatusCode=statusCode.ToString();
+                                    p.HTTPStatusTextBKG=Colors.Orange;
+                                }
+                            });
+
+                        }
+                        catch (OperationCanceledException ex)
+                        {
+
+                        }
+                        catch (Exception)
+                        {
+                            await MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                p.HTTPStatusCode="ERROR";
+                                p.HTTPStatusTextBKG=Colors.Red;
+                            });
+                        }
+
+                        if(!M3U8ValidChckCTS.IsCancellationRequested)
+                        {
+                            finishcheck++;
+                        }
+
+                    }
+                });
+            thread.Start();
+
+            await Task.Delay(20);
+        });
+ 
+        while(finishcheck<vdlcount)
+        {
+            if (M3U8ValidChckCTS.IsCancellationRequested)
+            {
+                break;
+            }
+            await Task.Delay(1000);
+        }
+
+        M3U8ValidStopBtn.IsEnabled=false;
+        isFinishMValidCheck=true;
+
+        if (!M3U8ValidChckCTS.IsCancellationRequested)
+        {
+            var tlist = VideoDetailList.ItemsSource;
+            VideoDetailList.ItemsSource=null;
+            VideoDetailList.ItemsSource=tlist;
+
+            await DisplayAlert("提示信息", "已全部检测完成！", "确定");
+        }
+        else
+        {
+            string regexIndex = GetRegexOptionIndex();
+            if (regexIndex!="0")
+            {
+                VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
+            }
+            else
+            {
+                VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+            }
+            await DisplayAlert("提示信息", "您已取消检测！", "确定");
+        }
+
+
+    }
+
+    private async void M3U8VRemoveBtn_Clicked(object sender, EventArgs e)
+    {
+        if (CurrentVURL=="")
+        {
+            await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
+            return;
+        }
+
+        var vdlcount = VideoDetailList.ItemsSource.Cast<VideoDetailList>().Count();
+        if (vdlcount<1)
+        {
+            await DisplayAlert("提示信息", "当前列表里没有直播源，请尝试更换一个解析方案！", "确定");
+            return;
+        }
+        if (!isFinishMValidCheck)
+        {
+            await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
+            return;
+        }
+        var notokcount = VideoDetailList.ItemsSource.Cast<VideoDetailList>().Where(p=>(p.HTTPStatusCode!="OK")&&(p.HTTPStatusCode!=null)).Count();
+        if (notokcount<1)
+        {
+            await DisplayAlert("提示信息", "当前列表里没有无效的直播信号，无需操作！", "确定");
+            return;
+        }
+        bool tSelect = await DisplayAlert("提示信息", "本次将要移除"+notokcount+"个无效的直播信号，你确定移除吗？\n移除后可点击页面右上角的保存按钮。", "确定", "取消");
+        if (!tSelect)
+        {
+            return;
+        }
+
+
+        VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList().ForEach(p =>
+        {
+            if(p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null)
+            {
+                string vname = p.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+
+                var tresult = GetOLDStr(AllVideoData, vname, p.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
+                if (tresult != null&&!tresult.Contains("#EXTINF"))
+                {
+                    AllVideoData=AllVideoData.Replace(tresult, "");
+                }
+
+            }
+        });
+
+        string regexIndex = GetRegexOptionIndex();
+        if (regexIndex!="0")
+        {
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
+        }
+        else
+        {
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+        }
+        await DisplayAlert("提示信息", "已成功移除无效的直播信号！", "确定");
+
+    }
+
+    private async void M3U8ValidStopBtn_Clicked(object sender, EventArgs e)
+    {
+        if(M3U8ValidChckCTS!=null)
+        {
+            bool CancelCheck =await DisplayAlert("提示信息", "您要停止检测吗？停止后暂时不支持恢复进度。", "确定", "取消");
+            if (CancelCheck)
+            {
+                M3U8ValidChckCTS.Cancel();
+                M3U8ValidStopBtn.IsEnabled=false;
+            }
+
         }
     }
 }

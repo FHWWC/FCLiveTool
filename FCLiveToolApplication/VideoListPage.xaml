@@ -9,7 +9,7 @@
             <ViewCell>
                 <StackLayout Margin="0,10">
                     <Label Text="{Binding SourceName}" FontAttributes="Bold" HorizontalOptions="Center"/>
-                    <Label Text="{Binding Description}" LineBreakMode="WordWrap" HorizontalOptions="Center"/>
+                    <Label Text="{Binding Description}" HorizontalOptions="Center"/>
                 </StackLayout>
             </ViewCell>
         </DataTemplate>
@@ -18,20 +18,37 @@
                 <Grid Margin="20,10" HeightRequest="100">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition/>
+                        <RowDefinition />
                     </Grid.RowDefinitions>
 
-                    <HorizontalStackLayout>
-                        <Image HeightRequest="45" Source="{Binding LogoLink}"/>
-                        <Label Text="{Binding SourceName}" FontAttributes="Bold"  Margin="20"/>
-                    </HorizontalStackLayout>
+                    
+                    <StackLayout HorizontalOptions="End" Margin="{ OnPlatform Android='0,5,0,0'}">
+                        <StackLayout BackgroundColor="{Binding HTTPStatusTextBKG}" Padding="5,0">
+                            <Label TextColor="White" Text="{Binding HTTPStatusCode}"/>
+                        </StackLayout>
 
-                    <StackLayout Orientation="Horizontal" Grid.Row="1">
-                        <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" Padding="5,0">
+                    </StackLayout>
+                    <Grid Margin="0,20,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <Image HeightRequest="45" Source="{Binding LogoLink}" HorizontalOptions="Start"/>
+                        <Label Text="{Binding SourceName}" FontAttributes="Bold" HorizontalOptions="Start" Margin="20,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
+                    </Grid>
+
+                    <Grid Margin="0,10,0,0" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" HorizontalOptions="Start" Padding="5,0">
                             <Label TextColor="White" Text="HTTPS"/>
                         </StackLayout>
-                        <Label Text="{Binding FileName}" Margin="10,0,0,0"/>
-                    </StackLayout>
+                        <Label Text="{Binding FileName}" HorizontalOptions="Start" Margin="10,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
+                    </Grid>
 
                 </Grid>
             </ViewCell>
@@ -79,7 +96,8 @@
                 <ImageButton x:Name="VideoListQue" Background="LightSkyBlue" HeightRequest="30" WidthRequest="40" Margin="5,0,0,0" CornerRadius="{ OnPlatform Android=5}" Source="question.png" Clicked="Question_Clicked"/>
             </HorizontalStackLayout>
 
-            <Grid Margin="0,15,0,0">
+            <Label Text="列表操作：" FontSize="Medium" Margin="0,20,0,0"/>
+            <Grid Margin="0,10,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition Height="{ OnPlatform WinUI=0}"/>
@@ -96,7 +114,6 @@
                     </Button.ImageSource>
                 </Button>
             </Grid>
-
             <StackLayout Orientation="{ OnPlatform Horizontal,Android=Vertical}" HorizontalOptions="Center" Margin="0,5,0,0">
                 <Entry x:Name="VLPageTb" MaxLength="3" Placeholder="输入页码" Keyboard="Numeric"/>
                 <Button x:Name="VLJumpBtn" Background="LightBlue" HeightRequest="35" Text="跳转" Margin="{ OnPlatform '5,0,0,0', Android=0}" Clicked="VLJumpBtn_Clicked"/>
@@ -166,7 +183,9 @@
                 <ImageButton x:Name="VideosQue" Background="LightSkyBlue" HeightRequest="30" WidthRequest="40" Margin="5,0,0,0" CornerRadius="{OnPlatform Android=5}" HorizontalOptions="End" VerticalOptions="Start" Source="question.png" Clicked="Question_Clicked"/>
             </HorizontalStackLayout>
 
-            <HorizontalStackLayout Margin="0,15,0,0">
+
+            <Label Text="解析方案：" FontSize="Medium" Margin="0,20,0,0"/>
+            <HorizontalStackLayout Margin="0,10,0,0">
                 <Picker x:Name="RegexSelectBox" Title="选择解析方案：" ItemsSource="{Binding RegexOption}" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
                 <Button x:Name="RegexSelectIfmBtn" Background="LightGray" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectIfmBtn_Clicked">
                     <Button.ImageSource>
@@ -181,6 +200,28 @@
                 </StackLayout>
             </HorizontalStackLayout>
 
+            <Label Text="直播源检测：" FontSize="Medium" Margin="0,15,0,0"/>
+            <HorizontalStackLayout Margin="0,10,0,0">
+                <StackLayout>
+                    <Button x:Name="M3U8ValidBtn" Background="LightBlue" Text="测试直播源有效性" Clicked="M3U8ValidBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE9D5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Button x:Name="M3U8ValidStopBtn" Background="LightPink" Text="终止" WidthRequest="80" Margin="0,5,0,0" IsEnabled="False" Clicked="M3U8ValidStopBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </StackLayout>
+
+                <Button x:Name="M3U8VRemoveBtn" Background="LightPink" Text="移除无效的直播源" Margin="5,0,0,0" Clicked="M3U8VRemoveBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+            
         </StackLayout>
         <Grid HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1">
             <ActivityIndicator x:Name="VideoDetailListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
