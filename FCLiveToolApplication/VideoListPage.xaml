@@ -215,7 +215,7 @@
                     </Button>
                 </StackLayout>
 
-                <Button x:Name="M3U8VRemoveBtn" Background="LightPink" Text="移除无效的直播源" Margin="5,0,0,0" Clicked="M3U8VRemoveBtn_Clicked">
+                <Button x:Name="M3U8ValidRemoveBtn" Background="LightPink" Text="移除无效的直播源" Margin="5,0,0,0" Clicked="M3U8ValidRemoveBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>

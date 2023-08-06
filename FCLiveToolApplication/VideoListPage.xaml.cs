@@ -89,7 +89,7 @@ public partial class VideoListPage : ContentPage
     public List<string[]> M3U8PlayList = new List<string[]>();
     public bool isFinishMValidCheck = true;
 
-    CancellationTokenSource M3U8ValidChckCTS;
+    CancellationTokenSource M3U8ValidCheckCTS;
 
     private void Question_Clicked(object sender, EventArgs e)
     {
@@ -1032,7 +1032,7 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
-        M3U8ValidChckCTS=new CancellationTokenSource();
+        M3U8ValidCheckCTS=new CancellationTokenSource();
         isFinishMValidCheck=false;
         M3U8ValidStopBtn.IsEnabled=true;
 
@@ -1047,14 +1047,14 @@ public partial class VideoListPage : ContentPage
                         httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
                         HttpResponseMessage response = null;
                         //取消操作
-                        M3U8ValidChckCTS.Token.ThrowIfCancellationRequested();
+                        M3U8ValidCheckCTS.Token.ThrowIfCancellationRequested();
 
                         try
                         {
                             p.HTTPStatusCode="Checking...";
                             p.HTTPStatusTextBKG=Colors.Gray;
 
-                            response = await httpClient.GetAsync(p.SourceLink,M3U8ValidChckCTS.Token);
+                            response = await httpClient.GetAsync(p.SourceLink,M3U8ValidCheckCTS.Token);
 
                             statusCode=(int)response.StatusCode;
                             await MainThread.InvokeOnMainThreadAsync(() =>
@@ -1085,7 +1085,7 @@ public partial class VideoListPage : ContentPage
                             });
                         }
 
-                        if(!M3U8ValidChckCTS.IsCancellationRequested)
+                        if(!M3U8ValidCheckCTS.IsCancellationRequested)
                         {
                             finishcheck++;
                         }
@@ -1099,7 +1099,7 @@ public partial class VideoListPage : ContentPage
  
         while(finishcheck<vdlcount)
         {
-            if (M3U8ValidChckCTS.IsCancellationRequested)
+            if (M3U8ValidCheckCTS.IsCancellationRequested)
             {
                 break;
             }
@@ -1109,7 +1109,7 @@ public partial class VideoListPage : ContentPage
         M3U8ValidStopBtn.IsEnabled=false;
         isFinishMValidCheck=true;
 
-        if (!M3U8ValidChckCTS.IsCancellationRequested)
+        if (!M3U8ValidCheckCTS.IsCancellationRequested)
         {
             var tlist = VideoDetailList.ItemsSource;
             VideoDetailList.ItemsSource=null;
@@ -1134,7 +1134,7 @@ public partial class VideoListPage : ContentPage
 
     }
 
-    private async void M3U8VRemoveBtn_Clicked(object sender, EventArgs e)
+    private async void M3U8ValidRemoveBtn_Clicked(object sender, EventArgs e)
     {
         if (CurrentVURL=="")
         {
@@ -1196,12 +1196,13 @@ public partial class VideoListPage : ContentPage
 
     private async void M3U8ValidStopBtn_Clicked(object sender, EventArgs e)
     {
-        if(M3U8ValidChckCTS!=null)
+        if(M3U8ValidCheckCTS!=null)
         {
             bool CancelCheck =await DisplayAlert("提示信息", "您要停止检测吗？停止后暂时不支持恢复进度。", "确定", "取消");
             if (CancelCheck)
             {
-                M3U8ValidChckCTS.Cancel();
+                M3U8ValidCheckCTS.Cancel();
+                //这句可以注释掉
                 M3U8ValidStopBtn.IsEnabled=false;
             }
 
