@@ -1,21 +1,7 @@
-using Microsoft.Maui.Platform;
-using System.Diagnostics.Metrics;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml.Linq;
 using System.Xml.Serialization;
-using static Microsoft.Maui.Controls.Button.ButtonContentLayout;
-using static Microsoft.Maui.Controls.Button;
-using System.IO;
-using System.Reflection.PortableExecutable;
-using Microsoft.Maui.Storage;
-using Microsoft.Maui.Controls.PlatformConfiguration;
 using CommunityToolkit.Maui.Storage;
-using System.Text;
 using Encoding = System.Text.Encoding;
-using System.Net;
-using System;
-using CommunityToolkit.Maui.Views;
 
 #if ANDROID
 using Android.Content;

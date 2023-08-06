@@ -1,7 +1,3 @@
-using CommunityToolkit.Maui.Views;
-using Microsoft.Maui.Controls;
-using System.Linq.Expressions;
-using System.Security;
 using System.Xml.Serialization;
 
 namespace FCLiveToolApplication;
