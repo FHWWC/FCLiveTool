@@ -73,7 +73,8 @@ public partial class VideoListPage : ContentPage
     public List<string> RegexOption;
     public bool IgnoreSelectionEvents = false;
     public List<string[]> M3U8PlayList = new List<string[]>();
-    public bool isFinishMValidCheck = true;
+    public bool isFinishM3U8VCheck = true;
+    public int M3U8VCheckFinishCount = 0;
 
     CancellationTokenSource M3U8ValidCheckCTS;
 
@@ -285,6 +286,8 @@ public partial class VideoListPage : ContentPage
         {
             Match tVResult = Regex.Match(videodata, Regex.Escape(name)+@"(?s)([\s\S]*?)"+Regex.Escape(link));
             oldvalue = tVResult.Value;
+            if (oldvalue=="")
+                return null;
             int tncount = oldvalue.Split(name).Length;
             int tlcount = oldvalue.Split(link).Length;
 
@@ -513,7 +516,11 @@ public partial class VideoListPage : ContentPage
         try
         {
             //重置直播源检测标记
-            isFinishMValidCheck=true;
+            isFinishM3U8VCheck=true;
+            if (M3U8ValidCheckCTS!=null)
+            {
+                M3U8ValidCheckCTS.Cancel();
+            }
 
             AllVideoData = await new HttpClient().GetStringAsync("https://fclivetool.com/api/APPGetVD?url="+url);
 
@@ -1007,83 +1014,26 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "当前列表里没有直播源，请尝试更换一个解析方案！", "确定");
             return;
         }
-        if (!isFinishMValidCheck)
+        if (!isFinishM3U8VCheck)
         {
             await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
             return;
         }
-        bool tSelect= await DisplayAlert("提示信息", "本次将要检测"+vdlcount+"个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定","取消");
+        bool tSelect= await DisplayAlert("提示信息", "本次将要检测 "+vdlcount+" 个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定","取消");
         if (!tSelect)
         {
             return;
         }
 
         M3U8ValidCheckCTS=new CancellationTokenSource();
-        isFinishMValidCheck=false;
+        isFinishM3U8VCheck=false;
         M3U8ValidStopBtn.IsEnabled=true;
+        M3U8VProgressText.Text="0 / "+vdlcount;
+        M3U8VCheckFinishCount = 0;
 
-        int finishcheck = 0;
-        VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList().ForEach(async p =>
-        {
-            Thread thread = new Thread(async ()=>
-                {
-                    using (HttpClient httpClient = new HttpClient())
-                    {
-                        int statusCode;
-                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
-                        HttpResponseMessage response = null;
-                        //取消操作
-                        M3U8ValidCheckCTS.Token.ThrowIfCancellationRequested();
+        await M3U8ValidCheck(VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList());
 
-                        try
-                        {
-                            p.HTTPStatusCode="Checking...";
-                            p.HTTPStatusTextBKG=Colors.Gray;
-
-                            response = await httpClient.GetAsync(p.SourceLink,M3U8ValidCheckCTS.Token);
-
-                            statusCode=(int)response.StatusCode;
-                            await MainThread.InvokeOnMainThreadAsync(() =>
-                            {
-                                if (response.IsSuccessStatusCode)
-                                {
-                                    p.HTTPStatusCode="OK";
-                                    p.HTTPStatusTextBKG=Colors.Green;
-                                }
-                                else
-                                {
-                                    p.HTTPStatusCode=statusCode.ToString();
-                                    p.HTTPStatusTextBKG=Colors.Orange;
-                                }
-                            });
-
-                        }
-                        catch (OperationCanceledException ex)
-                        {
-
-                        }
-                        catch (Exception)
-                        {
-                            await MainThread.InvokeOnMainThreadAsync(() =>
-                            {
-                                p.HTTPStatusCode="ERROR";
-                                p.HTTPStatusTextBKG=Colors.Red;
-                            });
-                        }
-
-                        if(!M3U8ValidCheckCTS.IsCancellationRequested)
-                        {
-                            finishcheck++;
-                        }
-
-                    }
-                });
-            thread.Start();
-
-            await Task.Delay(20);
-        });
- 
-        while(finishcheck<vdlcount)
+        while(M3U8VCheckFinishCount<vdlcount)
         {
             if (M3U8ValidCheckCTS.IsCancellationRequested)
             {
@@ -1093,7 +1043,7 @@ public partial class VideoListPage : ContentPage
         }
 
         M3U8ValidStopBtn.IsEnabled=false;
-        isFinishMValidCheck=true;
+        isFinishM3U8VCheck=true;
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
         {
@@ -1119,7 +1069,77 @@ public partial class VideoListPage : ContentPage
 
 
     }
+    public async Task M3U8ValidCheck(List<VideoDetailList> videodetaillist)
+    {
+        for (int i = 0; i<videodetaillist.Count; i++)
+        {
+            Thread thread = new Thread(async () =>
+            {
+                int tindex = i;
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    //httpClient.Timeout=TimeSpan.FromMinutes(2);
 
+                    int statusCode;
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                    HttpResponseMessage response = null;
+                    //取消操作
+                    M3U8ValidCheckCTS.Token.ThrowIfCancellationRequested();
+
+                    try
+                    {
+                        videodetaillist[tindex].HTTPStatusCode="Checking...";
+                        videodetaillist[tindex].HTTPStatusTextBKG=Colors.Gray;
+
+                        response = await httpClient.GetAsync(videodetaillist[tindex].SourceLink, M3U8ValidCheckCTS.Token);
+
+                        statusCode=(int)response.StatusCode;
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            if (response.IsSuccessStatusCode)
+                            {
+                                videodetaillist[tindex].HTTPStatusCode="OK";
+                                videodetaillist[tindex].HTTPStatusTextBKG=Colors.Green;
+                            }
+                            else
+                            {
+                                videodetaillist[tindex].HTTPStatusCode=statusCode.ToString();
+                                videodetaillist[tindex].HTTPStatusTextBKG=Colors.Orange;
+                            }
+                        });
+
+                    }
+                    catch (OperationCanceledException ex)
+                    {
+
+                    }
+                    catch (Exception)
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            videodetaillist[tindex].HTTPStatusCode="ERROR";
+                            videodetaillist[tindex].HTTPStatusTextBKG=Colors.Red;
+                        });
+                    }
+
+                    if (!M3U8ValidCheckCTS.IsCancellationRequested)
+                    {
+                        M3U8VCheckFinishCount++;
+
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            M3U8VProgressText.Text=M3U8VCheckFinishCount+" / "+videodetaillist.Count;
+                        });
+
+                    }
+
+                }
+            });
+            thread.Start();
+
+            await Task.Delay(20);
+        }
+    }
     private async void M3U8ValidRemoveBtn_Clicked(object sender, EventArgs e)
     {
         if (CurrentVURL=="")
@@ -1134,7 +1154,7 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "当前列表里没有直播源，请尝试更换一个解析方案！", "确定");
             return;
         }
-        if (!isFinishMValidCheck)
+        if (!isFinishM3U8VCheck)
         {
             await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
             return;
@@ -1145,7 +1165,7 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "当前列表里没有无效的直播信号，无需操作！", "确定");
             return;
         }
-        bool tSelect = await DisplayAlert("提示信息", "本次将要移除"+notokcount+"个无效的直播信号，你确定移除吗？\n移除后可点击页面右上角的保存按钮。", "确定", "取消");
+        bool tSelect = await DisplayAlert("提示信息", "本次将要移除 "+notokcount+" 个无效的直播信号，你确定移除吗？\n移除后可点击页面右上角的保存按钮。", "确定", "取消");
         if (!tSelect)
         {
             return;

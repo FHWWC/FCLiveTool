@@ -208,6 +208,10 @@
                             <FontImageSource Glyph="&#xE9D5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
+                    <HorizontalStackLayout Margin="0,5,0,0">
+                        <Label>进度：</Label>
+                        <Label x:Name="M3U8VProgressText"/>
+                    </HorizontalStackLayout>
                     <Button x:Name="M3U8ValidStopBtn" Background="LightPink" Text="终止" WidthRequest="80" Margin="0,5,0,0" IsEnabled="False" Clicked="M3U8ValidStopBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
