@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Xml.Serialization;
 using CommunityToolkit.Maui.Storage;
 using Encoding = System.Text.Encoding;
@@ -1019,7 +1020,7 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
             return;
         }
-        bool tSelect= await DisplayAlert("提示信息", "本次将要检测 "+vdlcount+" 个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定","取消");
+        bool tSelect = await DisplayAlert("提示信息", "本次将要检测 "+vdlcount+" 个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定", "取消");
         if (!tSelect)
         {
             return;
@@ -1033,7 +1034,7 @@ public partial class VideoListPage : ContentPage
 
         await M3U8ValidCheck(VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList());
 
-        while(M3U8VCheckFinishCount<vdlcount)
+        while (M3U8VCheckFinishCount<vdlcount)
         {
             if (M3U8ValidCheckCTS.IsCancellationRequested)
             {
@@ -1064,6 +1065,8 @@ public partial class VideoListPage : ContentPage
             {
                 VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
             }
+
+            M3U8VProgressText.Text="";
             await DisplayAlert("提示信息", "您已取消检测！", "确定");
         }
 
@@ -1083,11 +1086,12 @@ public partial class VideoListPage : ContentPage
                     int statusCode;
                     httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
                     HttpResponseMessage response = null;
-                    //取消操作
-                    M3U8ValidCheckCTS.Token.ThrowIfCancellationRequested();
 
                     try
                     {
+                        //取消操作
+                        M3U8ValidCheckCTS.Token.ThrowIfCancellationRequested();
+
                         videodetaillist[tindex].HTTPStatusCode="Checking...";
                         videodetaillist[tindex].HTTPStatusTextBKG=Colors.Gray;
 
@@ -1109,7 +1113,7 @@ public partial class VideoListPage : ContentPage
                         });
 
                     }
-                    catch (OperationCanceledException ex)
+                    catch (OperationCanceledException)
                     {
 
                     }
@@ -1159,7 +1163,7 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
             return;
         }
-        var notokcount = VideoDetailList.ItemsSource.Cast<VideoDetailList>().Where(p=>(p.HTTPStatusCode!="OK")&&(p.HTTPStatusCode!=null)).Count();
+        var notokcount = VideoDetailList.ItemsSource.Cast<VideoDetailList>().Where(p => (p.HTTPStatusCode!="OK")&&(p.HTTPStatusCode!=null)).Count();
         if (notokcount<1)
         {
             await DisplayAlert("提示信息", "当前列表里没有无效的直播信号，无需操作！", "确定");
@@ -1174,7 +1178,7 @@ public partial class VideoListPage : ContentPage
 
         VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList().ForEach(p =>
         {
-            if(p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null)
+            if (p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null)
             {
                 string vname = p.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
 
@@ -1202,9 +1206,9 @@ public partial class VideoListPage : ContentPage
 
     private async void M3U8ValidStopBtn_Clicked(object sender, EventArgs e)
     {
-        if(M3U8ValidCheckCTS!=null)
+        if (M3U8ValidCheckCTS!=null)
         {
-            bool CancelCheck =await DisplayAlert("提示信息", "您要停止检测吗？停止后暂时不支持恢复进度。", "确定", "取消");
+            bool CancelCheck = await DisplayAlert("提示信息", "您要停止检测吗？停止后暂时不支持恢复进度。", "确定", "取消");
             if (CancelCheck)
             {
                 M3U8ValidCheckCTS.Cancel();

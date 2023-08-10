@@ -32,7 +32,12 @@ public partial class MainPage : ContentPage
         NaviPage.Content=videoPrevPage.Content;
         
     }
-
+    protected override void OnDisappearing()
+    {
+        base.OnDisappearing();
+        //this.Navigation.RemovePage(this);
+        Navigation.PopAsync();
+    }
     private void NaviBtn_Clicked(object sender, EventArgs e)
     {
         //如果是Grid布局控件，需要在前台代码中完成赋值
