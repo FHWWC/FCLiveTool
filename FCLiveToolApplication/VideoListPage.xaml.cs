@@ -1032,6 +1032,7 @@ public partial class VideoListPage : ContentPage
         M3U8ValidStopBtn.IsEnabled=true;
         M3U8VProgressText.Text="0 / "+vdlcount;
         M3U8VCheckFinishCount = 0;
+        RegexSelectBox.IsEnabled=false;
 
         await M3U8ValidCheck(VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList());
 
@@ -1046,6 +1047,7 @@ public partial class VideoListPage : ContentPage
 
         M3U8ValidStopBtn.IsEnabled=false;
         isFinishM3U8VCheck=true;
+        RegexSelectBox.IsEnabled=true;
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
         {
@@ -1082,7 +1084,7 @@ public partial class VideoListPage : ContentPage
                 int tindex = i;
                 using (HttpClient httpClient = new HttpClient())
                 {
-                    //httpClient.Timeout=TimeSpan.FromMinutes(2);
+                    httpClient.Timeout=TimeSpan.FromMinutes(2);
 
                     int statusCode;
                     httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
