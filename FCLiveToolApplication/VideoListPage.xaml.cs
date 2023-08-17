@@ -490,6 +490,7 @@ public partial class VideoListPage : ContentPage
 
             //暂时忽略小于15的情况
             CurrentVideosList = (List<VideoList>)xmlSerializer.Deserialize(new StringReader(videodata));
+            CurrentVideosList=CurrentVideosList.Where(p => p.RecommendReg!="-1").ToList();
             VideosList.ItemsSource= CurrentVideosList.Take(15);
             //更新数据源后需手动清除选中的项信息
             VideosList.SelectedItem=null;
