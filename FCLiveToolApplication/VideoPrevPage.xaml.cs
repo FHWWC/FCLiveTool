@@ -14,11 +14,19 @@ public partial class VideoPrevPage : ContentPage
     {
         videoPrevPage=this;
 
+        NowPlayingTb.Text =Preferences.Get("DefaultPlayM3U8Name", "");
+        VideoWindow.Source= Preferences.Get("DefaultPlayM3U8URL","");
+        //VideoWindow.ShouldAutoPlay=Preferences.Get("StartAutoPlayM3U8", true);
+        if(Preferences.Get("StartAutoPlayM3U8", true))
+        {
+            VideoWindow.Play();
+        }
 
         LoadRecent();
 #if ANDROID
         RecentPanel.WidthRequest=PageGrid.Width;
 #endif
+
         //CurrentURL=(VideoWindow.Source as UriMediaSource).Uri.ToString();
     }
     private void PageGrid_SizeChanged(object sender, EventArgs e)

@@ -10,7 +10,20 @@ public partial class AppShell : Shell
     }
     private void Shell_Loaded(object sender, EventArgs e)
     {
-        Application.Current.UserAppTheme = AppTheme.Light;      
+        Preferences.Set("DefaultPlayM3U8Name", Preferences.Get("DefaultPlayM3U8Name", "CGTN (法语)"));
+        Preferences.Set("DefaultPlayM3U8URL", Preferences.Get("DefaultPlayM3U8URL", @"https://livefr.cgtn.com/1000f/prog_index.m3u8"));
+        Preferences.Set("StartAutoPlayM3U8", Preferences.Get("StartAutoPlayM3U8", true));
+        Preferences.Set("AppDarkMode", Preferences.Get("AppDarkMode", false));
+
+        if(Preferences.Get("AppDarkMode", false))
+        {
+            Application.Current.UserAppTheme = AppTheme.Dark;
+        }
+        else
+        {
+            Application.Current.UserAppTheme = AppTheme.Light;
+        }
+
     }
 
     private async void AboutBtn_Clicked(object sender, EventArgs e)

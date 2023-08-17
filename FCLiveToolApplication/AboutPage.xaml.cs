@@ -23,9 +23,12 @@ public partial class AboutPage : ContentPage
         Launcher.OpenAsync("https://github.com/FHWWC/FCLiveTool");
     }
 
-    private void EmailBtn_Clicked(object sender, EventArgs e)
+    private async void EmailBtn_Clicked(object sender, EventArgs e)
     {
-        Launcher.OpenAsync("mailto:justineedyoumost@163.com");
+        if(!await Launcher.TryOpenAsync("mailto:justineedyoumost@163.com"))
+        {
+            await DisplayAlert("提示信息", "无法打开邮件客户端，如有需要请手动输入邮箱：\n justineedyoumost@163.com", "确定");
+        }
     }
 
     private void GroupsBtn_Clicked(object sender, EventArgs e)

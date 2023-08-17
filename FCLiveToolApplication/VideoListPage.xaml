@@ -9,7 +9,7 @@
             <ViewCell>
                 <StackLayout Margin="0,10">
                     <Label Text="{Binding SourceName}" FontAttributes="Bold" HorizontalOptions="Center"/>
-                    <Label Text="{Binding Description}" HorizontalOptions="Center"/>
+                    <Label Text="{Binding Description}" HorizontalOptions="Center" IsVisible="{ OnPlatform Android=False}"/>
                 </StackLayout>
             </ViewCell>
         </DataTemplate>

@@ -2,14 +2,45 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="FCLiveToolApplication.AppSettingPage"
-             Title="AppSettingPage">
+             Title="AppSettingPage" Loaded="ContentPage_Loaded">
 
     <Shell.TitleView>
         <HorizontalStackLayout>
             <Label Text="设置" TextColor="#A0F0FFFF" FontSize="Large" VerticalTextAlignment="Center"/>
         </HorizontalStackLayout>
     </Shell.TitleView>
-    
-    
+
+    <StackLayout Margin="20">
+        <Label Text="播放设置：" FontSize="Medium"/>
+        <StackLayout Margin="0,10,0,0">
+            <HorizontalStackLayout>
+                <Label Text="打开APP默认播放的直播源" Margin="0,5,0,0"/>
+                <Button x:Name="ShowDPInput" Background="Transparent" WidthRequest="50" ContentLayout="Top,0" Clicked="ShowDPInput_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+            <Label x:Name="DefaultPlayM3U8NameText" FontAttributes="Bold"/>
+            <Label x:Name="DefaultPlayM3U8URLText" HorizontalOptions="Start" MaximumWidthRequest="400" TextDecorations="Underline"/>
+
+            <StackLayout Margin="0,5,0,0">
+                <Label Text="打开APP自动播放直播源"/>
+                <Switch x:Name="StartAutoPlayToogleBtn" IsToggled="True" HorizontalOptions="Start" Toggled="StartAutoPlayToogleBtn_Toggled"/>
+            </StackLayout>
+        </StackLayout>
+        
+        <Label Text="界面设置：" FontSize="Medium" Margin="0,15,0,0"/>
+        <StackLayout Margin="0,10,0,0">
+            <StackLayout>
+                <Label Text="暗黑模式"/>
+                <Switch x:Name="DarkModeToogleBtn" IsToggled="False" HorizontalOptions="Start" Toggled="DarkModeToogleBtn_Toggled"/>
+            </StackLayout>
+            
+            <!--
+                        <Label Text="旋转模式"/>
+            -->
+        </StackLayout>
+    </StackLayout>
     
 </ContentPage>

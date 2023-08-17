@@ -35,21 +35,18 @@
             <Label Text="关于FCDevTeam" FontSize="Medium" HorizontalOptions="Center"/>
             <Label Text="我们期待您的反馈，感谢您对本项目的支持！" Margin="0,5,0,0"/>
             <HorizontalStackLayout Margin="0,5,0,0">
-                <Button x:Name="GitHubBtn" Background="LightPink" Text="GitHub页面" Clicked="GitHubBtn_Clicked">
-                    <Button.ImageSource>
-                        <x:String>about_github.png</x:String>
-                    </Button.ImageSource>
-                </Button>
-                <Button x:Name="EmailBtn" Background="LightBlue" Text="发送邮件" Margin="5,0,0,0" Clicked="EmailBtn_Clicked">
-                    <Button.ImageSource>
-                        <x:String>about_email.png</x:String>
-                    </Button.ImageSource>
-                </Button>
-                <Button x:Name="GroupsBtn" Background="LightBlue" Text="加入群组" Margin="5,0,0,0"  Clicked="GroupsBtn_Clicked">
-                    <Button.ImageSource>
-                        <x:String>about_group.png</x:String>
-                    </Button.ImageSource>
-                </Button>
+                <StackLayout>
+                    <Image HeightRequest="40" Source="about_github.png" IsVisible="{OnPlatform False,Android=True}"/>
+                    <Button x:Name="GitHubBtn" Background="LightPink" Text="GitHub页面" ImageSource="{OnPlatform 'about_github.png',Android=x:Null}" Clicked="GitHubBtn_Clicked"/>
+                </StackLayout>
+                <StackLayout>
+                    <Image HeightRequest="40" Source="about_email.png" IsVisible="{OnPlatform False,Android=True}"/>
+                    <Button x:Name="EmailBtn" Background="LightBlue" Text="发送邮件" Margin="5,0,0,0" ImageSource="{OnPlatform 'about_email.png',Android=x:Null}" Clicked="EmailBtn_Clicked"/>
+                </StackLayout>
+                <StackLayout>
+                    <Image HeightRequest="40" Source="about_group.png" IsVisible="{OnPlatform False,Android=True}"/>
+                    <Button x:Name="GroupsBtn" Background="LightBlue" Text="加入群组" Margin="5,0,0,0" ImageSource="{OnPlatform 'about_group.png',Android=x:Null}" Clicked="GroupsBtn_Clicked"/>
+                </StackLayout>
             </HorizontalStackLayout>
             <Label Text="© 2017-2023 -- FC Dev Team" Margin="0,10,0,0"/>
         </StackLayout>
