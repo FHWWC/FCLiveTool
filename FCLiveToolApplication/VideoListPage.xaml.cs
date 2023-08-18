@@ -76,7 +76,7 @@ public partial class VideoListPage : ContentPage
     public List<string[]> M3U8PlayList = new List<string[]>();
     public bool isFinishM3U8VCheck = true;
     public int M3U8VCheckFinishCount = 0;
-
+    public bool ShowLoadOrRefreshDialog = false;
     CancellationTokenSource M3U8ValidCheckCTS;
 
     private void Question_Clicked(object sender, EventArgs e)
@@ -240,9 +240,6 @@ public partial class VideoListPage : ContentPage
         await DisplayAlert("提示信息", "更新成功！", "确定");
 
         VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
-        //MAUI的ListView的坑，重新赋值数据源，SelectedItem竟然不会自动清除
-        VideoDetailList.SelectedItem=null;
-
     }
     private async void DeleteBtn_Clicked(object sender, EventArgs e)
     {
@@ -274,8 +271,6 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "移除成功！", "确定");
 
             VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
-            //MAUI的ListView的坑，重新赋值数据源，SelectedItem竟然不会自动清除
-            VideoDetailList.SelectedItem=null;
         }
 
     }
@@ -535,8 +530,6 @@ public partial class VideoListPage : ContentPage
             IgnoreSelectionEvents=false;
 
             VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
-            //更新数据源后需手动清除选中的项信息
-            VideoDetailList.SelectedItem=null;
             VDLIfmText.Text="";
         }
         catch (Exception)
@@ -872,7 +865,6 @@ public partial class VideoListPage : ContentPage
             VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
         }
 
-
         if (VideoDetailList.ItemsSource.Cast<VideoDetailList>().Count()<1)
         {
             VDLIfmText.Text="这里空空如也，请更换一个解析方案吧~";
@@ -1018,7 +1010,7 @@ public partial class VideoListPage : ContentPage
         }
         if (!isFinishM3U8VCheck)
         {
-            await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
+            await DisplayAlert("提示信息", "当前正在执行直播源检测！", "确定");
             return;
         }
         bool tSelect = await DisplayAlert("提示信息", "本次将要检测 "+vdlcount+" 个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定", "取消");
@@ -1033,6 +1025,7 @@ public partial class VideoListPage : ContentPage
         M3U8VProgressText.Text="0 / "+vdlcount;
         M3U8VCheckFinishCount = 0;
         RegexSelectBox.IsEnabled=false;
+        ShowLoadOrRefreshDialog=false;
 
         await M3U8ValidCheck(VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList());
 
@@ -1059,18 +1052,28 @@ public partial class VideoListPage : ContentPage
         }
         else
         {
-            string regexIndex = GetRegexOptionIndex();
-            if (regexIndex!="0")
+            if (ShowLoadOrRefreshDialog)
             {
-                VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
+                bool tresult = await DisplayAlert("提示信息", "是要查看部分检测完的结果还是要重新加载列表？", "查看结果", "重新加载");
+                if (tresult)
+                {
+                    var tlist = VideoDetailList.ItemsSource;
+                    VideoDetailList.ItemsSource=null;
+                    VideoDetailList.ItemsSource=tlist;
+                }
+                else
+                {
+                    GetCurrentIndexAndLoadData();
+                }
             }
             else
             {
-                VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+                GetCurrentIndexAndLoadData();
+                await DisplayAlert("提示信息", "您已取消检测！", "确定");
             }
 
             M3U8VProgressText.Text="";
-            await DisplayAlert("提示信息", "您已取消检测！", "确定");
+
         }
 
 
@@ -1163,7 +1166,7 @@ public partial class VideoListPage : ContentPage
         }
         if (!isFinishM3U8VCheck)
         {
-            await DisplayAlert("提示信息", "当前直播源未完成检测！", "确定");
+            await DisplayAlert("提示信息", "当前正在执行直播源检测！", "确定");
             return;
         }
         var notokcount = VideoDetailList.ItemsSource.Cast<VideoDetailList>().Where(p => (p.HTTPStatusCode!="OK")&&(p.HTTPStatusCode!=null)).Count();
@@ -1194,15 +1197,8 @@ public partial class VideoListPage : ContentPage
             }
         });
 
-        string regexIndex = GetRegexOptionIndex();
-        if (regexIndex!="0")
-        {
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
-        }
-        else
-        {
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
-        }
+
+        GetCurrentIndexAndLoadData();
         await DisplayAlert("提示信息", "已成功移除无效的直播信号！", "确定");
 
     }
@@ -1217,8 +1213,31 @@ public partial class VideoListPage : ContentPage
                 M3U8ValidCheckCTS.Cancel();
                 //这句可以注释掉
                 M3U8ValidStopBtn.IsEnabled=false;
+
+                ShowLoadOrRefreshDialog = true;
             }
 
         }
+    }
+    public void GetCurrentIndexAndLoadData()
+    {
+        string regexIndex = GetRegexOptionIndex();
+        if (regexIndex!="0")
+        {
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
+        }
+        else
+        {
+            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+        }
+    }
+
+    private void VideoDetailList_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == "ItemsSource")
+        {
+            VideoDetailList.SelectedItem=null;
+        }
+
     }
 }
