@@ -5,12 +5,12 @@
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   IgnorableNamespaces="uap rescap">
 
-  <Identity Name="maui-package-name-placeholder" Publisher="CN=FCDevTeam" Version="0.0.3.0" />
+  <Identity Name="FCLiveTool" Publisher="CN=Lucky" Version="1.0.5.0" />
 
   <Properties>
     <DisplayName>$placeholder$</DisplayName>
-    <PublisherDisplayName>User Name</PublisherDisplayName>
-    <Logo>$placeholder$.png</Logo>
+    <PublisherDisplayName>FC Dev Team</PublisherDisplayName>
+    <Logo>Resources\AppIcon\fclive_logo.png</Logo>
   </Properties>
 
   <Dependencies>
@@ -27,17 +27,25 @@
       <uap:VisualElements
         DisplayName="$placeholder$"
         Description="$placeholder$"
-        Square150x150Logo="$placeholder$.png"
-        Square44x44Logo="$placeholder$.png"
+        Square150x150Logo="Resources\AppIcon\$placeholder$.png"
+        Square44x44Logo="Resources\AppIcon\appicon_win.png"
         BackgroundColor="transparent">
-        <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png" />
-        <uap:SplashScreen Image="$placeholder$.png" />
+        <uap:DefaultTile Square71x71Logo="Resources\AppIcon\$placeholder$.png" Wide310x150Logo="Resources\AppIcon\$placeholder$.png" Square310x310Logo="Resources\AppIcon\$placeholder$.png" />
+        <uap:SplashScreen Image="Resources\AppIcon\fclive_big_logo.png" />
+        <uap:InitialRotationPreference>
+          <uap:Rotation Preference="landscape"/>
+          <uap:Rotation Preference="portrait"/>
+          <uap:Rotation Preference="landscapeFlipped"/>
+          <uap:Rotation Preference="portraitFlipped"/></uap:InitialRotationPreference>
+        <uap:LockScreen Notification="badge" BadgeLogo="Resources\AppIcon\BadgeLogo.png"/>
       </uap:VisualElements>
     </Application>
   </Applications>
 
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <Capability Name="internetClient"/>
+    <Capability Name="internetClientServer"/>
   </Capabilities>
 
 </Package>
