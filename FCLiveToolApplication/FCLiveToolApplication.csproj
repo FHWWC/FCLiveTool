@@ -31,7 +31,7 @@
 		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
 		<PackageCertificateKeyFile>FCLiveToolApplication_TemporaryKey.pfx</PackageCertificateKeyFile>
 		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+		<AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
 		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
@@ -43,23 +43,51 @@
 
 	<PropertyGroup>
 	  <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+	  <Title>FCLiveTool</Title>
+	  <DefaultLanguage>zh-cn</DefaultLanguage>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-android33.0|AnyCPU'">
 	  <AndroidPackageFormat>apk</AndroidPackageFormat>
 	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-android33.0|AnyCPU'">
 	  <AndroidKeyStore>False</AndroidKeyStore>
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-maccatalyst|AnyCPU'">
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-ios|AnyCPU'">
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-windows10.0.19041.0|AnyCPU'">
+	  <ApplicationTitle>FCLiveTool</ApplicationTitle>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+    <MauiIcon Include="Resources\AppIcon\fclogo.svg" Color="LightBlue" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+		<MauiSplashScreen Include="Resources\AppIcon\fcbiglogo.svg" Color="LightBlue" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -72,13 +100,101 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\AppIcon\%24placeholder%24.scale-100.png" />
+	  <None Remove="Resources\AppIcon\%24placeholder%24.scale-125.png" />
+	  <None Remove="Resources\AppIcon\%24placeholder%24.scale-150.png" />
+	  <None Remove="Resources\AppIcon\%24placeholder%24.scale-200.png" />
+	  <None Remove="Resources\AppIcon\%24placeholder%24.scale-400.png" />
+	  <None Remove="Resources\AppIcon\%24placeholder%24.targetsize-24_altform-lightunplated.png" />
+	  <None Remove="Resources\AppIcon\%24placeholder%24.targetsize-256.png" />
+	  <None Remove="Resources\AppIcon\appiconwin.scale-100.png" />
+	  <None Remove="Resources\AppIcon\appiconwin.scale-125.png" />
+	  <None Remove="Resources\AppIcon\appiconwin.scale-150.png" />
+	  <None Remove="Resources\AppIcon\appiconwin.scale-200.png" />
+	  <None Remove="Resources\AppIcon\appiconwin.scale-400.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.scale-100.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.scale-125.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.scale-150.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.scale-200.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.scale-400.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-16.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-16_altform-lightunplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-16_altform-unplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-24.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-24_altform-lightunplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-24_altform-unplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-256.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-256_altform-lightunplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-256_altform-unplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-32.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-32_altform-lightunplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-32_altform-unplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-48.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-48_altform-lightunplated.png" />
+	  <None Remove="Resources\AppIcon\appicon_win.targetsize-48_altform-unplated.png" />
+	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-100.png" />
+	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-125.png" />
+	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-150.png" />
+	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-200.png" />
+	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-400.png" />
+	  <None Remove="Resources\AppIcon\fclive_logo.scale-100.png" />
+	  <None Remove="Resources\AppIcon\fclive_logo.scale-125.png" />
+	  <None Remove="Resources\AppIcon\fclive_logo.scale-150.png" />
+	  <None Remove="Resources\AppIcon\fclive_logo.scale-200.png" />
+	  <None Remove="Resources\AppIcon\fclive_logo.scale-400.png" />
+	  <None Remove="Resources\AppIcon\test.scale-100.png" />
+	  <None Remove="Resources\AppIcon\test.scale-125.png" />
+	  <None Remove="Resources\AppIcon\test.scale-150.png" />
+	  <None Remove="Resources\AppIcon\test.scale-200.png" />
+	  <None Remove="Resources\AppIcon\test.scale-400.png" />
 	  <None Remove="Resources\Fonts\segmdl2.ttf" />
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="CommunityToolkit.Maui" Version="5.2.0" />
+	  <Content Include="Resources\AppIcon\$placeholder$.scale-100.png" />
+	  <Content Include="Resources\AppIcon\$placeholder$.scale-125.png" />
+	  <Content Include="Resources\AppIcon\$placeholder$.scale-150.png" />
+	  <Content Include="Resources\AppIcon\$placeholder$.scale-200.png" />
+	  <Content Include="Resources\AppIcon\$placeholder$.scale-400.png" />
+	  <Content Include="Resources\AppIcon\$placeholder$.targetsize-24_altform-lightunplated.png" />
+	  <Content Include="Resources\AppIcon\$placeholder$.targetsize-256.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.scale-100.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.scale-125.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.scale-150.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.scale-200.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.scale-400.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-16.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-16_altform-lightunplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-16_altform-unplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-24.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-24_altform-lightunplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-24_altform-unplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-256.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-256_altform-lightunplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-256_altform-unplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-32.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-32_altform-lightunplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-32_altform-unplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-48.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-48_altform-lightunplated.png" />
+	  <Content Include="Resources\AppIcon\appicon_win.targetsize-48_altform-unplated.png" />
+	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-100.png" />
+	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-125.png" />
+	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-150.png" />
+	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-200.png" />
+	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-400.png" />
+	  <Content Include="Resources\AppIcon\fclive_logo.scale-100.png" />
+	  <Content Include="Resources\AppIcon\fclive_logo.scale-125.png" />
+	  <Content Include="Resources\AppIcon\fclive_logo.scale-150.png" />
+	  <Content Include="Resources\AppIcon\fclive_logo.scale-200.png" />
+	  <Content Include="Resources\AppIcon\fclive_logo.scale-400.png" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="CommunityToolkit.Maui" Version="5.3.0" />
+	  <PackageReference Include="CommunityToolkit.Maui.Core" Version="5.3.0" />
 	  <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="2.0.0" />
-	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.9" />
+	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.10" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net7.0-ios'">
