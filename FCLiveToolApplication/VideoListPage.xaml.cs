@@ -64,11 +64,15 @@ public partial class VideoListPage : ContentPage
     }
 
     public int VLCurrentPageIndex = 1;
+    public int VDLCurrentPageIndex = 1;
     public int VLMaxPageIndex;
+    public int VDLMaxPageIndex;
     public const int VL_COUNT_PER_PAGE = 15;
+    public const int VDL_COUNT_PER_PAGE = 100;
     public string AllVideoData;
     public int[] UseGroup;
     public List<VideoList> CurrentVideosList;
+    public List<VideoDetailList> CurrentVideosDetailList;
     public string CurrentVURL = "";
     public string RecommendReg = "0";
     public List<string> RegexOption;
@@ -237,9 +241,30 @@ public partial class VideoListPage : ContentPage
         }
 
         AllVideoData=AllVideoData.Replace(tresult, tresult.Replace(vname, newvalue));
-        await DisplayAlert("提示信息", "更新成功！", "确定");
+        CurrentVideosDetailList.Where(p => p==selectVDL).FirstOrDefault().SourceName=newvalue; ;
 
-        VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+        //仅在调试 AllVideoData是否被正确修改 以及 AllVideoData能否正常被加载到列表 时使用
+        /*
+                 string regexIndex = GetRegexOptionIndex();
+                string treg;
+                if (regexIndex!="0")
+                {
+                    treg=regexIndex;
+                }
+                else
+                {
+                    treg=RecommendReg;
+                }
+
+                List<VideoDetailList> tlist = DoRegex(AllVideoData, treg);
+         */
+
+        VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
+        SetVDLPage(1);
+
+        MakeVideosDataToPage(CurrentVideosDetailList, 0);
+
+        await DisplayAlert("提示信息", "更新成功！", "确定");
     }
     private async void DeleteBtn_Clicked(object sender, EventArgs e)
     {
@@ -268,9 +293,31 @@ public partial class VideoListPage : ContentPage
             }
 
             AllVideoData=AllVideoData.Replace(tresult, "");
+            CurrentVideosDetailList.Remove(selectVDL);
+
+            //仅在调试 AllVideoData是否被正确修改 以及 AllVideoData能否正常被加载到列表 时使用
+            /*
+                     string regexIndex = GetRegexOptionIndex();
+                    string treg;
+                    if (regexIndex!="0")
+                    {
+                        treg=regexIndex;
+                    }
+                    else
+                    {
+                        treg=RecommendReg;
+                    }
+
+                    List<VideoDetailList> tlist = DoRegex(AllVideoData, treg);
+             */
+
+            VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
+            SetVDLPage(1);
+
+            MakeVideosDataToPage(CurrentVideosDetailList, 0);
+
             await DisplayAlert("提示信息", "移除成功！", "确定");
 
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
         }
 
     }
@@ -486,9 +533,10 @@ public partial class VideoListPage : ContentPage
             //暂时忽略小于15的情况
             CurrentVideosList = (List<VideoList>)xmlSerializer.Deserialize(new StringReader(videodata));
             CurrentVideosList=CurrentVideosList.Where(p => p.RecommendReg!="-1").ToList();
-            VideosList.ItemsSource= CurrentVideosList.Take(15);
-            //更新数据源后需手动清除选中的项信息
+            VideosList.ItemsSource= CurrentVideosList.Take(VL_COUNT_PER_PAGE);
+
             VideosList.SelectedItem=null;
+            VideoDetailList.ItemsSource=null;
 
             //暂时忽略页数小于1的情况
             VLMaxPageIndex= (int)Math.Ceiling(CurrentVideosList.Count/15.0);
@@ -523,14 +571,16 @@ public partial class VideoListPage : ContentPage
 
             RecommendReg=reg;
             CurrentVURL =url;
-
+            VDLIfmText.Text="";
             //更改索引会触发SelectedIndexChanged事件，所以在仅刷新列表的时候选择不执行事件内后续代码
             IgnoreSelectionEvents=true;
             RegexSelectBox.SelectedIndex = 0;
             IgnoreSelectionEvents=false;
 
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
-            VDLIfmText.Text="";
+            CurrentVideosDetailList = DoRegex(AllVideoData, RecommendReg);
+            VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
+            SetVDLPage(1);
+            MakeVideosDataToPage(CurrentVideosDetailList, 0);
         }
         catch (Exception)
         {
@@ -669,7 +719,15 @@ public partial class VideoListPage : ContentPage
         VLCurrentPageIndex=index;
         VLCurrentPage.Text=index+"/"+VLMaxPageIndex;
     }
-
+    /// <summary>
+    /// 重置M3U8列表的页码
+    /// </summary>
+    /// <param name="index"></param>
+    public void SetVDLPage(int index)
+    {
+        VDLCurrentPageIndex=index;
+        VDLCurrentPage.Text=index+"/"+VDLMaxPageIndex;
+    }
     private void VLBackBtn_Clicked(object sender, EventArgs e)
     {
         if (VLCurrentPageIndex<=1)
@@ -683,6 +741,50 @@ public partial class VideoListPage : ContentPage
         VideosList.ItemsSource= CurrentVideosList.Skip(skipcount).Take(VL_COUNT_PER_PAGE);
 
         if (VLCurrentPageIndex<=1)
+        {
+            VLBackBtn.IsEnabled = false;
+            VLNextBtn.IsEnabled = true;
+        }
+        else
+        {
+            VLBackBtn.IsEnabled = true;
+            VLNextBtn.IsEnabled = true;
+        }
+    }
+
+    private async void VLJumpBtn_Clicked(object sender, EventArgs e)
+    {
+        int TargetPage = 1;
+        if (!int.TryParse(VLPageTb.Text, out TargetPage))
+        {
+            await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
+            return;
+        }
+        if (TargetPage<1||TargetPage>VLMaxPageIndex)
+        {
+            await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
+            return;
+        }
+
+
+        SetPage(TargetPage);
+
+        int skipcount = (VLCurrentPageIndex-1)*VL_COUNT_PER_PAGE;
+        if (VLCurrentPageIndex==VLMaxPageIndex)
+        {
+            VideosList.ItemsSource= CurrentVideosList.Skip(skipcount).Take(CurrentVideosList.Count-skipcount);
+        }
+        else
+        {
+            VideosList.ItemsSource= CurrentVideosList.Skip(skipcount).Take(VL_COUNT_PER_PAGE);
+        }
+
+        if (VLCurrentPageIndex>=VLMaxPageIndex)
+        {
+            VLBackBtn.IsEnabled = true;
+            VLNextBtn.IsEnabled = false;
+        }
+        else if (VLCurrentPageIndex<=1)
         {
             VLBackBtn.IsEnabled = false;
             VLNextBtn.IsEnabled = true;
@@ -725,48 +827,85 @@ public partial class VideoListPage : ContentPage
         }
     }
 
-    private async void VLJumpBtn_Clicked(object sender, EventArgs e)
+    private void VDLBackBtn_Clicked(object sender, EventArgs e)
     {
+        if (VDLCurrentPageIndex<=1)
+        {
+            return;
+        }
 
+        SetVDLPage(VDLCurrentPageIndex-1);
+
+
+        MakeVideosDataToPage(CurrentVideosDetailList, (VDLCurrentPageIndex - 1) * VDL_COUNT_PER_PAGE);
+
+    }
+
+    private async void VDLJumpBtn_Clicked(object sender, EventArgs e)
+    {
         int TargetPage = 1;
-        if (!int.TryParse(VLPageTb.Text, out TargetPage))
+        if (!int.TryParse(VDLPageTb.Text, out TargetPage))
         {
             await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
             return;
         }
-        if (TargetPage<1||TargetPage>VLMaxPageIndex)
+        if (TargetPage<1||TargetPage>VDLMaxPageIndex)
         {
             await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
             return;
         }
 
 
-        SetPage(TargetPage);
+        SetVDLPage(TargetPage);
 
-        int skipcount = (VLCurrentPageIndex-1)*VL_COUNT_PER_PAGE;
-        if (VLCurrentPageIndex==VLMaxPageIndex)
+        MakeVideosDataToPage(CurrentVideosDetailList, (VDLCurrentPageIndex - 1) * VDL_COUNT_PER_PAGE);
+    }
+
+    private void VDLNextBtn_Clicked(object sender, EventArgs e)
+    {
+        if (VDLCurrentPageIndex>=VDLMaxPageIndex)
         {
-            VideosList.ItemsSource= CurrentVideosList.Skip(skipcount).Take(CurrentVideosList.Count-skipcount);
+            return;
+        }
+
+        SetVDLPage(VDLCurrentPageIndex+1);
+
+        MakeVideosDataToPage(CurrentVideosDetailList, (VDLCurrentPageIndex-1)*VDL_COUNT_PER_PAGE);
+    }
+
+    public void MakeVideosDataToPage(List<VideoDetailList> list,int skipcount)
+    {
+        if (list.Count()<1)
+        {
+            VDLIfmText.Text="这里空空如也，请更换一个解析方案吧~";
+            VideoDetailList.ItemsSource=null;
+
+            return;
+        }
+
+        if (VDLCurrentPageIndex==VDLMaxPageIndex)
+        {
+            VideoDetailList.ItemsSource=list.Skip(skipcount).Take(list.Count-skipcount);
         }
         else
         {
-            VideosList.ItemsSource= CurrentVideosList.Skip(skipcount).Take(VL_COUNT_PER_PAGE);
+            VideoDetailList.ItemsSource=list.Skip(skipcount).Take(VDL_COUNT_PER_PAGE);
         }
 
-        if (VLCurrentPageIndex>=VLMaxPageIndex)
+        if (VDLCurrentPageIndex>=VDLMaxPageIndex)
         {
-            VLBackBtn.IsEnabled = true;
-            VLNextBtn.IsEnabled = false;
+            VDLBackBtn.IsEnabled = true;
+            VDLNextBtn.IsEnabled = false;
         }
-        else if (VLCurrentPageIndex<=1)
+        else if (VDLCurrentPageIndex<=1)
         {
-            VLBackBtn.IsEnabled = false;
-            VLNextBtn.IsEnabled = true;
+            VDLBackBtn.IsEnabled = false;
+            VDLNextBtn.IsEnabled = true;
         }
         else
         {
-            VLBackBtn.IsEnabled = true;
-            VLNextBtn.IsEnabled = true;
+            VDLBackBtn.IsEnabled = true;
+            VDLNextBtn.IsEnabled = true;
         }
     }
 
@@ -855,21 +994,23 @@ public partial class VideoListPage : ContentPage
         }
 
         VDLIfmText.Text="";
+        string treg;
+
         string regexIndex = GetRegexOptionIndex();
         if (regexIndex!="0")
         {
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
+            treg=regexIndex;
         }
         else
         {
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+            treg=RecommendReg;
         }
 
-        if (VideoDetailList.ItemsSource.Cast<VideoDetailList>().Count()<1)
-        {
-            VDLIfmText.Text="这里空空如也，请更换一个解析方案吧~";
-        }
+        CurrentVideosDetailList = DoRegex(AllVideoData, treg);
+        VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
+        SetVDLPage(1);
 
+        MakeVideosDataToPage(CurrentVideosDetailList, 0);
 
     }
 
@@ -1013,7 +1154,7 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "当前正在执行直播源检测！", "确定");
             return;
         }
-        bool tSelect = await DisplayAlert("提示信息", "本次将要检测 "+vdlcount+" 个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定", "取消");
+        bool tSelect = await DisplayAlert("提示信息", "本次将要检测 "+CurrentVideosDetailList.Count+" 个直播信号，你确定要开始测试吗？\n全部测试完后才会自动更新结果。", "确定", "取消");
         if (!tSelect)
         {
             return;
@@ -1022,14 +1163,15 @@ public partial class VideoListPage : ContentPage
         M3U8ValidCheckCTS=new CancellationTokenSource();
         isFinishM3U8VCheck=false;
         M3U8ValidStopBtn.IsEnabled=true;
-        M3U8VProgressText.Text="0 / "+vdlcount;
+        M3U8VProgressText.Text="0 / "+CurrentVideosDetailList.Count;
         M3U8VCheckFinishCount = 0;
         RegexSelectBox.IsEnabled=false;
         ShowLoadOrRefreshDialog=false;
 
-        await M3U8ValidCheck(VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList());
 
-        while (M3U8VCheckFinishCount<vdlcount)
+        await M3U8ValidCheck(CurrentVideosDetailList);
+
+        while (M3U8VCheckFinishCount<CurrentVideosDetailList.Count)
         {
             if (M3U8ValidCheckCTS.IsCancellationRequested)
             {
@@ -1041,12 +1183,13 @@ public partial class VideoListPage : ContentPage
         M3U8ValidStopBtn.IsEnabled=false;
         isFinishM3U8VCheck=true;
         RegexSelectBox.IsEnabled=true;
+        //还需要重置分页信息，此处不需要指定页面
+        VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
+        SetVDLPage(1);
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
         {
-            var tlist = VideoDetailList.ItemsSource;
-            VideoDetailList.ItemsSource=null;
-            VideoDetailList.ItemsSource=tlist;
+            MakeVideosDataToPage(CurrentVideosDetailList, 0);
 
             await DisplayAlert("提示信息", "已全部检测完成！", "确定");
         }
@@ -1057,18 +1200,16 @@ public partial class VideoListPage : ContentPage
                 bool tresult = await DisplayAlert("提示信息", "是要查看部分检测完的结果还是要重新加载列表？", "查看结果", "重新加载");
                 if (tresult)
                 {
-                    var tlist = VideoDetailList.ItemsSource;
-                    VideoDetailList.ItemsSource=null;
-                    VideoDetailList.ItemsSource=tlist;
+                    MakeVideosDataToPage(CurrentVideosDetailList, 0);
                 }
                 else
                 {
-                    GetCurrentIndexAndLoadData();
+                    GetCurrentIndexAndLoadData(0);
                 }
             }
             else
             {
-                GetCurrentIndexAndLoadData();
+                GetCurrentIndexAndLoadData(0);
                 await DisplayAlert("提示信息", "您已取消检测！", "确定");
             }
 
@@ -1169,7 +1310,7 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "当前正在执行直播源检测！", "确定");
             return;
         }
-        var notokcount = VideoDetailList.ItemsSource.Cast<VideoDetailList>().Where(p => (p.HTTPStatusCode!="OK")&&(p.HTTPStatusCode!=null)).Count();
+        var notokcount = CurrentVideosDetailList.Where(p => (p.HTTPStatusCode!="OK")&&(p.HTTPStatusCode!=null)).Count();
         if (notokcount<1)
         {
             await DisplayAlert("提示信息", "当前列表里没有无效的直播信号，无需操作！", "确定");
@@ -1182,7 +1323,7 @@ public partial class VideoListPage : ContentPage
         }
 
 
-        VideoDetailList.ItemsSource.Cast<VideoDetailList>().ToList().ForEach(p =>
+        CurrentVideosDetailList.ForEach(p =>
         {
             if (p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null)
             {
@@ -1196,9 +1337,12 @@ public partial class VideoListPage : ContentPage
 
             }
         });
+        CurrentVideosDetailList.RemoveAll(p=> p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null);
 
+        VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
+        SetVDLPage(1);
+        MakeVideosDataToPage(CurrentVideosDetailList, 0);
 
-        GetCurrentIndexAndLoadData();
         await DisplayAlert("提示信息", "已成功移除无效的直播信号！", "确定");
 
     }
@@ -1219,16 +1363,16 @@ public partial class VideoListPage : ContentPage
 
         }
     }
-    public void GetCurrentIndexAndLoadData()
+    public void GetCurrentIndexAndLoadData(int skipcount)
     {
         string regexIndex = GetRegexOptionIndex();
         if (regexIndex!="0")
         {
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, regexIndex);
+            MakeVideosDataToPage(DoRegex(AllVideoData, regexIndex), skipcount);
         }
         else
         {
-            VideoDetailList.ItemsSource= DoRegex(AllVideoData, RecommendReg);
+            MakeVideosDataToPage(DoRegex(AllVideoData, RecommendReg), skipcount);
         }
     }
 
@@ -1237,7 +1381,17 @@ public partial class VideoListPage : ContentPage
         if (e.PropertyName == "ItemsSource")
         {
             VideoDetailList.SelectedItem=null;
+
+            if(VideoDetailList.ItemsSource is not null)
+            {
+                VDLPagePanel.IsVisible=true;
+            }
+            else
+            {
+                VDLPagePanel.IsVisible=false;
+            }
         }
 
     }
+
 }

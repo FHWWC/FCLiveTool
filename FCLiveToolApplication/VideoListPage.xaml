@@ -170,8 +170,30 @@
                 <ListView x:Name="VideoDetailList" ItemTemplate="{StaticResource VideoDetailListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{OnPlatform Android=100}" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never" ItemTapped="VideoDetailList_ItemTapped" Refreshing="VideoDetailList_Refreshing" PropertyChanged="VideoDetailList_PropertyChanged"/>
                 <Label x:Name="VDLIfmText" Text="这里空空如也，先在左侧列表里选择一项吧~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Grid>
-
-
+            <Grid x:Name="VDLPagePanel" VerticalOptions="End" IsVisible="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition Height="{ OnPlatform WinUI=0}"/>
+                </Grid.RowDefinitions>
+                <Label x:Name="VDLCurrentPage" Text="1/1" FontSize="24" HorizontalOptions="Center"/>
+                
+                <Button x:Name="VDLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" Grid.Row="1" Clicked="VDLBackBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Grid.Row="{ OnPlatform 1, Android=2}">
+                    <Entry x:Name="VDLPageTb" MaxLength="3" Placeholder="输入页码" Keyboard="Numeric"/>
+                    <Button x:Name="VDLJumpBtn" Background="LightBlue" HeightRequest="35" Text="跳转" Margin="{ OnPlatform '5,0,0,0', Android=0}" Clicked="VDLJumpBtn_Clicked"/>
+                </StackLayout>
+                <Button x:Name="VDLNextBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="End" Grid.Row="1" Clicked="VDLNextBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+         
+            </Grid>
         </StackLayout>
         <StackLayout x:Name="VideoDataListPanel" Background="#A0F0FFFF" Grid.Row="1" Grid.Column="1" Margin="5,10,0,0" Padding="5" TranslationY="-1000">
             <HorizontalStackLayout HorizontalOptions="End">
