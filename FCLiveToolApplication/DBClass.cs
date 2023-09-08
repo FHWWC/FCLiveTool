@@ -22,6 +22,7 @@ namespace FCLiveToolApplication
         public string SourceName { get; set; }
         public string SourceLink { get; set; }
         //客户端专用
+        public string FullM3U8Str { get; set; }
         public bool isHTTPS { get; set; }
         public string FileName { get; set; }
         public string HTTPStatusCode { get; set; }

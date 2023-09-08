@@ -233,15 +233,46 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
-        var tresult = GetOLDStr(AllVideoData, vname, selectVDL.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
-        if (tresult is null||tresult.Contains("#EXTINF"))
+        /*
+                 var tresult = GetOLDStr(AllVideoData, vname, selectVDL.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
+                if (tresult is null||tresult.Contains("#EXTINF"))
+                {
+                    await DisplayAlert("提示信息", "无法更新当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
+                    return;
+                }
+         */
+
+        string m3u8Str = GetFullM3U8Str(selectVDL);
+        if (m3u8Str is "")
         {
-            await DisplayAlert("提示信息", "无法更新当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
+            await DisplayAlert("提示信息", "无法更新当前直播源，在M3U文件内找不到当前直播源！", "确定");
             return;
         }
 
-        AllVideoData=AllVideoData.Replace(tresult, tresult.Replace(vname, newvalue));
         CurrentVideosDetailList.Where(p => p==selectVDL).FirstOrDefault().SourceName=newvalue; ;
+
+        string regexIndex = GetRegexOptionIndex();
+        if (regexIndex=="0")
+            regexIndex=RecommendReg;
+        if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2"))
+        {
+            vname="tvg-name=\""+vname+"\"";
+            newvalue="tvg-name=\""+newvalue+"\"";
+        }
+        else
+        {
+            vname=","+vname;
+            newvalue=","+newvalue;
+        }
+
+        if (m3u8Str is null)
+        {
+            AllVideoData=AllVideoData.Replace(selectVDL.FullM3U8Str, selectVDL.FullM3U8Str.Replace(vname, newvalue));
+        }
+        else
+        {
+            AllVideoData=AllVideoData.Replace(m3u8Str, m3u8Str.Replace(vname, newvalue));
+        }
 
         //仅在调试 AllVideoData是否被正确修改 以及 AllVideoData能否正常被加载到列表 时使用
         /*
@@ -285,14 +316,29 @@ public partial class VideoListPage : ContentPage
         bool readydel = await DisplayAlert("你确定要移除该直播源吗？", vname, "确定", "取消");
         if (readydel)
         {
-            var tresult = GetOLDStr(AllVideoData, vname, selectVDL.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
-            if (tresult is null||tresult.Contains("#EXTINF"))
+            /*
+              var tresult = GetOLDStr(AllVideoData, vname, selectVDL.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
+             if (tresult is null||tresult.Contains("#EXTINF"))
+             {
+                 await DisplayAlert("提示信息", "无法移除当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
+                 return;
+             }
+             */
+
+            string m3u8Str = GetFullM3U8Str(selectVDL);
+            if(m3u8Str is "")
             {
-                await DisplayAlert("提示信息", "无法移除当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
+                await DisplayAlert("提示信息", "无法移除当前直播源，在M3U文件内找不到当前直播源！", "确定");
                 return;
             }
-
-            AllVideoData=AllVideoData.Replace(tresult, "");
+            if(m3u8Str is null)
+            {
+                AllVideoData=AllVideoData.Replace(selectVDL.FullM3U8Str, "");
+            }
+            else
+            {
+                AllVideoData=AllVideoData.Replace(m3u8Str, "");
+            }           
             CurrentVideosDetailList.Remove(selectVDL);
 
             //仅在调试 AllVideoData是否被正确修改 以及 AllVideoData能否正常被加载到列表 时使用
@@ -322,6 +368,35 @@ public partial class VideoListPage : ContentPage
 
     }
 
+    public string GetFullM3U8Str(VideoDetailList vdlList)
+    {
+        //如果正则表达式更改，这里可能也需要更新
+        string regexIndex = GetRegexOptionIndex();
+        if (regexIndex=="0")
+            regexIndex=RecommendReg;
+
+        if(regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex=="5")
+        {
+            return null;
+        }
+        else if (regexIndex=="3")
+        {
+            string reg = "(.*?)((tvg-logo=\""+vdlList.LogoLink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?("+vdlList.SourceLink+"(?=\n))";
+            return Regex.Match(AllVideoData, reg).Groups[0].Value;
+        }
+        else if (regexIndex=="3.2")
+        {
+            string reg = "(.*?)((tvg-logo=\""+vdlList.LogoLink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
+            return Regex.Match(AllVideoData, reg).Groups[0].Value;
+        }
+        else if (regexIndex=="4")
+        {
+            string reg ="(.*?),?((tvg-logo=\""+vdlList.LogoLink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
+            return Regex.Match(AllVideoData, reg).Groups[0].Value;
+        }
+
+        return "";
+    }
     public string GetOLDStr(string videodata, string name, string link)
     {
         string oldvalue;
@@ -658,6 +733,7 @@ public partial class VideoListPage : ContentPage
                 LogoLink=match[i].Groups[UseGroup[0]].Value=="" ? "fclive_tvicon.png" : match[i].Groups[UseGroup[0]].Value,
                 SourceName=match[i].Groups[UseGroup[1]].Value,
                 SourceLink=match[i].Groups[UseGroup[2]].Value,
+                FullM3U8Str=match[i].Groups[0].Value,
                 isHTTPS=match[i].Groups[UseGroup[2]].Value.ToLower().StartsWith("https://") ? true : false,
                 FileName=Regex.Match(match[i].Groups[UseGroup[2]].Value, @"\/([^\/]+\.m3u8)").Groups[1].Value
             };
@@ -679,32 +755,32 @@ public partial class VideoListPage : ContentPage
         {
             case "1":
                 UseGroup =new int[] { 1, 2, 3 };
-                return @"(?:.*?tvg-logo=""([^""]*)"")?(?:.*?tvg-name=""([^""]*)"")?.*\r?\n?((http|https)://\S+\.m3u8(\?(.*?))?(?=\n|,))";
+                return @"(?:.*?tvg-logo=""([^""]*)"")?(?:.*?tvg-name=""([^""]*)"")?.*\r?\n?((http|https)://\S+\.m3u8(\?(.*?))?(?=\n))";
             //1.2为1的不限制M3U8后缀的版本
             case "1.2":
                 UseGroup =new int[] { 1, 2, 3 };
-                return @"(?:.*?tvg-logo=""([^""]*)"")?(?:.*?tvg-name=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n|,))";
+                return @"(?:.*?tvg-logo=""([^""]*)"")?(?:.*?tvg-name=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n))";
             //只有2方案是先匹配台名后匹配台标
             case "2":
                 UseGroup =new int[] { 2, 1, 3 };
-                return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+\.m3u8(\?(.*?))?(?=\n|,))";
+                return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+\.m3u8(\?(.*?))?(?=\n))";
             //2.2为2的不限制M3U8后缀的版本
             case "2.2":
                 UseGroup =new int[] { 2, 1, 3 };
-                return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n|,))";
+                return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n))";
             case "3":
                 UseGroup =new int[] { 3, 5, 8 };
-                return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+\.m3u8(\?(.*?))?(?=\n|,)))";
+                return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+\.m3u8(\?(.*?))?(?=\n)))";
             //3.2为3的不限制M3U8后缀的版本
             case "3.2":
                 UseGroup =new int[] { 3, 5, 8 };
-                return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n|,)))";
+                return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
             case "4":
                 UseGroup =new int[] { 3, 5, 8 };
-                return @",?((tvg-logo=""([^""]*)"")(.*?)),(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n|,)))";
+                return @",?((tvg-logo=""([^""]*)"")(.*?)),(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
             case "5":
                 UseGroup =new int[] { 2, 5, 7 };
-                return @"(((http|https)://\S+)(,))?(.*?)(,)((http|https)://\S+(?=\n|,|\s{1}))";
+                return @"(((http|https)://\S+)(,))?(.*?)(,)((http|https)://\S+(?=\n|\s{1}))";
             default:
                 return "";
         }
