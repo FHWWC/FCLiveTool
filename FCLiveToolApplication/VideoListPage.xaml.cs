@@ -326,19 +326,19 @@ public partial class VideoListPage : ContentPage
              */
 
             string m3u8Str = GetFullM3U8Str(selectVDL);
-            if(m3u8Str is "")
+            if (m3u8Str is "")
             {
                 await DisplayAlert("提示信息", "无法移除当前直播源，在M3U文件内找不到当前直播源！", "确定");
                 return;
             }
-            if(m3u8Str is null)
+            if (m3u8Str is null)
             {
                 AllVideoData=AllVideoData.Replace(selectVDL.FullM3U8Str, "");
             }
             else
             {
                 AllVideoData=AllVideoData.Replace(m3u8Str, "");
-            }           
+            }
             CurrentVideosDetailList.Remove(selectVDL);
 
             //仅在调试 AllVideoData是否被正确修改 以及 AllVideoData能否正常被加载到列表 时使用
@@ -375,7 +375,7 @@ public partial class VideoListPage : ContentPage
         if (regexIndex=="0")
             regexIndex=RecommendReg;
 
-        if(regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex=="5")
+        if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex=="5")
         {
             return null;
         }
@@ -391,46 +391,50 @@ public partial class VideoListPage : ContentPage
         }
         else if (regexIndex=="4")
         {
-            string reg ="(.*?),?((tvg-logo=\""+vdlList.LogoLink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
+            string reg = "(.*?),?((tvg-logo=\""+vdlList.LogoLink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
             return Regex.Match(AllVideoData, reg).Groups[0].Value;
         }
 
         return "";
     }
-    public string GetOLDStr(string videodata, string name, string link)
-    {
-        string oldvalue;
-        try
-        {
-            Match tVResult = Regex.Match(videodata, Regex.Escape(name)+@"(?s)([\s\S]*?)"+Regex.Escape(link));
-            oldvalue = tVResult.Value;
-            if (oldvalue=="")
-                return null;
-            int tncount = oldvalue.Split(name).Length;
-            int tlcount = oldvalue.Split(link).Length;
 
-            if (tncount>2&&tlcount>2)
+    /*
+         public string GetOLDStr(string videodata, string name, string link)
+        {
+            string oldvalue;
+            try
+            {
+                Match tVResult = Regex.Match(videodata, Regex.Escape(name)+@"(?s)([\s\S]*?)"+Regex.Escape(link));
+                oldvalue = tVResult.Value;
+                if (oldvalue=="")
+                    return null;
+                int tncount = oldvalue.Split(name).Length;
+                int tlcount = oldvalue.Split(link).Length;
+
+                if (tncount>2&&tlcount>2)
+                {
+                    return null;
+                }
+                if (tncount>2)
+                {
+                    string tvdata = oldvalue.Remove(oldvalue.IndexOf(name), name.Length);
+                    return GetOLDStr(tvdata, name, link);
+                }
+                if (tlcount>2)
+                {
+                    string tvdata = oldvalue.Remove(oldvalue.LastIndexOf(link), link.Length);
+                    return GetOLDStr(tvdata, name, link);
+                }
+            }
+            catch (Exception)
             {
                 return null;
             }
-            if (tncount>2)
-            {
-                string tvdata = oldvalue.Remove(oldvalue.IndexOf(name), name.Length);
-                return GetOLDStr(tvdata, name, link);
-            }
-            if (tlcount>2)
-            {
-                string tvdata = oldvalue.Remove(oldvalue.LastIndexOf(link), link.Length);
-                return GetOLDStr(tvdata, name, link);
-            }
-        }
-        catch (Exception)
-        {
-            return null;
-        }
 
-        return oldvalue;
-    }
+            return oldvalue;
+        }
+     */
+
     /// <summary>
     /// 左侧M3U列表点击事件
     /// </summary>
@@ -949,7 +953,7 @@ public partial class VideoListPage : ContentPage
         MakeVideosDataToPage(CurrentVideosDetailList, (VDLCurrentPageIndex-1)*VDL_COUNT_PER_PAGE);
     }
 
-    public void MakeVideosDataToPage(List<VideoDetailList> list,int skipcount)
+    public void MakeVideosDataToPage(List<VideoDetailList> list, int skipcount)
     {
         if (list.Count()<1)
         {
@@ -1405,15 +1409,23 @@ public partial class VideoListPage : ContentPage
             {
                 string vname = p.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
 
-                var tresult = GetOLDStr(AllVideoData, vname, p.SourceLink.Replace("\r", "").Replace("\n", "").Replace("\r\n", ""));
-                if (tresult != null&&!tresult.Contains("#EXTINF"))
+                string m3u8Str = GetFullM3U8Str(p);
+                if (m3u8Str is "")
                 {
-                    AllVideoData=AllVideoData.Replace(tresult, "");
+                    //备用
+                }
+                if (m3u8Str is null)
+                {
+                    AllVideoData=AllVideoData.Replace(p.FullM3U8Str, "");
+                }
+                else
+                {
+                    AllVideoData=AllVideoData.Replace(m3u8Str, "");
                 }
 
             }
         });
-        CurrentVideosDetailList.RemoveAll(p=> p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null);
+        CurrentVideosDetailList.RemoveAll(p => p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null);
 
         VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
         SetVDLPage(1);
@@ -1458,7 +1470,7 @@ public partial class VideoListPage : ContentPage
         {
             VideoDetailList.SelectedItem=null;
 
-            if(VideoDetailList.ItemsSource is not null)
+            if (VideoDetailList.ItemsSource is not null)
             {
                 VDLPagePanel.IsVisible=true;
             }
