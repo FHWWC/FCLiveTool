@@ -375,23 +375,32 @@ public partial class VideoListPage : ContentPage
         if (regexIndex=="0")
             regexIndex=RecommendReg;
 
+        string tlogolink = vdlList.LogoLink;
+        string tsourcelink = vdlList.SourceLink;
+        //如果之前就未匹配到Logo，那么表达式就用原来的字符串。
+        if (vdlList.LogoLink.Contains("fclive_tvicon.png"))
+        {
+            tlogolink="([^\"]*)";
+            tsourcelink="(http|https)://\\S+\\.m3u8(\\?(.*?))?";
+        }
+
         if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex=="5")
         {
             return null;
         }
         else if (regexIndex=="3")
         {
-            string reg = "(.*?)((tvg-logo=\""+vdlList.LogoLink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?("+vdlList.SourceLink+"(?=\n))";
+            string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?("+tsourcelink+"(?=\n))";
             return Regex.Match(AllVideoData, reg).Groups[0].Value;
         }
         else if (regexIndex=="3.2")
         {
-            string reg = "(.*?)((tvg-logo=\""+vdlList.LogoLink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
+            string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
             return Regex.Match(AllVideoData, reg).Groups[0].Value;
         }
         else if (regexIndex=="4")
         {
-            string reg = "(.*?),?((tvg-logo=\""+vdlList.LogoLink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
+            string reg = "(.*?),?((tvg-logo=\""+tlogolink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
             return Regex.Match(AllVideoData, reg).Groups[0].Value;
         }
 
