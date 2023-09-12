@@ -623,8 +623,10 @@ public partial class VideoListPage : ContentPage
             CurrentVideosList=CurrentVideosList.Where(p => p.RecommendReg!="-1").ToList();
             VideosList.ItemsSource= CurrentVideosList.Take(VL_COUNT_PER_PAGE);
 
+            //重置
             VideosList.SelectedItem=null;
             VideoDetailList.ItemsSource=null;
+            CurrentVURL="";
 
             //暂时忽略页数小于1的情况
             VLMaxPageIndex= (int)Math.Ceiling(CurrentVideosList.Count/15.0);
@@ -1044,6 +1046,11 @@ public partial class VideoListPage : ContentPage
 
     private void VideoDetailList_Refreshing(object sender, EventArgs e)
     {
+        if (CurrentVURL=="")
+        {
+            return;
+        }
+
         LoadVideoDetail(CurrentVURL, RecommendReg);
 
         //不使用ListView自己的加载圈
@@ -1166,15 +1173,7 @@ public partial class VideoListPage : ContentPage
 
     private async void SaveM3UFileBtn_Clicked(object sender, EventArgs e)
     {
-        /*
-                 if (CurrentVURL=="")
-                {
-                    await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
-                    return;
-                }
-         */
-        //如果刷新了左侧列表，则暂不支持保存M3U文件
-        if (VideosList.SelectedItem is null)
+        if (CurrentVURL=="")
         {
             await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
             return;
@@ -1226,7 +1225,7 @@ public partial class VideoListPage : ContentPage
 
     private async void M3U8ValidBtn_Clicked(object sender, EventArgs e)
     {
-        if (CurrentVURL=="")
+        if (VideoDetailList.ItemsSource is null)
         {
             await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
             return;
@@ -1382,7 +1381,7 @@ public partial class VideoListPage : ContentPage
     }
     private async void M3U8ValidRemoveBtn_Clicked(object sender, EventArgs e)
     {
-        if (CurrentVURL=="")
+        if (VideoDetailList.ItemsSource is null)
         {
             await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
             return;
@@ -1491,4 +1490,50 @@ public partial class VideoListPage : ContentPage
 
     }
 
+    private async void VDLSearchBtn_Clicked(object sender, EventArgs e)
+    {
+        if (CurrentVURL=="")
+        {
+            await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源，才能搜索里面的内容！", "确定");
+            return;
+        }
+        if (!isFinishM3U8VCheck)
+        {
+            await DisplayAlert("提示信息", "当前正在执行直播源检测，请先停止检测再搜索！", "确定");
+            return;
+        }
+
+        string searchText = VDLSearchTb.Text;
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            await DisplayAlert("提示信息", "输入的内容无效！", "确定");
+            return;
+        }
+        /*
+                 if (searchText.Length < 3)
+                {
+                    await DisplayAlert("提示信息", "搜索内容长度不能小于3！", "确定");
+                    return;
+                }
+         */
+
+        string treg;
+        string regexIndex = GetRegexOptionIndex();
+        if (regexIndex!="0")
+        {
+            treg=regexIndex;
+        }
+        else
+        {
+            treg=RecommendReg;
+        }
+        //暂时不编写智能搜索
+        CurrentVideosDetailList= DoRegex(AllVideoData, treg).Where(p => p.SourceName.Contains(searchText)).ToList();
+
+        VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
+        SetVDLPage(1);
+
+        MakeVideosDataToPage(CurrentVideosDetailList, 0);
+
+    }
 }
