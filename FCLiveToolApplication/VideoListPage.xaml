@@ -57,9 +57,18 @@
 
 
     <Shell.TitleView>
-        <HorizontalStackLayout>
+        <Grid>
             <Label Text="直播源列表" TextColor="#A0F0FFFF" FontSize="Large" VerticalTextAlignment="Center"/>
-        </HorizontalStackLayout>
+
+            <HorizontalStackLayout HorizontalOptions="End" VerticalOptions="Center">
+                <Entry Text="{Binding Source={x:Reference VDLSearchTb}, Path=Text, Mode=TwoWay}" WidthRequest="150" Placeholder="输入直播源名称..." Keyboard="Text" ClearButtonVisibility="WhileEditing"/>
+                <Button Background="Transparent" BorderColor="Transparent" ContentLayout="Top,-1" Clicked="VDLSearchBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xF78B;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+        </Grid>
     </Shell.TitleView>
 
 
@@ -129,7 +138,15 @@
             <Label Text="视频列表：" FontSize="Medium"/>
 
             <StackLayout Orientation="Horizontal"  HorizontalOptions="End">
-                <Button x:Name="SaveM3UFileBtn" Background="LightBlue"  Text="保存M3U文件" Clicked="SaveM3UFileBtn_Clicked">
+                <HorizontalStackLayout IsVisible="{OnPlatform Android=False}">
+                    <Entry x:Name="VDLSearchTb" WidthRequest="150" Placeholder="输入直播源名称..." Keyboard="Text" ClearButtonVisibility="WhileEditing"/>
+                    <Button x:Name="VDLSearchBtn" Background="Transparent" BorderColor="Transparent" ContentLayout="Top,-1" Clicked="VDLSearchBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xF78B;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </HorizontalStackLayout>
+                <Button x:Name="SaveM3UFileBtn" Background="LightBlue"  Text="保存M3U文件" Margin="{ OnPlatform '10,0,0,0', Android='5,0,0,0'}" Clicked="SaveM3UFileBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
