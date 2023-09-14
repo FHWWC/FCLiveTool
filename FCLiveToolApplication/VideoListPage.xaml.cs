@@ -969,7 +969,10 @@ public partial class VideoListPage : ContentPage
         if (list.Count()<1)
         {
             VDLIfmText.Text="这里空空如也，请更换一个解析方案吧~";
-            VideoDetailList.ItemsSource=null;
+
+            VideoDetailList.ItemsSource=new List<VideoDetailList>() { };
+            //如果启用直接赋值null，则需要在部分按钮点击事件里分别使用CurrentVURL，ItemSource，Count的判断。
+            //VideoDetailList.ItemsSource=null;
 
             return;
         }
@@ -1225,7 +1228,7 @@ public partial class VideoListPage : ContentPage
 
     private async void M3U8ValidBtn_Clicked(object sender, EventArgs e)
     {
-        if (VideoDetailList.ItemsSource is null)
+        if (CurrentVURL=="")
         {
             await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
             return;
@@ -1381,7 +1384,7 @@ public partial class VideoListPage : ContentPage
     }
     private async void M3U8ValidRemoveBtn_Clicked(object sender, EventArgs e)
     {
-        if (VideoDetailList.ItemsSource is null)
+        if (CurrentVURL=="")
         {
             await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
             return;
@@ -1478,7 +1481,7 @@ public partial class VideoListPage : ContentPage
         {
             VideoDetailList.SelectedItem=null;
 
-            if (VideoDetailList.ItemsSource is not null)
+            if (VideoDetailList.ItemsSource is not null&&VideoDetailList.ItemsSource.Cast<VideoDetailList>().Count()>0)
             {
                 VDLPagePanel.IsVisible=true;
             }
@@ -1517,6 +1520,7 @@ public partial class VideoListPage : ContentPage
                 }
          */
 
+        VDLIfmText.Text="";
         string treg;
         string regexIndex = GetRegexOptionIndex();
         if (regexIndex!="0")
@@ -1527,8 +1531,15 @@ public partial class VideoListPage : ContentPage
         {
             treg=RecommendReg;
         }
+
+        List<VideoDetailList> tlist = DoRegex(AllVideoData, treg);
+        if(tlist.Count<1)
+        {
+            tlist = DoRegex(AllVideoData, RecommendReg);
+            DisplayAlert("提示信息", "当前解析方案未能解析出直播源，已改为推荐的方案去解析并执行搜索。", "确定");
+        }
         //暂时不编写智能搜索
-        CurrentVideosDetailList= DoRegex(AllVideoData, treg).Where(p => p.SourceName.Contains(searchText)).ToList();
+        CurrentVideosDetailList= tlist.Where(p => p.SourceName.Contains(searchText)).ToList();
 
         VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
         SetVDLPage(1);
