@@ -68,13 +68,14 @@
         <StackLayout x:Name="LocalM3U8Panel" Background="#A0F0FFFF" Grid.Row="1" TranslationY="-1000" Padding="20,10">
             <StackLayout x:Name="LocalM3U8SP">
                 <Label Text="请选择一个文件夹，程序会读取里面所有的M3U8直播源文件，暂时仅支持M3U8文件"/>
-                <Button x:Name="SelectLocalM3U8Btn" Background="LightBlue" HorizontalOptions="Start" Margin="0,10,0,0" Clicked="SelectLocalM3U8Btn_Clicked">
+                <Button x:Name="SelectLocalM3U8Btn" Background="LightBlue" HorizontalOptions="Start" ContentLayout="Top,-3" Margin="0,10,0,0" Clicked="SelectLocalM3U8Btn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </StackLayout>
 
+            <Label x:Name="LocalM3U8IfmText" HorizontalOptions="Center"/>
             <ListView x:Name="LocalM3U8List" ItemTemplate="{StaticResource LocalM3U8ListStyle}" VerticalOptions="Start" HorizontalScrollBarVisibility="Never" Margin="0,20,0,0" ItemTapped="LocalM3U8List_ItemTapped"/>
         </StackLayout>
         

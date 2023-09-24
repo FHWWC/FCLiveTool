@@ -1,6 +1,4 @@
-using CommunityToolkit.Maui.Core.Primitives;
 using CommunityToolkit.Maui.Storage;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Xml.Serialization;
 
 namespace FCLiveToolApplication;
@@ -323,8 +321,15 @@ public partial class VideoPrevPage : ContentPage
 
         if (folderPicker.IsSuccessful)
         {
+            LocalM3U8IfmText.Text="";
+
             List<LocalM3U8List> mlist = new List<LocalM3U8List>();
             LoadM3U8FileFromSystem(folderPicker.Folder.Path,folderPicker.Folder.Path,ref mlist);
+
+            if(mlist.Count<1)
+            {
+                LocalM3U8IfmText.Text="当前文件夹下没有符合条件的文件";
+            }
 
             LocalM3U8List.ItemsSource= mlist;
         }

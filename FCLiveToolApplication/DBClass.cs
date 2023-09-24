@@ -206,7 +206,7 @@ namespace FCLiveToolApplication
             M3U8PlayList.Clear();
 
             try
-            {               
+            {
                 using (StringReader sr = new StringReader(File.ReadAllText(VideoIfm[1])))
                 {
                     string r = "";
@@ -222,14 +222,9 @@ namespace FCLiveToolApplication
                             continue;
                         else if (r.Contains(".m3u8"))
                         {
-                            if (!r.Contains("://"))
-                            {
-                                r=VideoIfm[1].Substring(0, VideoIfm[1].LastIndexOf("/")+1)+r;
-                            }
-
-
-                            //string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];                                
-                            Match m3u8nameResult = Regex.Match(r, @"\/([^\/]+\.m3u8)");
+                            //string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];
+                            //暂时给表达式加?
+                            Match m3u8nameResult = Regex.Match(r, @"\/?([^\/]+\.m3u8)");
                             string m3u8name = m3u8nameResult.Groups[1].Value=="" ? "未解析到文件名" : m3u8nameResult.Groups[1].Value;
 
                             Match tPResult = Regex.Match(tProperties, @"(?:,|:)BANDWIDTH=(.*?)(,|\n|$)");
@@ -284,5 +279,21 @@ namespace FCLiveToolApplication
                 VideoPrevPage.videoPrevPage.M3U8PlayList.Add(p);
             });
         }
+
+        /*
+               public string GetReadM3U8FileErrorMsg(int index)
+              {
+                  switch (index)
+                  {
+                      case 1:
+
+                          break;
+                      case 2:
+                          break;
+                      case 3:
+                          break;
+                  }
+              }
+         */
     }
 }
