@@ -40,6 +40,12 @@ namespace FCLiveToolApplication
         //客户端专用
         public string PastTime { get; set; }
     }
+    public class LocalM3U8List
+    {
+        public string FilePath { get; set; }
+        public string FileName { get; set; }
+        public string FullFilePath { get; set; }
+    }
 
     public class APPPermissions
     {
@@ -92,7 +98,7 @@ namespace FCLiveToolApplication
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="M3U8PlayList"></param>
+        /// <param name="M3U8PlayList">M3U8文件内的所有直播信号</param>
         /// <param name="VideoIfm">1：名称；2：URL；</param>
         /// <returns></returns>
         public async Task<string> DownloadAndReadM3U8File(List<string[]> M3U8PlayList, string[] VideoIfm)
@@ -185,6 +191,83 @@ namespace FCLiveToolApplication
 
             }
 
+
+            return "";
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="M3U8PlayList">M3U8文件内的所有直播信号</param>
+        /// <param name="VideoIfm">1：文件名；2：文件的路径；</param>
+        /// <returns></returns>
+        public async Task<string> ReadLocalM3U8File(List<string[]> M3U8PlayList, string[] VideoIfm)
+        {
+            M3U8PlayList.Clear();
+
+            try
+            {               
+                using (StringReader sr = new StringReader(File.ReadAllText(VideoIfm[1])))
+                {
+                    string r = "";
+                    string tProperties = "";
+                    while ((r=await sr.ReadLineAsync())!=null)
+                    {
+                        if (r.StartsWith("#"))
+                        {
+                            tProperties=r;
+                            continue;
+                        }
+                        else if (String.IsNullOrWhiteSpace(r))
+                            continue;
+                        else if (r.Contains(".m3u8"))
+                        {
+                            if (!r.Contains("://"))
+                            {
+                                r=VideoIfm[1].Substring(0, VideoIfm[1].LastIndexOf("/")+1)+r;
+                            }
+
+
+                            //string m3u8name = r[new Range(r.LastIndexOf("/")+1, r.LastIndexOf(".m3u8")+5)];                                
+                            Match m3u8nameResult = Regex.Match(r, @"\/([^\/]+\.m3u8)");
+                            string m3u8name = m3u8nameResult.Groups[1].Value=="" ? "未解析到文件名" : m3u8nameResult.Groups[1].Value;
+
+                            Match tPResult = Regex.Match(tProperties, @"(?:,|:)BANDWIDTH=(.*?)(,|\n|$)");
+                            string tBandwidth = tPResult.Groups[1].Value.Replace("\"", "");
+                            tBandwidth=tBandwidth=="" ? "---" : tBandwidth;
+                            Match tPResult2 = Regex.Match(tProperties, @"RESOLUTION=(.*?)(,|\n|$)");
+                            string tResolution = tPResult2.Groups[1].Value.Replace("\"", "");
+                            tResolution=tResolution=="" ? "---" : tResolution;
+                            Match tPResult3 = Regex.Match(tProperties, @"FRAME-RATE=(.*?)(,|\n|$)");
+                            string tFrameRate = tPResult3.Groups[1].Value.Replace("\"", "");
+                            tFrameRate=tFrameRate=="" ? "---" : tFrameRate;
+                            Match tPResult4 = Regex.Match(tProperties, @"CODECS=""(.*?)""(,|\n|$)");
+                            string tCodecs = tPResult4.Groups[1].Value.Replace("\"", "");
+                            tCodecs=tCodecs=="" ? "---" : tCodecs;
+                            Match tPResult5 = Regex.Match(tProperties, @"NAME=(.*?)(,|\n|$)");
+                            string tName = tPResult5.Groups[1].Value.Replace("\"", "");
+                            tName=tName=="" ? "---" : tName;
+
+                            if (!r.Contains("://"))
+                            {
+                                r="";
+                            }
+
+                            M3U8PlayList.Add(new string[] { m3u8name, r, tBandwidth, tResolution, tFrameRate, tCodecs, tName });
+
+                        }
+                        else if (r.Contains(".ts"))
+                        {
+                            //备用
+                        }
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+                return "解析出现问题，可能是M3U8文件数据格式有问题。";
+            }
 
             return "";
         }

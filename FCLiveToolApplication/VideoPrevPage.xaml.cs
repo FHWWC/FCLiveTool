@@ -1,3 +1,6 @@
+using CommunityToolkit.Maui.Core.Primitives;
+using CommunityToolkit.Maui.Storage;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using System.Xml.Serialization;
 
 namespace FCLiveToolApplication;
@@ -36,7 +39,8 @@ public partial class VideoPrevPage : ContentPage
         VideoWindow.WidthRequest=PageGrid.Width;
         VideoWindow.HeightRequest=PageGrid.Height-50;
 
-        RecentList.HeightRequest=PageGrid.Height-50;
+        RecentList.HeightRequest=PageGrid.Height-100;
+        LocalM3U8List.HeightRequest=PageGrid.Height-(LocalM3U8SP.Height+100);
 
         //如果最近播放的列表是展开状态，则窗口大小改变时也要同时调整它，保证它不错位
         if (RecentPanel.Width>0)
@@ -278,5 +282,133 @@ public partial class VideoPrevPage : ContentPage
         }
 
         VideoWindow.Play();
+    }
+
+    private void LocalM3U8Btn_Clicked(object sender, EventArgs e)
+    {
+        //收回
+        if (LocalM3U8Panel.TranslationY==0)
+        {
+            var animation = new Animation { 
+                { 0, 1, new Animation(v => LocalM3U8Panel.TranslationY  = v, 0, -1000) },
+                { 0, 1, new Animation(v => LocalM3U8Panel.Opacity  = v, 1, 0) }
+            };
+            animation.Commit(this, "MPanelAnimation", 16, 500, Easing.CubicInOut);
+
+        }
+        //展开
+        else
+        {
+            var animation = new Animation {
+                { 0, 1,  new Animation(v => LocalM3U8Panel.TranslationY  = v, -1000, 0)},
+                { 0, 1, new Animation(v => LocalM3U8Panel.Opacity  = v, 0, 1) }
+            };
+            animation.Commit(this, "MPanelAnimation", 16, 500, Easing.CubicOut);
+
+        }
+    }
+
+    private async void SelectLocalM3U8Btn_Clicked(object sender, EventArgs e)
+    {
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要保存文件！", "确定");
+            return;
+        }
+
+
+        //VideoWindow.Source=new Uri("C:\\Users\\Lee\\Desktop\\cgtn-f.m3u8");
+        var folderPicker = await FolderPicker.PickAsync(FileSystem.AppDataDirectory, CancellationToken.None);
+
+        if (folderPicker.IsSuccessful)
+        {
+            List<LocalM3U8List> mlist = new List<LocalM3U8List>();
+            LoadM3U8FileFromSystem(folderPicker.Folder.Path,folderPicker.Folder.Path,ref mlist);
+
+            LocalM3U8List.ItemsSource= mlist;
+        }
+        else
+        {
+            await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+        }
+
+    }
+    public void LoadM3U8FileFromSystem(string path,string initFoldername,ref List<LocalM3U8List> list)
+    {
+        foreach (string item in Directory.EnumerateFileSystemEntries(path).ToList())
+        {
+            if (File.GetAttributes(item).HasFlag(FileAttributes.Directory))
+            {
+                LoadM3U8FileFromSystem(item,initFoldername,ref list);
+            }
+            else
+            {
+                if(item.EndsWith(".m3u8"))
+                {
+                    string tname=item.Substring(item.LastIndexOf("\\")+1);
+                    string tfoldername = "."+item.Replace(initFoldername,"").Replace(tname,"");
+
+                    list.Add(new LocalM3U8List() {FileName=tname,FilePath=tfoldername,FullFilePath=item});
+                }
+
+            }
+
+        }
+    }
+    private async void LocalM3U8List_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        LocalM3U8List list = e.Item as LocalM3U8List;
+
+        //暂时编写一些冗余代码
+        List<string[]> tmlist = new List<string[]>();
+        M3U8PlayList.ForEach(tmlist.Add);
+
+        string readresult = await new VideoManager().ReadLocalM3U8File(M3U8PlayList, new string[] { list.FileName, list.FullFilePath });
+        if (readresult!="")
+        {
+            M3U8PlayList=tmlist;
+            await DisplayAlert("提示信息", readresult, "确定");
+            return;
+        }
+
+
+        M3U8PlayList.Insert(0, new string[] { "默认", list.FullFilePath });
+        string[] MOptions = new string[M3U8PlayList.Count];
+        MOptions[0]="默认\n";
+        string WantPlayURL = list.FullFilePath;
+
+        if (M3U8PlayList.Count > 2)
+        {
+            for (int i = 1; i<M3U8PlayList.Count; i++)
+            {
+                MOptions[i]="【"+i+"】\n文件名："+M3U8PlayList[i][0]+"\n位率："+M3U8PlayList[i][2]+"\n分辨率："+M3U8PlayList[i][3]+"\n帧率："+M3U8PlayList[i][4]+"\n编解码器："+M3U8PlayList[i][5]+"\n标签："+M3U8PlayList[i][6]+"\n";
+            }
+
+            string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
+            if (MSelectResult == "取消"||MSelectResult is null)
+            {
+                M3U8PlayList=tmlist;
+                return;
+            }
+            else if (!MSelectResult.Contains("默认"))
+            {
+                int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
+                WantPlayURL=M3U8PlayList[tmindex][1];
+            }
+
+            if(WantPlayURL=="")
+            {
+                await DisplayAlert("提示信息", "当前直播源的URL是相对地址，不是绝对地址，因为不知道主机地址，故无法播放该直播源。", "确定");
+                return;
+            }
+        }
+
+
+        VideoWindow.Source=new Uri(WantPlayURL);
+        VideoWindow.Play();
+        NowPlayingTb.Text="本地文件： "+list.FileName;
+
+
     }
 }

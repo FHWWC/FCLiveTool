@@ -18,6 +18,14 @@
                 </StackLayout>
             </ViewCell>
         </DataTemplate>
+        <DataTemplate x:Key="LocalM3U8ListStyle">
+            <ViewCell>
+                <StackLayout Margin="10,5">
+                    <Label Text="{Binding FilePath}" LineBreakMode="WordWrap"/>
+                    <Label Text="{Binding FileName}" FontSize="Medium" LineBreakMode="WordWrap"/>
+                </StackLayout>
+            </ViewCell>
+        </DataTemplate>
     </ContentPage.Resources>
 
     <Shell.TitleView>
@@ -37,7 +45,7 @@
         </Grid.ColumnDefinitions>
         
 
-        <Grid Grid.Row="0" Margin="10">
+        <Grid Margin="10">
             <HorizontalStackLayout x:Name="VideoIfm"  Margin="{ OnPlatform WinUI= '0,5,0,0'}">
                 <Label Text="当前正在播放："/>
                 <Label x:Name="NowPlayingTb" TextDecorations="Underline" x:FieldModifier="Public"/>
@@ -47,11 +55,29 @@
                     <FontImageSource Glyph="&#xF738;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
             </Button>
-            <ImageButton x:Name="PlaylistBtn" Background="LightPink" HeightRequest="30"  CornerRadius="{OnPlatform Android=5}"  HorizontalOptions="End" VerticalOptions="Start"  Margin="{ OnPlatform Android= '0,-5,0,0'}" Source="m3u8_playlist.png" Clicked="PlaylistBtn_Clicked"/>
+
+            <StackLayout Orientation="Horizontal" HorizontalOptions="End" VerticalOptions="Start"  Margin="{ OnPlatform Android= '0,-5,0,0'}">
+                <ImageButton x:Name="PlaylistBtn" Background="LightPink" HeightRequest="30"  CornerRadius="{OnPlatform Android=5}" Source="m3u8_playlist.png" Clicked="PlaylistBtn_Clicked"/>
+                <ImageButton x:Name="LocalM3U8Btn" Background="LightPink" HeightRequest="30"  CornerRadius="{OnPlatform Android=5}" Margin="5,0,0,0" Source="local_m3u8_btn.png" Clicked="LocalM3U8Btn_Clicked"/>
+            </StackLayout>
+
         </Grid>
 
         <toolkit:MediaElement x:Name="VideoWindow" HorizontalOptions="FillAndExpand" VerticalOptions="StartAndExpand" Grid.Row="1" ShouldKeepScreenOn="True" x:FieldModifier="Public"/>
 
+        <StackLayout x:Name="LocalM3U8Panel" Background="#A0F0FFFF" Grid.Row="1" TranslationY="-1000" Padding="20,10">
+            <StackLayout x:Name="LocalM3U8SP">
+                <Label Text="请选择一个文件夹，程序会读取里面所有的M3U8直播源文件，暂时仅支持M3U8文件"/>
+                <Button x:Name="SelectLocalM3U8Btn" Background="LightBlue" HorizontalOptions="Start" Margin="0,10,0,0" Clicked="SelectLocalM3U8Btn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </StackLayout>
+
+            <ListView x:Name="LocalM3U8List" ItemTemplate="{StaticResource LocalM3U8ListStyle}" VerticalOptions="Start" HorizontalScrollBarVisibility="Never" Margin="0,20,0,0" ItemTapped="LocalM3U8List_ItemTapped"/>
+        </StackLayout>
+        
         <ScrollView x:Name="RecentPanel" Background="#A0F0FFFF" WidthRequest="0" Grid.Row="{ OnPlatform 1, Android= 2}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -59,7 +85,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Button x:Name="RLRefreshBtn" Background="LightBlue" IsVisible="{ OnPlatform True, Android= False}" ContentLayout="Top,-3" Clicked="RLRefreshBtn_Clicked">
+                <Button x:Name="RLRefreshBtn" Background="LightBlue" IsVisible="{ OnPlatform Android= False}" ContentLayout="Top,-3" Clicked="RLRefreshBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
@@ -72,9 +98,5 @@
 
 
     </Grid>
-    
-    
-    
-
     
 </ContentPage>
