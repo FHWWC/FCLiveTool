@@ -1413,7 +1413,8 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
-
+        int tNOKRemoveCount = 0;
+        int tOKRemoveCount = 0;
         CurrentVideosDetailList.ForEach(p =>
         {
             if (p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null)
@@ -1423,15 +1424,18 @@ public partial class VideoListPage : ContentPage
                 string m3u8Str = GetFullM3U8Str(p);
                 if (m3u8Str is "")
                 {
-                    //备用
+                    //如果仍然不能搜索到完整的字符串，那就不进行替换
+                    tNOKRemoveCount++;
                 }
-                if (m3u8Str is null)
+                else if (m3u8Str is null)
                 {
                     AllVideoData=AllVideoData.Replace(p.FullM3U8Str, "");
+                    tOKRemoveCount++;
                 }
                 else
                 {
                     AllVideoData=AllVideoData.Replace(m3u8Str, "");
+                    tOKRemoveCount++;
                 }
 
             }
@@ -1442,7 +1446,7 @@ public partial class VideoListPage : ContentPage
         SetVDLPage(1);
         MakeVideosDataToPage(CurrentVideosDetailList, 0);
 
-        await DisplayAlert("提示信息", "已成功移除无效的直播信号！", "确定");
+        await DisplayAlert("提示信息", "已成功从列表里移除所有无效的直播信号！\n已从M3U文件缓存里移除无效的直播信号"+tOKRemoveCount+"条，未成功移除"+tNOKRemoveCount+"条。", "确定");
 
     }
 
@@ -1533,7 +1537,7 @@ public partial class VideoListPage : ContentPage
         }
 
         List<VideoDetailList> tlist = DoRegex(AllVideoData, treg);
-        if(tlist.Count<1)
+        if (tlist.Count<1)
         {
             tlist = DoRegex(AllVideoData, RecommendReg);
             DisplayAlert("提示信息", "当前解析方案未能解析出直播源，已改为推荐的方案去解析并执行搜索。", "确定");
