@@ -1,9 +1,162 @@
 ﻿#EXTM3U
 #EXTINF:-1 ,CCTV1
 http://39.134.135.125/wh7f454c46tw476562278_175623229/000000001000PLTV/88888888/224/3221236219/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV1
+http://39.135.238.32/000000001000PLTV/88888888/224/3221236219/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV1
+http://39.134.134.82/000000001000PLTV/88888888/224/3221236219/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
 #EXTINF:-1 ,CCTV2
 http://39.135.238.32/000000001000PLTV/88888888/224/3221235743/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV2
+http://39.134.134.86/000000001000PLTV/88888888/224/3221235743/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
 
+#EXTINF:-1 ,CCTV4
+http://39.135.238.32/000000001000PLTV/88888888/224/3221236202/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV4
+http://39.134.134.82/000000001000PLTV/88888888/224/3221236202/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV4
+http://39.134.135.82/000000001000PLTV/88888888/224/3221236202/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV7
+http://39.135.238.32/000000001000PLTV/88888888/224/3221235759/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV7
+http://39.134.134.84/000000001000PLTV/88888888/224/3221235759/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV7
+http://39.134.135.124/000000001000PLTV/88888888/224/3221235759/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV9
+http://39.135.238.32/000000001000PLTV/88888888/224/3221235767/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV9
+http://39.134.134.86/000000001000PLTV/88888888/224/3221235767/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV11
+http://39.135.238.32/000000001000PLTV/88888888/224/3221236200/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV11
+http://39.134.134.86/000000001000PLTV/88888888/224/3221236200/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV12
+http://39.135.238.32/000000001000PLTV/88888888/224/3221235735/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV12
+http://39.134.134.84/000000001000PLTV/88888888/224/3221235735/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV12
+http://39.134.135.82/000000001000PLTV/88888888/224/3221235735/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV13
+http://39.135.238.32/000000001000PLTV/88888888/224/3221236218/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV13
+http://39.134.134.88/000000001000PLTV/88888888/224/3221236218/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV13
+http://39.134.135.84/000000001000PLTV/88888888/224/3221236218/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV13
+http://39.135.238.32/000000001000PLTV/88888888/224/3221236187/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV13
+http://39.134.134.84/000000001000PLTV/88888888/224/3221236187/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV13
+http://39.134.135.124/000000001000PLTV/88888888/224/3221236187/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV14
+http://39.135.238.49/000000001000PLTV/88888888/224/3221235776/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV14
+http://39.134.135.80/000000001000PLTV/88888888/224/3221235776/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV15
+http://39.135.238.32/000000001000PLTV/88888888/224/3221236203/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV15
+http://39.134.134.88/000000001000PLTV/88888888/224/3221236203/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV15
+http://39.134.135.125/000000001000PLTV/88888888/224/3221236203/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+#EXTINF:-1 ,CCTV17
+http://39.135.238.59/000000001000PLTV/88888888/224/3221236190/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+#EXTINF:-1 ,CCTV17
+http://39.134.134.82/000000001000PLTV/88888888/224/3221236190/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV超级电影,http://39.134.135.125/000000001000PLTV/88888888/224/3221235755/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级电影,http://39.134.134.82/000000001000PLTV/88888888/224/3221235755/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级电影,http://39.134.135.125/000000001000PLTV/88888888/224/3221235755/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV超级电视剧,http://39.134.135.82/000000001000PLTV/88888888/224/3221235788/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级电视剧,http://39.134.134.88/000000001000PLTV/88888888/224/3221235788/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级电视剧,http://39.134.135.82/000000001000PLTV/88888888/224/3221235788/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV超级综艺,http://39.135.238.32/000000001000PLTV/88888888/224/3221235747/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级综艺,http://39.134.134.84/000000001000PLTV/88888888/224/3221235747/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级综艺,http://39.134.135.124/000000001000PLTV/88888888/224/3221235747/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV超级体育,http://39.135.238.32/000000001000PLTV/88888888/224/3221235751/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级体育,http://39.134.134.82/000000001000PLTV/88888888/224/3221235751/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV超级体育,http://39.134.135.125/000000001000PLTV/88888888/224/3221235751/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV炫舞未来,http://39.135.238.32/000000001000PLTV/88888888/224/3221235764/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV炫舞未来,http://39.134.134.82/000000001000PLTV/88888888/224/3221235764/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV炫舞未来,http://39.134.135.125/000000001000PLTV/88888888/224/3221235764/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV潮妈辣婆,http://39.135.238.105/000000001000PLTV/88888888/224/3221236059/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV潮妈辣婆,http://39.134.134.82/000000001000PLTV/88888888/224/3221236059/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV潮妈辣婆,http://39.134.135.124/000000001000PLTV/88888888/224/3221236059/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV精品大剧,http://39.135.238.47/000000001000PLTV/88888888/224/3221236205/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV精品大剧,http://39.134.135.125/000000001000PLTV/88888888/224/3221236205/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV家庭剧场,http://39.135.238.49/000000001000PLTV/88888888/224/3221236206/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV家庭剧场,http://39.134.135.82/000000001000PLTV/88888888/224/3221236206/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV怡伴健康,http://39.135.238.105/000000001000PLTV/88888888/224/3221236209/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV怡伴健康,http://39.134.134.84/000000001000PLTV/88888888/224/3221236209/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV怡伴健康,http://39.134.135.84/000000001000PLTV/88888888/224/3221236209/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV军事评论,http://39.135.238.49/000000001000PLTV/88888888/224/3221236210/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV军事评论,http://39.134.135.125/000000001000PLTV/88888888/224/3221236210/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV海外剧场,http://39.135.238.47/000000001000PLTV/88888888/224/3221236211/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV海外剧场,http://39.134.135.82/000000001000PLTV/88888888/224/3221236211/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV中国功夫,http://39.135.238.49/000000001000PLTV/88888888/224/3221236214/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV中国功夫,http://39.134.135.84/000000001000PLTV/88888888/224/3221236214/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV爱情喜剧,http://39.135.238.47/000000001000PLTV/88888888/224/3221236215/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV爱情喜剧,http://39.134.135.82/000000001000PLTV/88888888/224/3221236215/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV古装剧场,http://39.135.238.61/000000001000PLTV/88888888/224/3221236213/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV古装剧场,http://39.134.134.88/000000001000PLTV/88888888/224/3221236213/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV动作电影,http://39.134.135.84/000000001000PLTV/88888888/224/3221236207/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV动作电影,http://39.134.134.82/000000001000PLTV/88888888/224/3221236207/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV精品纪录,http://39.134.135.124/000000001000PLTV/88888888/224/3221236204/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV精品纪录,http://39.134.134.84/000000001000PLTV/88888888/224/3221236204/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV武搏世界,http://39.134.134.84/000000001000PLTV/88888888/224/3221236216/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV武搏世界,http://39.134.135.125/000000001000PLTV/88888888/224/3221236216/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV武搏世界,http://39.134.134.85/000000001000PLTV/88888888/224/3221236216/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV武搏世界,http://39.134.135.125/000000001000PLTV/88888888/224/3221236216/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV精品体育,http://39.134.135.81/000000001000PLTV/88888888/224/3221236208/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV精品体育,http://39.134.134.88/000000001000PLTV/88888888/224/3221236208/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+
+NewTV农业致富,http://39.134.134.88/000000001000PLTV/88888888/224/3221236147/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV农业致富,http://39.134.135.82/000000001000PLTV/88888888/224/3221236147/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+NewTV军旅剧场,http://39.135.238.47/000000001000PLTV/88888888/224/3221236212/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+NewTV军旅剧场,http://39.134.135.80/000000001000PLTV/88888888/224/3221236212/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+聚鲨环球精选,http://39.134.135.81/000000001000PLTV/88888888/224/3221236813/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+聚鲨环球精选,http://39.134.134.88/000000001000PLTV/88888888/224/3221236813/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+优购物,http://39.135.238.49/000000001000PLTV/88888888/224/3221236826/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+优购物,http://39.134.135.82/000000001000PLTV/88888888/224/3221236826/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+优购物,http://39.134.135.125/000000001000PLTV/88888888/224/3221236828/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+优购物,http://39.134.134.85/000000001000PLTV/88888888/224/3221236828/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+优购物,http://39.134.134.85/000000001000PLTV/88888888/224/3221236832/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+优购物,http://39.134.135.82/000000001000PLTV/88888888/224/3221236832/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+
+家有购物,http://39.134.134.85/000000001000PLTV/88888888/224/3221236830/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
+家有购物,http://39.134.135.80/000000001000PLTV/88888888/224/3221236830/1.m3u8?HlsProfileId=&icpid=123&RTS=1699939942&from=6&popid=6&hms_devid=3734&prioritypopid=6&vqe=3
 
 
 
