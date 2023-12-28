@@ -1,6 +1,3 @@
-本人由于正在在职考研，项目会在明年一月份继续开发。若您愿意等待本项目更新，请不要取消Star，若您觉得该项目对您已无用处，您可以随时取消Star。感谢您的支持。  
-  
-  
 ![FCLiveToolLogo](FCLiveToolApplication/Resources/Images/fclive_big_logo.png)  
   
 # FCLiveTool  
