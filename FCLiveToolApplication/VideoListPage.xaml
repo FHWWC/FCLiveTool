@@ -141,7 +141,7 @@
 
         </StackLayout>
 
-        <Grid HorizontalOptions="FillAndExpand" Grid.Row="1">
+        <Grid HorizontalOptions="Center" Grid.Row="1">
             <ActivityIndicator x:Name="VideosListRing" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
 
@@ -276,7 +276,7 @@
             </HorizontalStackLayout>
             
         </StackLayout>
-        <Grid HorizontalOptions="FillAndExpand" Grid.Row="1" Grid.Column="1">
+        <Grid HorizontalOptions="Center" Grid.Row="1" Grid.Column="1">
             <ActivityIndicator x:Name="VideoDetailListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
 
