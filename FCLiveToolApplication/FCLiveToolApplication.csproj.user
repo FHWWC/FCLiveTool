@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <ActiveDebugFramework>net7.0-windows10.0.19041.0</ActiveDebugFramework>
+    <ActiveDebugFramework>net8.0-windows10.0.22621.0</ActiveDebugFramework>
     <IsFirstTimeProjectOpen>False</IsFirstTimeProjectOpen>
     <ActiveDebugProfile>Windows Machine</ActiveDebugProfile>
     <SelectedPlatformGroup>PhysicalDevice</SelectedPlatformGroup>
@@ -10,6 +10,15 @@
     <AppxShowAllApps>False</AppxShowAllApps>
     <_LastSelectedProfileId>MSIX-win10-x64.pubxml</_LastSelectedProfileId>
     <PackageOptionalProjectsInIdeBuilds>False</PackageOptionalProjectsInIdeBuilds>
+    <Source>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</Source>
+    <SmallTileSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</SmallTileSource>
+    <MediumTileSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</MediumTileSource>
+    <WideTileSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</WideTileSource>
+    <LargeTileSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</LargeTileSource>
+    <AppIconSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</AppIconSource>
+    <PackageLogoSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</PackageLogoSource>
+    <BadgeLogoSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_logo.png</BadgeLogoSource>
+    <SplashScreenSource>D:\VS 2015-19 Project\FCLiveToolApplication\Resources\Images\fclive_big_logo.png</SplashScreenSource>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net6.0-android|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
@@ -24,6 +33,9 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net7.0-maccatalyst|AnyCPU'">
+    <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <ItemGroup />
