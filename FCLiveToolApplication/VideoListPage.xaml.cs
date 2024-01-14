@@ -26,6 +26,10 @@ public partial class VideoListPage : ContentPage
     public static VideoListPage videoListPage;
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
+        if(videoListPage!=null)
+        {
+            return;
+        }
         videoListPage=this;
 
         //让主页的播放列表引用当前页的播放列表

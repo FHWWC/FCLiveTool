@@ -42,6 +42,7 @@ namespace FCLiveToolApplication
     }
     public class LocalM3U8List
     {
+        public string ItemId { get; set; }
         public string FilePath { get; set; }
         public string FileName { get; set; }
         public string FullFilePath { get; set; }
@@ -52,7 +53,7 @@ namespace FCLiveToolApplication
         /// <summary>
         /// 检查是否有文件读取的权限
         /// </summary>
-        /// <returns>状态码。0：已经有权限或已成功获取到权限；1：读取没有权限；2：写入没有权限；3：读写都没有权限；</returns>
+        /// <returns>状态码。0：已经有权限或已成功获取到权限；1：读取没有权限；2：写入没有权限；3：读写都没有权限或其他异常情况；</returns>
         public async Task<int> CheckAndReqPermissions()
         {
             //Windows操作系统不需要这种单独获取权限
@@ -205,6 +206,11 @@ namespace FCLiveToolApplication
         {
             M3U8PlayList.Clear();
 
+            if(!File.Exists(VideoIfm[1]))
+            {
+                return "程序找不到该直播源本地文件，可能是该文件已被删除或移动。";
+            }
+
             try
             {
                 using (StringReader sr = new StringReader(File.ReadAllText(VideoIfm[1])))
@@ -295,5 +301,36 @@ namespace FCLiveToolApplication
                   }
               }
          */
+    }
+    public class APPFileManager
+    {
+        public string GetOrCreateAPPDirectory(string foldername)
+        {
+            //根据不同平台选择不同的缓存方式
+            string dataPath;
+#if WINDOWS
+            dataPath = Path.Combine(FileSystem.AppDataDirectory+"/"+foldername);
+#elif ANDROID
+            //var test= Directory.CreateDirectory(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DataDirectory.AbsolutePath)+"/LiveStreamCache");
+            dataPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"/"+foldername);
+#else
+            //暂时不对苹果设备以及其他平台进行直播源缓存
+
+            //await DisplayAlert("提示信息", "当前平台暂不支持保存操作！", "确定");
+            return null;
+#endif
+
+            try
+            {
+                Directory.CreateDirectory(dataPath);
+            }
+            catch (Exception)
+            {
+                //await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
+                return null;
+            }
+
+            return dataPath;
+        }
     }
 }

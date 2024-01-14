@@ -20,10 +20,24 @@
         </DataTemplate>
         <DataTemplate x:Key="LocalM3U8ListStyle">
             <ViewCell>
-                <StackLayout Margin="10,5">
-                    <Label Text="{Binding FilePath}" LineBreakMode="WordWrap"/>
-                    <Label Text="{Binding FileName}" FontSize="Medium" LineBreakMode="WordWrap"/>
-                </StackLayout>
+                <Grid Padding="15,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackLayout>
+                        <Label Text="{Binding FilePath}" LineBreakMode="WordWrap"/>
+                        <Label Text="{Binding FileName}" FontSize="Medium" LineBreakMode="WordWrap"/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="1"  HorizontalOptions="End" VerticalOptions="Center" Margin="20,0,0,0">
+                        <Button CommandParameter="{Binding ItemId}" Background="{OnPlatform Transparent,Android=LightPink}" Clicked="LocalM3U8RemoveBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </StackLayout>
+                </Grid>
             </ViewCell>
         </DataTemplate>
     </ContentPage.Resources>
@@ -43,7 +57,7 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="{ OnPlatform Auto, Android= *}"/>
         </Grid.ColumnDefinitions>
-        
+
 
         <Grid Margin="10">
             <HorizontalStackLayout x:Name="VideoIfm"  Margin="{ OnPlatform WinUI= '0,5,0,0'}">
@@ -67,18 +81,28 @@
 
         <StackLayout x:Name="LocalM3U8Panel" Background="#A0F0FFFF" Grid.Row="1" TranslationY="-1000" Padding="20,10">
             <StackLayout x:Name="LocalM3U8SP">
-                <Label Text="请选择一个文件夹，程序会读取里面所有的M3U8直播源文件，暂时仅支持M3U8文件"/>
-                <Button x:Name="SelectLocalM3U8Btn" Background="LightBlue" HorizontalOptions="Start" ContentLayout="Top,-3" Margin="0,10,0,0" Clicked="SelectLocalM3U8Btn_Clicked">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                    </Button.ImageSource>
-                </Button>
+                <Label Text="我的播放列表：" FontSize="Medium"/>
+                <Label Text="请选择一个文件夹，程序会读取里面所有的M3U8直播源文件，且会自动筛选之前已添加的直播源，暂时仅支持M3U8文件"/>
+                <Label Text="你需要点击保存按钮，才能使得程序再次打开时会加载当前播放列表的数据"/>
+                <StackLayout Orientation="Horizontal" Margin="0,10,0,0">
+                    <Button x:Name="SelectLocalM3U8Btn" Background="LightBlue" ContentLayout="Top,-3" Clicked="SelectLocalM3U8Btn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Button x:Name="SaveLocalM3U8Btn" Background="LightBlue" Margin="10,0,0,0"  Clicked="SaveLocalM3U8Btn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </StackLayout>
             </StackLayout>
 
-            <Label x:Name="LocalM3U8IfmText" HorizontalOptions="Center"/>
-            <ListView x:Name="LocalM3U8List" ItemTemplate="{StaticResource LocalM3U8ListStyle}" VerticalOptions="Start" HorizontalScrollBarVisibility="Never" Margin="0,20,0,0" ItemTapped="LocalM3U8List_ItemTapped"/>
+            <Label x:Name="LocalM3U8IfmText" HorizontalOptions="Center" Margin="{ OnPlatform '0,20,0,0', Android= 0}"/>
+            <ListView x:Name="LocalM3U8List" ItemTemplate="{StaticResource LocalM3U8ListStyle}" HorizontalScrollBarVisibility="Never" ItemTapped="LocalM3U8List_ItemTapped" PropertyChanged="LocalM3U8List_PropertyChanged"/>
+            <Label Text="测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试测试" Margin="50,0,0,0" IsVisible="False"/>
         </StackLayout>
-        
+
         <ScrollView x:Name="RecentPanel" Background="#A0F0FFFF" WidthRequest="0" Grid.Row="{ OnPlatform 1, Android= 2}">
             <Grid>
                 <Grid.RowDefinitions>
@@ -91,13 +115,13 @@
                         <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
-                
-                <ListView x:Name="RecentList" ItemTemplate="{StaticResource RecentListStyle}" RowHeight="{ OnPlatform Android= 130}" Grid.Row="1" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never" ItemTapped="RecentList_ItemTapped" Refreshing="RecentList_Refreshing"/>
+
+                <ListView x:Name="RecentList" ItemTemplate="{StaticResource RecentListStyle}" RowHeight="{ OnPlatform Android= 130}" Grid.Row="1" VerticalOptions="Start" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never" ItemTapped="RecentList_ItemTapped" Refreshing="RecentList_Refreshing"/>
                 <ActivityIndicator x:Name="RecentListRing" HorizontalOptions="Center" VerticalOptions="{ OnPlatform Center, Android= Start}" Margin="{ OnPlatform Android= '0,50,0,0'}" Grid.Row="1"/>
             </Grid>
         </ScrollView>
 
 
     </Grid>
-    
+
 </ContentPage>
