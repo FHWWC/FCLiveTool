@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Storage;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
 
@@ -352,12 +353,12 @@ public partial class VideoPrevPage : ContentPage
         }
     }
 
-    private async void SelectLocalM3U8Btn_Clicked(object sender, EventArgs e)
+    private async void SelectLocalM3U8FolderBtn_Clicked(object sender, EventArgs e)
     {
         int permResult = await new APPPermissions().CheckAndReqPermissions();
         if (permResult!=0)
         {
-            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要保存文件！", "确定");
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
             return;
         }
 
@@ -373,29 +374,69 @@ public partial class VideoPrevPage : ContentPage
         {
             List<LocalM3U8List> mlist = new List<LocalM3U8List>();
             LoadM3U8FileFromSystem(folderPicker.Folder.Path, folderPicker.Folder.Path, ref mlist);
-
-            List<LocalM3U8List> tlist;
-            if (LocalM3U8List.ItemsSource is not null)
-            {
-                tlist = LocalM3U8List.ItemsSource.Cast<LocalM3U8List>().ToList();
-                tlist.AddRange(mlist);
-                LocalM3U8List.ItemsSource=tlist;
-            }
-            else
-            {
-                LocalM3U8List.ItemsSource=mlist;
-            }
+            CurrentLocalM3U8List.AddRange(mlist);
 
             //重新添加序号
-            int tmindex = 0;
-            //MAUI中的ListView，直接修改ItemsSource，视图上不会自动更新
-            tlist = LocalM3U8List.ItemsSource.Cast<LocalM3U8List>().ToList();
-            tlist.ForEach(p =>
+            int tmindex = 0;          
+            CurrentLocalM3U8List.ForEach(p =>
             {
                 p.ItemId="LMRB"+tmindex;
                 tmindex++;
             });
-            LocalM3U8List.ItemsSource=tlist;
+            LocalM3U8List.ItemsSource=CurrentLocalM3U8List;
+        }
+        else
+        {
+            await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+        }
+
+    }
+    private async void SelectLocalM3U8FileBtn_Clicked(object sender, EventArgs e)
+    {
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
+            return;
+        }
+
+        //每次点击按钮将当前列表数据放入变量里，在添加时进行对比
+        if (LocalM3U8List.ItemsSource is not null)
+        {
+            CurrentLocalM3U8List=LocalM3U8List.ItemsSource.Cast<LocalM3U8List>().ToList();
+        }
+
+        var fileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+{
+    { DevicePlatform.iOS, new[] { "com.apple.mpegurl", "public.m3u8-playlist" , "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.macOS, new[] { "public.m3u8", "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.Android, new[] { "application/x-mpegURL" , "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.WinUI, new[] { ".m3u8" ,".m3u"} }
+});
+        var filePicker = await FilePicker.PickMultipleAsync(new PickOptions()
+        {
+            PickerTitle="选择M3U8文件",
+            FileTypes=fileTypes
+        });
+
+        if (filePicker is not null&&filePicker.Count()>0)
+        {
+            filePicker.ToList().ForEach(p =>
+            {
+                if (CurrentLocalM3U8List.Where(p2 => p2.FullFilePath==p.FullPath).Count()<1)
+                {
+                    CurrentLocalM3U8List.Add(new LocalM3U8List() { FileName=p.FileName, FilePath=p.FullPath.Replace(p.FileName, ""), FullFilePath=p.FullPath });
+                }
+            });
+
+            //重新添加序号
+            int tmindex = 0;
+            CurrentLocalM3U8List.ForEach(p =>
+            {
+                p.ItemId="LMRB"+tmindex;
+                tmindex++;
+            });
+            LocalM3U8List.ItemsSource=CurrentLocalM3U8List;
         }
         else
         {
@@ -552,4 +593,5 @@ tname = item.Substring(item.LastIndexOf("\\")+1);
 
         await DisplayAlert("提示信息", "保存播放列表成功啦！", "确定");
     }
+
 }
