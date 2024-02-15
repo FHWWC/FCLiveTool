@@ -47,7 +47,89 @@ namespace FCLiveToolApplication
         public string FileName { get; set; }
         public string FullFilePath { get; set; }
     }
+    public class LocalM3UList
+    {
+        public string ItemId { get; set; }
+        public string FilePath { get; set; }
+        public string FileName { get; set; }
+        public string FullFilePath { get; set; }
+    }
+    public abstract class VideoEditList
+    {    /// <summary>
+         /// 当前项使用的数据模板ID
+         /// </summary>
+         /// <value>
+         /// ID对应的数据模板：
+         /// <para>1：VideoEditListEXT；2：VideoEditListTVG；3：VideoEditListEXT_Readonly；4：VideoEditListSourceLink；5：VideoEditListOtherString。</para>
+         /// </value>
+        public int ItemTypeId { get; set; }
+        /// <summary>
+        /// 当前项的名称
+        /// </summary>
+        /// <value>
+        /// 名称在集合里面是唯一的。
+        /// </value>
+        public string ItemName { get; set; }
+        public bool IsSelected { get; set; }
+    }
+    public class VideoEditListEXT : VideoEditList
+    {
+        public string EXTTag { get; set; }
+    }
+    public class VideoEditListEXT_Readonly : VideoEditList
+    {
+        public string EXTTag { get; set; }
+    }
+    public class VideoEditListTVG : VideoEditList
+    {
+        public string AllStr { get; set; }
+        public string GroupTitle { get; set; }
+        public string TVGGroup { get; set; }
+        public string TVGID { get; set; }
+        public string TVGLogo { get; set; }
+        public string TVGCountry { get; set; }
+        public string TVGLanguage { get; set; }
+        public string TVGName { get; set; }
+        public string TVGURL { get; set; }
 
+    }
+    public class VideoEditListSourceLink : VideoEditList
+    {
+        public string SourceLink { get; set; }
+    }
+    public class VideoEditListOtherString : VideoEditList
+    {
+        public string AllStr { get; set; }
+    }
+
+    public class VideoEditListDataTemplateSelector : DataTemplateSelector
+    {
+        protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
+        {
+            if (item is VideoEditListEXT)
+            {
+                return (DataTemplate)VideoEditPage.videoEditPage.Resources["VideoEditListEXTStyle"];
+            }
+            else if (item is VideoEditListTVG)
+            {
+                return (DataTemplate)VideoEditPage.videoEditPage.Resources["VideoEditListTVGStyle"];
+            }
+            else if(item is VideoEditListEXT_Readonly)
+            {
+                return (DataTemplate)VideoEditPage.videoEditPage.Resources["VideoEditListEXT_ReadonlyStyle"];
+            }
+            else if (item is VideoEditListSourceLink)
+            {
+                return (DataTemplate)VideoEditPage.videoEditPage.Resources["VideoEditListSourceLinkStyle"];
+            }
+            else if (item is VideoEditListOtherString)
+            {
+                return (DataTemplate)VideoEditPage.videoEditPage.Resources["VideoEditListOtherStringStyle"];
+            }
+
+            return null;
+        }
+    }
     public class APPPermissions
     {
         /// <summary>
@@ -206,7 +288,7 @@ namespace FCLiveToolApplication
         {
             M3U8PlayList.Clear();
 
-            if(!File.Exists(VideoIfm[1]))
+            if (!File.Exists(VideoIfm[1]))
             {
                 return "程序找不到该直播源本地文件，可能是该文件已被删除或移动。";
             }
@@ -300,6 +382,124 @@ namespace FCLiveToolApplication
                           break;
                   }
               }
+         */
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="m3uStr"></param>
+        /// <returns></returns>
+        public async Task<List<VideoEditList>> ReadM3UString(string m3uStr)
+        {
+            List<VideoEditList> videoStrList = new List<VideoEditList>();
+
+            try
+            {
+                using (StringReader sr = new StringReader(m3uStr))
+                {
+                    string r = "";
+                    while ((r=await sr.ReadLineAsync())!=null)
+                    {
+                        if (r.StartsWith("#"))
+                        {
+                            if(r.StartsWith("#EXTM3U"))
+                            {
+                                videoStrList.Add(new VideoEditListEXT_Readonly() { ItemTypeId=3, EXTTag=r });
+                            }
+                            else if (r.StartsWith("#EXTINF"))
+                            {
+                                string groupTitle="";
+                                string tvgGroup="";
+                                string tvgID="";
+                                string tvgLogo = "";
+                                string tvgCountry = "";
+                                string tvgLanguage = "";
+                                string tvgName = "";
+                                string tvgURL = "";
+
+                                if(r.Contains("group-title="))
+                                {
+                                    Match tResult = Regex.Match(r, @"group-title=""(.*?)""");
+                                    groupTitle=tResult.Groups[1].Value;
+                                }
+                                if (r.Contains("tvg-group="))
+                                {
+                                    Match tResult = Regex.Match(r, @"tvg-group=""(.*?)""");
+                                    tvgGroup=tResult.Groups[1].Value;
+                                }
+                                if (r.Contains("tvg-logo="))
+                                {
+                                    Match tResult = Regex.Match(r, @"tvg-logo=""(.*?)""");
+                                    tvgLogo=tResult.Groups[1].Value;
+                                }
+                                if (r.Contains("tvg-id="))
+                                {
+                                    Match tResult = Regex.Match(r, @"tvg-id=""(.*?)""");
+                                    tvgID=tResult.Groups[1].Value;
+                                }
+                                if (r.Contains("tvg-country="))
+                                {
+                                    Match tResult = Regex.Match(r, @"tvg-country=""(.*?)""");
+                                    tvgCountry=tResult.Groups[1].Value;
+                                }
+                                if (r.Contains("tvg-language="))
+                                {
+                                    Match tResult = Regex.Match(r, @"tvg-language=""(.*?)""");
+                                    tvgLanguage=tResult.Groups[1].Value;
+                                }
+                                if (r.Contains("tvg-name="))
+                                {
+                                    Match tResult = Regex.Match(r, @"tvg-name=""(.*?)""");
+                                    tvgName=tResult.Groups[1].Value;
+                                }
+                                if (r.Contains("tvg-url="))
+                                {
+                                    Match tResult = Regex.Match(r, @"tvg-url=""(.*?)""");
+                                    tvgURL=tResult.Groups[1].Value;
+                                }
+
+                                videoStrList.Add(new VideoEditListTVG() {ItemTypeId=2, AllStr=r ,GroupTitle=groupTitle, TVGGroup=tvgGroup,TVGID=tvgID,TVGLogo=tvgLogo,TVGCountry=tvgCountry,TVGLanguage=tvgLanguage,TVGName=tvgName,TVGURL=tvgURL});
+
+                            }
+                            else
+                            {
+                                videoStrList.Add(new VideoEditListEXT() {ItemTypeId=1, EXTTag=r });
+                            }
+
+                        }
+                        //暂时不对空格作出处理
+                        else if (String.IsNullOrWhiteSpace(r))
+                            continue;
+                        else if (r.Contains(".m3u8"))
+                        {
+                            videoStrList.Add(new VideoEditListSourceLink() {ItemTypeId=4, SourceLink=r });
+                        }
+                        else
+                        {
+                            videoStrList.Add(new VideoEditListOtherString() {ItemTypeId=5, AllStr=r });
+                        }
+                    }
+                }
+
+            }
+            catch (Exception)
+            {
+
+            }
+
+            return videoStrList;
+        }
+
+        /*
+                 public string CheckAndRandomGUID(List<VideoEditList> videolist)
+                {
+                    string guid = Guid.NewGuid().ToString();
+                    if(videolist.Where(p=>p.ItemName==guid).Count() > 0)
+                    {
+                       return CheckAndRandomGUID(videolist);
+                    }
+
+                    return guid;
+                }
          */
     }
     public class APPFileManager

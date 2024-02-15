@@ -32,7 +32,7 @@
     <Shell.FlyoutHeader>
         <VerticalStackLayout Padding="0,10,0,20">
             <Image Source="fclive_logo.png" HeightRequest="100" />
-            <Label TextColor="White" HorizontalTextAlignment="Center">FCLiveTool 直播源预览+下载</Label>
+            <Label HorizontalTextAlignment="Center">FCLiveTool 直播源预览+下载</Label>
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 
@@ -43,6 +43,9 @@
     <ShellContent Title="直播源列表" Icon="videoslist_page.png"
         ContentTemplate="{DataTemplate local:VideoListPage}"
         Route="VideoListPage"/>
+    <ShellContent Title="直播源编辑" Icon="videoedit_page.png"
+        ContentTemplate="{DataTemplate local:VideoEditPage}"
+        Route="VideoEditPage"/>
 
 
     <Shell.FlyoutFooter>
@@ -57,7 +60,7 @@
                     <FontImageSource Glyph="&#xE713;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
             </Button>
-            <Label Text="© 2017-2022  FC Dev Team" HorizontalOptions="Center"/>
+            <Label Text="© 2017-2024  FC Dev Team" HorizontalOptions="Center"/>
         </VerticalStackLayout>
     </Shell.FlyoutFooter>
     

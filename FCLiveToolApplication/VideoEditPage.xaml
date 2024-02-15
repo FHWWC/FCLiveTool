@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FCLiveToolApplication.VideoEditPage"
+             Title="VideoEditPage" Loaded="ContentPage_Loaded">
+
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="LocalM3UListStyle">
+            <ViewCell>
+                <Grid Padding="15,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackLayout>
+                        <Label Text="{Binding FilePath}" LineBreakMode="WordWrap"/>
+                        <Label Text="{Binding FileName}" FontSize="Medium" LineBreakMode="WordWrap"/>
+                    </StackLayout>
+                    <StackLayout Grid.Column="1"  HorizontalOptions="End" VerticalOptions="Center" Margin="20,0,0,0">
+                        <Button CommandParameter="{Binding ItemId}" Background="{OnPlatform Transparent,Android=LightPink}" Clicked="LocalM3URemoveBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </StackLayout>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        
+        <DataTemplate x:Key="VideoEditListEXTStyle">
+            <ViewCell>
+                <StackLayout Padding="15,5">
+                    <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay}" IsVisible="{Binding Source={x:Reference VideoEditListMulCB}, Path=IsChecked}" VerticalOptions="Start"/>
+                    <Label Text="EXT标签：" FontAttributes="Bold"/>
+                    <Entry Text="{Binding EXTTag, Mode=TwoWay}"/>
+                </StackLayout>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="VideoEditListTVGStyle">
+            <ViewCell>
+                <Grid Padding="15,5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay}" IsVisible="{Binding Source={x:Reference VideoEditListMulCB}, Path=IsChecked}" VerticalOptions="Start"/>
+                    <Image HeightRequest="60" Source="videoedit_listtag2.png" HorizontalOptions="Start" Grid.RowSpan="3"/>
+                    <StackLayout Orientation="Horizontal" Grid.Column="1">
+                        <StackLayout>
+                            <Label Text="分组标题：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG1" Text="{Binding GroupTitle, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                        <StackLayout Margin="10,0,0,0">
+                            <Label Text="分组标题（旧）：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG2" Text="{Binding TVGGroup, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                        <StackLayout Margin="10,0,0,0">
+                            <Label Text="频道ID：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG3" Text="{Binding TVGID, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                        <StackLayout Margin="10,0,0,0">
+                            <Label Text="台标：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG4" Text="{Binding TVGLogo, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                        <StackLayout>
+                            <Label Text="频道地区：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG5" Text="{Binding TVGCountry, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                        <StackLayout Margin="10,0,0,0">
+                            <Label Text="频道语言：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG6" Text="{Binding TVGLanguage, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                        <StackLayout Margin="10,0,0,0">
+                            <Label Text="台名：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG7" Text="{Binding TVGName, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                        <StackLayout Margin="10,0,0,0">
+                            <Label Text="频道直播源地址：" FontAttributes="Bold"/>
+                            <Entry x:Name="VELTVG8" Text="{Binding TVGURL, Mode=TwoWay}" TextChanged="VideoEditListEntry_TextChanged"/>
+                        </StackLayout>
+                    </StackLayout>
+                    <StackLayout Grid.Row="2"  Grid.Column="1">
+                        <Label Text="整行内容：" FontAttributes="Bold"/>
+                        <Entry Text="{Binding AllStr,Mode=TwoWay}"/>
+                    </StackLayout>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="VideoEditListEXT_ReadonlyStyle">
+            <ViewCell>
+                <StackLayout Padding="15,5">
+                    <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay}" IsVisible="{Binding Source={x:Reference VideoEditListMulCB}, Path=IsChecked}" VerticalOptions="Start"/>
+                    <Label Text="M3U文件标头：" FontAttributes="Bold"/>
+                    <Label Text="此标头不可缺少，不可修改"/>
+                    <Label Text="{Binding EXTTag}"/>
+                </StackLayout>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="VideoEditListSourceLinkStyle">
+            <ViewCell>
+                <Grid Padding="15,5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay}" IsVisible="{Binding Source={x:Reference VideoEditListMulCB}, Path=IsChecked}" VerticalOptions="Start"/>
+                    <Image HeightRequest="50" Source="videoedit_listtag1.png" HorizontalOptions="Start" Margin="0,10,0,0"/>
+                    <StackLayout Grid.Column="1">
+                        <Label Text="直播源的地址：" FontAttributes="Bold"/>
+                        <Label Text="可以是任何协议的链接"/>
+                        <Entry Text="{Binding SourceLink, Mode=TwoWay}"/>
+                    </StackLayout>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="VideoEditListOtherStringStyle">
+            <ViewCell>
+                <StackLayout Padding="15,5">
+                    <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay}" IsVisible="{Binding Source={x:Reference VideoEditListMulCB}, Path=IsChecked}" VerticalOptions="Start"/>
+                    <Label Text="字符串：" FontAttributes="Bold"/>
+                    <Entry Text="{Binding AllStr, Mode=TwoWay}"/>
+                </StackLayout>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+    
+    
+    <Shell.TitleView>
+        <Grid>
+            <Label Text="直播源编辑" TextColor="#A0F0FFFF" FontSize="Large" VerticalTextAlignment="Center"/>
+        </Grid>
+    </Shell.TitleView>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
+
+
+        <StackLayout>
+            <Label Text="直播源列表："  FontSize="Medium"/>
+            <Label Text="请选择一个文件或文件夹，仅限M3U文件！"/>
+            <StackLayout Orientation="Horizontal" Margin="0,10,0,0">
+                <Button x:Name="SelectLocalM3UFolderBtn" Background="LightBlue" ContentLayout="Top,-3" Clicked="SelectLocalM3UFolderBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="SelectLocalM3UFileBtn" Background="LightBlue" ContentLayout="Top,-3" Margin="5,0,0,0" Clicked="SelectLocalM3UFileBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE8E5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="ClearLocalM3UBtn" Background="LightBlue" Margin="10,0,0,0"  Clicked="ClearLocalM3UBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </StackLayout>
+        </StackLayout>
+
+        <Label x:Name="LocalM3UIfmText" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1"/>
+        <ListView x:Name="LocalM3UList" ItemTemplate="{StaticResource LocalM3UListStyle}" Grid.Row="1" HorizontalScrollBarVisibility="Never" ItemTapped="LocalM3UList_ItemTapped" PropertyChanged="LocalM3UList_PropertyChanged"/>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            
+            <StackLayout Orientation="Horizontal">
+                <Button x:Name="VideoEditListAddItemBtn" Background="LightBlue" Clicked="VideoEditListAddItemBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE710;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="VideoEditListRemoveItemBtn" Background="LightPink" Margin="5,0,0,0" Clicked="VideoEditListRemoveItemBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </StackLayout>
+            
+            <Button x:Name="VideoEditListSaveBtn" Background="LightBlue" Text="编辑好了" HorizontalOptions="End" Clicked="VideoEditListSaveBtn_Clicked">
+                <Button.ImageSource>
+                    <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                </Button.ImageSource>
+            </Button>
+
+            <StackLayout Grid.Row="1">
+                <HorizontalStackLayout>
+                    <CheckBox x:Name="VideoEditListMulCB"/>
+                    <Label Text="选择" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </StackLayout>
+        </Grid>
+
+        <Label x:Name="VideoEditIfmText" Text="当前解析列表为空，请在左侧列表选一个M3U直播源" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1" Grid.Column="1"/>
+        <ListView x:Name="VideoEditList" Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Never" PropertyChanged="VideoEditList_PropertyChanged"/>
+    </Grid>
+    
+</ContentPage>

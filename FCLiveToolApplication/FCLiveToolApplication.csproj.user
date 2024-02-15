@@ -40,6 +40,9 @@
   </PropertyGroup>
   <ItemGroup />
   <ItemGroup>
+    <MauiXaml Update="VideoEditPage.xaml">
+      <SubType>Designer</SubType>
+    </MauiXaml>
     <MauiXaml Update="VideoListPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
