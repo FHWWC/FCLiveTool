@@ -14,9 +14,9 @@
                 <img class="mainPageLogo" src="/img/FCLiveLogo.png" onclick="location.href='/TVideo/VideoPage';"/>
                 <h3>FCLiveTool</h3>
 
-                <div style="margin:20px;" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item" style="display:none;">
+                <div style="margin:20px;display:block;" class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1" style="margin-top:-10px;">
+                        <li class="nav-item" style="display:none;float:left;">
                             <div>
                                 <a class="nav-link transline" asp-area="" asp-controller="TVideo" asp-action="VideoPage">直播源</a>
                             </div>
@@ -40,7 +40,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="contentArea">
-            &copy; 2017-2022 -- FC Dev Team -- <a asp-area="" asp-controller="TVideo" asp-action="Privacy">关于我们</a>
+            &copy; 2017-2024 -- FC Dev Team -- <a asp-area="" asp-controller="TVideo" asp-action="Privacy">关于我们</a>
         </div>
     </footer>
 
@@ -48,6 +48,9 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+<!--
+            <script type="text/javascript" src="~/js/firework.js"></script>
+-->
     @RenderSection("Scripts", required: false)
 </body>
 </html>
