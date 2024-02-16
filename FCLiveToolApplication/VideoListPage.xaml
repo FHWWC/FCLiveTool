@@ -36,15 +36,15 @@
                         
                         <Image HeightRequest="40" MaximumWidthRequest="85" Source="{Binding LogoLink}"  HorizontalOptions="Start"/>
                         
-                        <Line StrokeThickness="1" X1="0" Y1="0" X2="0" Y2="30" HorizontalOptions="Start" Grid.Column="1">
-                            <Line.Background>
+                        <StackLayout WidthRequest="2" HorizontalOptions="Start" VerticalOptions="Fill" Grid.Column="1">
+                            <StackLayout.Background>
                                 <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                                     <GradientStop Color="Transparent" Offset="0"/>
                                     <GradientStop Color="Black" Offset="0.5"/>
                                     <GradientStop Color="Transparent" Offset="1"/>
                                 </LinearGradientBrush>
-                            </Line.Background>
-                        </Line>
+                            </StackLayout.Background>
+                        </StackLayout>
                        
                         <Label Text="{Binding SourceName}" FontAttributes="Bold" HorizontalOptions="Start" Margin="15,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
                     </Grid>
