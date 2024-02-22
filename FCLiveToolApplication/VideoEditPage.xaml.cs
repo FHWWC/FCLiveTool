@@ -481,12 +481,12 @@ public partial class VideoEditPage : ContentPage
             if (tlist.ItemTypeId==3)
             {
                 bool tresult = await DisplayAlert("提示信息", "检测到你勾选了M3U文件标头，是否确定要移除？", "是", "否");
-                if (tresult)
+                if (!tresult)
                 {
-                    videoEditList.Remove(tlist);
+                    return;
                 }
             }
-
+            videoEditList.Remove(tlist);
         }
         else if (MSelectResult.Contains("删除每一个已勾选"))
         {
@@ -636,5 +636,21 @@ public partial class VideoEditPage : ContentPage
         }
 
         return saveStr;
+    }
+
+    private void LocalM3UPanelBtn_Clicked(object sender, EventArgs e)
+    {
+        LocalM3UPanel.IsVisible=true;
+        LocalM3UPanel2.IsVisible=true;
+        VideoEditPanel.IsVisible=false;
+        VideoEditPanel2.IsVisible=false;
+    }
+
+    private void VideoEditPanelBtn_Clicked(object sender, EventArgs e)
+    {
+        LocalM3UPanel.IsVisible=false;
+        LocalM3UPanel2.IsVisible=false;
+        VideoEditPanel.IsVisible=true;
+        VideoEditPanel2.IsVisible=true;
     }
 }

@@ -152,8 +152,19 @@
             <ColumnDefinition Width="2*"/>
         </Grid.ColumnDefinitions>
 
+        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Start" Grid.ColumnSpan="2" IsVisible="{OnPlatform False,Android=True}">
+            <Border StrokeShape="RoundRectangle 5,0,5,0" Background="LightBlue" HeightRequest="30">
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer />
+                </Border.GestureRecognizers>
+                <Button x:Name="LocalM3UPanelBtn" Background="Transparent" CornerRadius="0" Text="直播源列表" Clicked="LocalM3UPanelBtn_Clicked"/>
+            </Border>
+            <Border StrokeShape="RoundRectangle 0,5,0,5" Background="LightBlue" HeightRequest="30">
+                <Button x:Name="VideoEditPanelBtn" Background="LightBlue" Text="编辑直播源" Clicked="VideoEditPanelBtn_Clicked"/>
+            </Border>
+        </HorizontalStackLayout>
 
-        <StackLayout>
+        <StackLayout x:Name="LocalM3UPanel" Margin="{OnPlatform Android='0,40,0,0'}" Grid.ColumnSpan="{OnPlatform Android=2}">
             <Label Text="直播源列表："  FontSize="Medium"/>
             <Label Text="请选择一个文件或文件夹，仅限M3U文件！"/>
             <StackLayout Orientation="Horizontal" Margin="0,10,0,0">
@@ -175,10 +186,12 @@
             </StackLayout>
         </StackLayout>
 
-        <Label x:Name="LocalM3UIfmText" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1"/>
-        <ListView x:Name="LocalM3UList" ItemTemplate="{StaticResource LocalM3UListStyle}" Grid.Row="1" HorizontalScrollBarVisibility="Never" ItemTapped="LocalM3UList_ItemTapped" PropertyChanged="LocalM3UList_PropertyChanged"/>
+        <Grid x:Name="LocalM3UPanel2" Grid.Row="1" Grid.ColumnSpan="{OnPlatform Android=2}">
+            <Label x:Name="LocalM3UIfmText" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <ListView x:Name="LocalM3UList" ItemTemplate="{StaticResource LocalM3UListStyle}" HorizontalScrollBarVisibility="Never" ItemTapped="LocalM3UList_ItemTapped" PropertyChanged="LocalM3UList_PropertyChanged"/>
+        </Grid>
 
-        <Grid Grid.Column="1">
+        <Grid x:Name="VideoEditPanel" Margin="{OnPlatform Android='0,40,0,0'}" Grid.Column="{OnPlatform 1,Android=0}" Grid.ColumnSpan="{OnPlatform Android=2}" IsVisible="{OnPlatform Android=False}">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition/>
@@ -211,8 +224,10 @@
             </StackLayout>
         </Grid>
 
-        <Label x:Name="VideoEditIfmText" Text="当前解析列表为空，请在左侧列表选一个M3U直播源" HorizontalOptions="Center" VerticalOptions="Center" Grid.Row="1" Grid.Column="1"/>
-        <ListView x:Name="VideoEditList" Grid.Row="1" Grid.Column="1" HorizontalScrollBarVisibility="Never" PropertyChanged="VideoEditList_PropertyChanged"/>
+        <Grid x:Name="VideoEditPanel2" Grid.Row="1" Grid.Column="{OnPlatform 1,Android=0}" Grid.ColumnSpan="{OnPlatform Android=2}" IsVisible="{OnPlatform Android=False}">
+            <Label x:Name="VideoEditIfmText" Text="当前解析列表为空，请在左侧列表选一个M3U直播源" HorizontalOptions="Center" VerticalOptions="Center"/>
+            <ListView x:Name="VideoEditList" HorizontalScrollBarVisibility="Never" PropertyChanged="VideoEditList_PropertyChanged"/>
+        </Grid>
     </Grid>
     
 </ContentPage>
