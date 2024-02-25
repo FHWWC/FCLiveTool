@@ -81,9 +81,10 @@ public partial class VideoEditPage : ContentPage
 {
     { DevicePlatform.iOS, new[] { "com.apple.mpegurl" , "application/vnd.apple.mpegurl" } },
     { DevicePlatform.macOS, new[] {  "application/vnd.apple.mpegurl" } },
-    { DevicePlatform.Android, new[] { "application/x-mpegURL"  } },
+    { DevicePlatform.Android, new[] { "audio/x-mpegurl"  } },
     { DevicePlatform.WinUI, new[] { ".m3u"} }
 });
+
         var filePicker = await FilePicker.PickMultipleAsync(new PickOptions()
         {
             PickerTitle="选择M3U文件",
@@ -94,7 +95,7 @@ public partial class VideoEditPage : ContentPage
         {
             filePicker.ToList().ForEach(p =>
             {
-                if (CurrentLocalM3UList.Where(p2 => p2.FullFilePath==p.FullPath).Count()<1)
+                if (CurrentLocalM3UList.Where(p2 => p2.FullFilePath==p.FullPath).Count()<1&&p.FileName.ToLower().EndsWith(".m3u"))
                 {
                     CurrentLocalM3UList.Add(new LocalM3UList() { FileName=p.FileName, FilePath=p.FullPath.Replace(p.FileName, ""), FullFilePath=p.FullPath });
                 }
@@ -132,7 +133,7 @@ public partial class VideoEditPage : ContentPage
             }
             else
             {
-                if (item.EndsWith(".m3u"))
+                if (item.ToLower().EndsWith(".m3u"))
                 {
                     string tname;
 #if ANDROID
@@ -180,6 +181,10 @@ public partial class VideoEditPage : ContentPage
         {
             await DisplayAlert("提示信息", "读取M3U文件数据时发生异常", "确定");
         }
+
+#if ANDROID
+        VideoEditPanelBtn_Clicked(sender, e);
+#endif
     }
     private async void LocalM3URemoveBtn_Clicked(object sender, EventArgs e)
     {
@@ -320,10 +325,36 @@ public partial class VideoEditPage : ContentPage
 
                 if(isNewStr)
                 {
-                    tcontext.AllStr=tcontext.AllStr.Insert(tcontext.AllStr.LastIndexOf(",")," "+newvalue);
+                    if(string.IsNullOrWhiteSpace(tcontext.AllStr))
+                    {
+                        tcontext.AllStr="#EXTINF: "+newvalue+",";
+                    }
+                    else
+                    {
+                        if (!tcontext.AllStr.StartsWith("#EXTINF:"))
+                        {
+                            tcontext.AllStr="#EXTINF: "+tcontext.AllStr;
+                        }
+
+                        var tindex = tcontext.AllStr.LastIndexOf(",");
+                        if (tindex<0)
+                        {
+                            tcontext.AllStr+=" "+newvalue+",";
+                        }
+                        else
+                        {
+                            tcontext.AllStr=tcontext.AllStr.Insert(tindex, " "+newvalue);
+                        }
+                    }
+
                 }
                 else
                 {
+                    if (!tcontext.AllStr.StartsWith("#EXTINF:"))
+                    {
+                        tcontext.AllStr="#EXTINF: "+tcontext.AllStr;
+                    }
+
                     tcontext.AllStr=tcontext.AllStr.Replace(oldvalue, newvalue);
                 }
 
@@ -537,7 +568,7 @@ public partial class VideoEditPage : ContentPage
         string[] toptions;
         string tmessage;
 
-        if(CurrentSaveLocation!="")
+        if(CurrentSaveLocation!=""&&DeviceInfo.Platform!=DevicePlatform.Android)
         {
             tmessage="你要如何保存？";
             toptions=new string[] { "保存到源文件","另存为..."};

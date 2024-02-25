@@ -90,7 +90,7 @@
                             <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
-                    <Button x:Name="SelectLocalM3U8FileBtn" Background="LightBlue" ContentLayout="Top,-3" Margin="5,0,0,0" Clicked="SelectLocalM3U8FileBtn_Clicked">
+                    <Button x:Name="SelectLocalM3U8FileBtn" Background="LightBlue" ContentLayout="Top,-3" Margin="5,0,0,0" IsVisible="{OnPlatform Android=False}" Clicked="SelectLocalM3U8FileBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE8E5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>

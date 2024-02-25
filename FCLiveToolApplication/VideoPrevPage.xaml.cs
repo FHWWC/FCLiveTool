@@ -410,7 +410,7 @@ public partial class VideoPrevPage : ContentPage
 {
     { DevicePlatform.iOS, new[] { "com.apple.mpegurl", "public.m3u8-playlist" , "application/vnd.apple.mpegurl" } },
     { DevicePlatform.macOS, new[] { "public.m3u8", "application/vnd.apple.mpegurl" } },
-    { DevicePlatform.Android, new[] { "application/x-mpegURL" , "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.Android, new[] {  "audio/x-mpegurl" } },
     { DevicePlatform.WinUI, new[] { ".m3u8" ,".m3u"} }
 });
         var filePicker = await FilePicker.PickMultipleAsync(new PickOptions()
@@ -454,7 +454,7 @@ public partial class VideoPrevPage : ContentPage
             }
             else
             {
-                if (item.EndsWith(".m3u8"))
+                if (item.ToLower().EndsWith(".m3u8"))
                 {
                     string tname;
 #if ANDROID
