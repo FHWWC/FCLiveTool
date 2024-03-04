@@ -226,7 +226,8 @@
 
         <Grid x:Name="VideoEditPanel2" Grid.Row="1" Grid.Column="{OnPlatform 1,Android=0}" Grid.ColumnSpan="{OnPlatform Android=2}" IsVisible="{OnPlatform Android=False}">
             <Label x:Name="VideoEditIfmText" Text="当前解析列表为空，请在左侧列表选一个M3U直播源" HorizontalOptions="Center" VerticalOptions="Center"/>
-            <ListView x:Name="VideoEditList" RowHeight="{OnPlatform Android=200}" HorizontalScrollBarVisibility="Never" PropertyChanged="VideoEditList_PropertyChanged"/>
+            <ListView x:Name="VideoEditList" RowHeight="{OnPlatform Android=200}" HorizontalScrollBarVisibility="Never" x:FieldModifier="Public" PropertyChanged="VideoEditList_PropertyChanged"/>
+            <ActivityIndicator x:Name="VideoEditSaveRing" HorizontalOptions="Center" VerticalOptions="Center"/>
         </Grid>
     </Grid>
     

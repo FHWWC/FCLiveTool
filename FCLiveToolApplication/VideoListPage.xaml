@@ -157,6 +157,11 @@
                         </Button.ImageSource>
                     </Button>
                 </HorizontalStackLayout>
+                <Button x:Name="JumpEditM3UBtn" Background="LightYellow"  Text="打开M3U编辑器" Margin="{ OnPlatform '10,0,0,0', Android='5,0,0,0'}" Clicked="JumpEditM3UBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE8A7;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
                 <Button x:Name="SaveM3UFileBtn" Background="LightBlue"  Text="保存M3U文件" Margin="{ OnPlatform '10,0,0,0', Android='5,0,0,0'}" Clicked="SaveM3UFileBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
@@ -173,7 +178,7 @@
         <StackLayout Margin="5,10,0,0" Grid.Row="1" Grid.Column="1">
             <Grid>
                 <StackLayout VerticalOptions="Start">
-                    <Label Text="编辑模式"/>
+                    <Label Text="简易编辑模式"/>
                     <Switch x:Name="VDLToogleBtn" IsToggled="False" HorizontalOptions="Start"/>
                 </StackLayout>
                 <HorizontalStackLayout x:Name="EditModeRightPanel" HorizontalOptions="End" VerticalOptions="Start" Margin="{ OnPlatform Android='0,60,0,0'}" IsVisible="{Binding Source={x:Reference VDLToogleBtn}, Path=IsToggled}">

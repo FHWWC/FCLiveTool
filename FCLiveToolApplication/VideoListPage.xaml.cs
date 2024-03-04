@@ -1560,4 +1560,22 @@ public partial class VideoListPage : ContentPage
         MakeVideosDataToPage(CurrentVideosDetailList, 0);
 
     }
+
+    private async void JumpEditM3UBtn_Clicked(object sender, EventArgs e)
+    {
+        if (CurrentVURL=="")
+        {
+            await DisplayAlert("提示信息", "请先在左侧M3U列表里选择一条直播源！", "确定");
+            return;
+        }
+
+
+        List<VideoEditList> videoEditLists = await new VideoManager().ReadM3UString(AllVideoData);
+
+        var mainpage = ((Shell)App.Current.MainPage);
+        mainpage.CurrentItem = mainpage.Items.FirstOrDefault(p=>p.Title=="直播源编辑");
+        await mainpage.Navigation.PopToRootAsync();
+
+        VideoEditPage.videoEditPage.VideoEditList.ItemsSource=videoEditLists;
+    }
 }

@@ -610,27 +610,43 @@ public partial class VideoEditPage : ContentPage
                 tsavename=".m3u";
             }
 
-            using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(GetVELSaveStr(videoEditList))))
+            VideoEditSaveRing.IsRunning=true;
+            new Thread(async()=>
             {
-                try
+                using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(GetVELSaveStr(videoEditList))))
                 {
-                    var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory,tsavename, ms, CancellationToken.None);
+                    try
+                    {
+                        await MainThread.InvokeOnMainThreadAsync(async() =>
+                        {
+                            var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, tsavename, ms, CancellationToken.None);
 
-                    if (fileSaver.IsSuccessful)
-                    {
-                        await DisplayAlert("提示信息", "文件已成功保存至：\n"+fileSaver.FilePath, "确定");
+                            if (fileSaver.IsSuccessful)
+                            {
+                                await DisplayAlert("提示信息", "文件已成功保存至：\n"+fileSaver.FilePath, "确定");
+                            }
+                            else
+                            {
+                                //暂时判断为用户在选择目录时点击了取消按钮
+                                await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                            }
+
+                            VideoEditSaveRing.IsRunning=false;
+                        });
+
+
                     }
-                    else
+                    catch (Exception)
                     {
-                        //暂时判断为用户在选择目录时点击了取消按钮
-                        await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                        await MainThread.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
+                            VideoEditSaveRing.IsRunning=false;
+                        });
+
                     }
                 }
-                catch (Exception)
-                {
-                    await DisplayAlert("提示信息", "保存文件失败！可能是没有权限。", "确定");
-                }
-            }
+            }).Start();
         }
 
 
