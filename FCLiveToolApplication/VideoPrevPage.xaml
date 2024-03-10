@@ -62,7 +62,11 @@
         <Grid Margin="10">
             <HorizontalStackLayout x:Name="VideoIfm"  Margin="{ OnPlatform WinUI= '0,5,0,0'}">
                 <Label Text="当前正在播放："/>
-                <Label x:Name="NowPlayingTb" TextDecorations="Underline" x:FieldModifier="Public"/>
+                <Label x:Name="NowPlayingTb" TextDecorations="Underline" ToolTipProperties.Text="点击来更改想播放的直播源" x:FieldModifier="Public">
+                    <Label.GestureRecognizers>
+                        <PointerGestureRecognizer PointerEntered="NowPlayingTb_PointerEntered" PointerExited="NowPlayingTb_PointerExited" PointerReleased="PointerGestureRecognizer_PointerReleased"/>
+                    </Label.GestureRecognizers>
+                </Label>
             </HorizontalStackLayout>
             <Button x:Name="CheckRecentBtn" Background="LightBlue" Text="大家都在看" HorizontalOptions="Center" VerticalOptions="Start" Margin="{ OnPlatform Android= '0,-5,0,0'}" Clicked="CheckRecentBtn_Clicked">
                 <Button.ImageSource>

@@ -594,4 +594,73 @@ tname = item.Substring(item.LastIndexOf("\\")+1);
         await DisplayAlert("提示信息", "保存播放列表成功啦！", "确定");
     }
 
+    private void NowPlayingTb_PointerEntered(object sender, PointerEventArgs e)
+    {
+        NowPlayingTb.Background=Colors.LightYellow;      
+    }
+
+    private void NowPlayingTb_PointerExited(object sender, PointerEventArgs e)
+    {
+        NowPlayingTb.Background=Colors.Transparent;
+    }
+
+    private async void PointerGestureRecognizer_PointerReleased(object sender, PointerEventArgs e)
+    {
+        string urlnewvalue = await DisplayPromptAsync("播放一个直播源", "请输入直播源URL：", "播放", "取消", "URL...", -1, Keyboard.Text, "");
+        if (string.IsNullOrWhiteSpace(urlnewvalue))
+        {
+            if (urlnewvalue!=null)
+                await DisplayAlert("提示信息", "请输入正确的内容！", "确定");
+            return;
+        }
+        if (!urlnewvalue.Contains("://"))
+        {
+            await DisplayAlert("提示信息", "输入的内容不符合URL规范！", "确定");
+            return;
+        }
+
+
+        List<string[]> tmlist = new List<string[]>();
+        M3U8PlayList.ForEach(tmlist.Add);
+
+        string readresult = await new VideoManager().DownloadAndReadM3U8File(M3U8PlayList, new string[] { "在线直播源", urlnewvalue });
+        if (readresult!="")
+        {
+            M3U8PlayList=tmlist;
+            await DisplayAlert("提示信息", readresult, "确定");
+            return;
+        }
+
+
+        M3U8PlayList.Insert(0, new string[] { "默认", urlnewvalue });
+        string[] MOptions = new string[M3U8PlayList.Count];
+        MOptions[0]="默认\n";
+        string WantPlayURL =urlnewvalue;
+
+        if (M3U8PlayList.Count > 2)
+        {
+            for (int i = 1; i<M3U8PlayList.Count; i++)
+            {
+                MOptions[i]="【"+i+"】\n文件名："+M3U8PlayList[i][0]+"\n位率："+M3U8PlayList[i][2]+"\n分辨率："+M3U8PlayList[i][3]+"\n帧率："+M3U8PlayList[i][4]+"\n编解码器："+M3U8PlayList[i][5]+"\n标签："+M3U8PlayList[i][6]+"\n";
+            }
+
+            string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
+            if (MSelectResult == "取消"||MSelectResult is null)
+            {
+                M3U8PlayList=tmlist;
+                return;
+            }
+            else if (!MSelectResult.Contains("默认"))
+            {
+                int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
+                WantPlayURL=M3U8PlayList[tmindex][1];
+            }
+
+        }
+
+
+        VideoWindow.Source=WantPlayURL;
+        VideoWindow.Play();
+        NowPlayingTb.Text="在线直播源";
+    }
 }
