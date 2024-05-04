@@ -119,7 +119,7 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Button x:Name="RLRefreshBtn" Background="LightBlue" IsVisible="{ OnPlatform Android= False}" ContentLayout="Top,-3" Clicked="RLRefreshBtn_Clicked">
+                <Button x:Name="RLRefreshBtn" Background="LightBlue" IsVisible="{ OnPlatform Android= False}" Clicked="RLRefreshBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>

@@ -46,6 +46,13 @@
     <ShellContent Title="直播源编辑" Icon="videoedit_page.png"
         ContentTemplate="{DataTemplate local:VideoEditPage}"
         Route="VideoEditPage"/>
+    <ShellContent Title="直播源下载" 
+        ContentTemplate="{DataTemplate local:VideoDownloadPage}"
+        Route="VideoDownloadPage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE896;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+        </ShellContent.Icon>
+    </ShellContent>
 
 
     <Shell.FlyoutFooter>

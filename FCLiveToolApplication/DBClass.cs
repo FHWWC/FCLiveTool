@@ -102,6 +102,35 @@ namespace FCLiveToolApplication
         public string AllStr { get; set; }
     }
 
+    public class VideoAnalysisList
+    {
+        public string ItemId { get; set; }
+        public string AllowCache { get; set; }
+        public string TargetDuration { get; set; }
+        public string MediaSequence { get; set; }
+        public List<M3U8_TS_PARM> TS_PARM { get; set; }
+        //非M3U8文件内参数
+        public string M3U8URL { get; set; }
+        public string FileName { get; set; }
+        public string FullURL { get; set; }
+        public bool IsSelected { get; set; }
+
+    }
+    public class M3U8_TS_PARM
+    {
+        public string ItemId { get; set; }
+        public double Time { get; set; }
+        public string FullURL { get; set; }
+        public string FileName { get; set; }
+    }
+    public class DownloadTempFileList
+    {
+        public int ItemId { get; set; }
+        public string FileName { get; set; }
+        public string FilePath { get; set; }
+        public long Filesize { get; set; }
+        public string FullLink { get; set; }
+    }
     public class VideoEditListDataTemplateSelector : DataTemplateSelector
     {
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
@@ -178,6 +207,7 @@ namespace FCLiveToolApplication
     }
     public class VideoManager
     {
+        public List<DownloadTempFileList> TempFileList;
         /// <summary>
         /// 
         /// </summary>
@@ -277,7 +307,120 @@ namespace FCLiveToolApplication
 
             return "";
         }
+        /// <summary>
+        ///  下载M3U8文件并解析所有TS分片文件，该方法会返回一个TS列表，用于下载分片文件
+        /// </summary>
+        /// <param name="videoAnalysisList">从M3U8文件里解析到的所有信息</param>
+        /// <param name="VideoIfm">1：URL；</param>
+        /// <returns></returns>
+        public async Task<string> DownloadAndReadM3U8FileForDownloadTS(VideoAnalysisList videoAnalysisList, string[] VideoIfm)
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                int statusCode;
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                HttpResponseMessage response = null;
 
+                try
+                {
+                    response = await httpClient.GetAsync(VideoIfm[0]);
+
+                    statusCode = (int)response.StatusCode;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        return "获取文件失败，请稍后重试！\n" + "HTTP错误代码：" + statusCode;
+                    }
+                }
+                catch (Exception)
+                {
+                    return "无法连接到对方服务器，请检查您的网络或者更换一个直播源！";
+                }
+
+                try
+                {
+                    using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                    {
+                        string r = "";
+                        string tAllowCache = "---";
+                        string tTargetDuration = "---";
+                        string tMediaSequence = "---";
+                        List<M3U8_TS_PARM> tMTP = new List<M3U8_TS_PARM>();
+                        double tTime = 0;
+                        string tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("/") + 1);
+
+                        while ((r = await sr.ReadLineAsync()) != null)
+                        {                       
+                            //如果下载M3U8文件后里面还是个M3U8文件，则继续下载并解析
+                            if (r.Contains(".m3u8"))
+                            {
+                                if (!r.Contains("://"))
+                                {
+                                    r =tsurl + r;
+                                }
+
+                                return await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { r });
+                            }
+                            //开始读取带TS分片信息的M3U8
+                            else if (r.StartsWith("#EXT-X-ALLOW-CACHE"))
+                            {
+                                tAllowCache=r.Replace("#EXT-X-ALLOW-CACHE:","");
+                            }                       
+                            else if (r.StartsWith("#EXT-X-TARGETDURATION"))
+                            {
+                                tTargetDuration=r.Replace("#EXT-X-TARGETDURATION:", "");
+                            }
+                            else if (r.StartsWith("#EXT-X-MEDIA-SEQUENCE"))
+                            {
+                                tMediaSequence=r.Replace("#EXT-X-MEDIA-SEQUENCE:", "");
+                            }
+                            else if (r.Contains("#EXTINF:"))
+                            {
+                                var tvalue = r.Replace("#EXTINF:", "");
+                                tvalue = tvalue.Substring(0, tvalue.IndexOf(","));
+                                
+                                double.TryParse(tvalue, out tTime);
+                            }
+                            else if (r.Contains(".ts"))
+                            {
+                                if (!r.Contains("://"))
+                                {
+                                    r = tsurl+ r;
+                                }
+
+                                tMTP.Add(new M3U8_TS_PARM() { FullURL=r,Time=tTime});
+                            }
+                            else if (r.Contains("#EXT-X-ENDLIST"))
+                            {
+                                //添加一个标识，因为直播已结束，服务器不再提供新的数据流，所以程序将不再向服务器发请求
+                                tMTP.Add(new M3U8_TS_PARM() { FullURL = "", Time = 0 });
+                                return "";
+                                //return "直播源已播放完毕";
+                            }
+
+                        }
+
+
+                        videoAnalysisList.AllowCache = tAllowCache;
+                        videoAnalysisList.MediaSequence = tMediaSequence;
+                        videoAnalysisList.TargetDuration = tTargetDuration;
+                        videoAnalysisList.FullURL = VideoIfm[0];
+                        videoAnalysisList.M3U8URL = tsurl;
+                        videoAnalysisList.FileName = VideoIfm[0].Replace(tsurl,"");
+                        videoAnalysisList.TS_PARM = tMTP;
+                    }
+
+                }
+                catch (Exception)
+                {
+                    return "解析出现问题，可能是M3U8文件数据格式有问题。";
+                }
+
+
+            }
+
+
+            return "";
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -354,7 +497,67 @@ namespace FCLiveToolApplication
 
             return "";
         }
+        public async Task<string> DownloadM3U8Stream(List<M3U8_TS_PARM> mlist, string savepath, string filename)
+        {
+            TempFileList=new List<DownloadTempFileList>();
+            int FileIndex = 0;
 
+            foreach (var m in mlist)
+            {
+                string url = m.FullURL;
+                long Filesize = 0;
+                string TempFilepath = string.Format($"{savepath}TMP{FileIndex}_{filename}.tmp");
+
+
+                using (HttpClient httpClient = new HttpClient())
+                {
+                    int statusCode;
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                    HttpResponseMessage response = null;
+
+                    try
+                    {
+                        response = await httpClient.GetAsync(url);
+
+                        statusCode=(int)response.StatusCode;
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            return "请求失败！"+"HTTP错误代码："+statusCode;
+                        }
+
+                        Filesize = response.Content.Headers.ContentLength??-1;
+                        if (Filesize<=0)
+                        {
+                            return "无法从 ContentLength 中获取有效的文件大小！";
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        return "请求发生异常！";
+                    }
+
+                    //此处要加上连续获取M3U8功能
+                    //后续加上文件已存在的判断
+
+                    FileStream fs = new FileStream(TempFilepath, FileMode.Create);
+                    Stream ns = await response.Content.ReadAsStreamAsync();
+                    ns.CopyTo(fs);
+
+
+                    fs?.Close();
+                    ns?.Close();
+                }
+
+                TempFileList.Add(new DownloadTempFileList() { ItemId=FileIndex, FileName=TempFilepath.Replace(savepath, ""), FilePath=TempFilepath, Filesize=Filesize, FullLink=url });
+                FileIndex++;
+            }
+
+
+            MergeTempFile(savepath+filename+".mp4");
+
+            return "";
+        }
         /// <summary>
         /// 将当前播放列表更新到直播源预览页面
         /// </summary>
@@ -501,6 +704,49 @@ namespace FCLiveToolApplication
                     return guid;
                 }
          */
+        private void MergeTempFile(string finalFilepath)
+        {
+            int length = 0;
+            //后续考虑加 拼接上次下载的视频 的功能，目前使用FileMode.Create覆写
+            using (FileStream fs = new FileStream(finalFilepath, FileMode.Create))
+            {
+                foreach (var item in TempFileList.OrderBy(p => p.ItemId))
+                {
+                    string tempFilePath = item.FilePath;
+                    if (!File.Exists(tempFilePath)) continue;
+
+                    try
+                    {
+                        using (FileStream tempStream = new FileStream(tempFilePath, FileMode.Open))
+                        {
+                            byte[] buffer = new byte[tempStream.Length];
+
+                            while ((length = tempStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                fs.Write(buffer, 0, length);
+                            }
+                            tempStream.Flush();
+                        }
+
+                    }
+                    catch
+                    {
+
+                    }
+
+                    try
+                    {
+                        File.Delete(tempFilePath);
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+
+                }
+            }
+
+        }
     }
     public class APPFileManager
     {

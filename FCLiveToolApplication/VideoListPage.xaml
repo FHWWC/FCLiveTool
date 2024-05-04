@@ -97,7 +97,7 @@
         <Grid Margin="0,0,5,0">
             <Label Text="直播源列表：" FontSize="Medium"/>
 
-            <Button x:Name="VLToolbarBtn" Background="LightPink" ContentLayout="Top,-3" HorizontalOptions="End" Clicked="VLToolbarBtn_Clicked">
+            <Button x:Name="VLToolbarBtn" Background="LightPink" HorizontalOptions="End" Clicked="VLToolbarBtn_Clicked">
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xE90F;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
