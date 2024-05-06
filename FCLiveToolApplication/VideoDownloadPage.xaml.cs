@@ -13,6 +13,7 @@ public partial class VideoDownloadPage : ContentPage
     //public double DownloadProcess;
     //public int ThreadNum = 1;
     //public List<ThreadInfo> threadinfos;
+    public List<VideoAnalysisList> DownloadTaskList=new List<VideoAnalysisList>();
     private void SelectLocalM3U8FileBtn_Clicked(object sender, EventArgs e)
     {
 
@@ -108,15 +109,19 @@ public partial class VideoDownloadPage : ContentPage
         }
 
         var tlist = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
-        tlist.ForEach(async p => 
+        tlist.ForEach(p => 
         {
         if(p.IsSelected)
             {
-                string r = await new VideoManager().DownloadM3U8Stream(p.TS_PARM, SaveDownloadFolderTb.Text+"\\", p.FileName.Substring(0, p.FileName.LastIndexOf(".")));
-                if (r!="")
+                new Thread(async ()=>
                 {
-                    await DisplayAlert("提示信息", p.FileName+"\n"+ r, "确定");
-                }
+                    string r = await new VideoManager().DownloadM3U8Stream(p.TS_PARM, SaveDownloadFolderTb.Text + "\\", p.FileName.Substring(0, p.FileName.LastIndexOf(".")));
+                    if (r != "")
+                    {
+                        await DisplayAlert("提示信息", p.FileName + "\n" + r, "确定");
+                    }
+                }).Start();
+
 
             }
         });

@@ -118,7 +118,7 @@ namespace FCLiveToolApplication
     }
     public class M3U8_TS_PARM
     {
-        public string ItemId { get; set; }
+        public int ItemId { get; set; }
         public double Time { get; set; }
         public string FullURL { get; set; }
         public string FileName { get; set; }
@@ -130,6 +130,14 @@ namespace FCLiveToolApplication
         public string FilePath { get; set; }
         public long Filesize { get; set; }
         public string FullLink { get; set; }
+    }
+    public class DownloadVideoFileList
+    {
+        public int ItemId { get; set; }
+        public string SaveFileName { get; set; }
+        public string SaveFilePath { get; set; }
+        public string M3U8FullLink { get; set; }
+        public int TS_FileCount { get; set; }
     }
     public class VideoEditListDataTemplateSelector : DataTemplateSelector
     {
@@ -347,6 +355,7 @@ namespace FCLiveToolApplication
                         List<M3U8_TS_PARM> tMTP = new List<M3U8_TS_PARM>();
                         double tTime = 0;
                         string tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("/") + 1);
+                        int ts_index = 0;
 
                         while ((r = await sr.ReadLineAsync()) != null)
                         {                       
@@ -387,7 +396,8 @@ namespace FCLiveToolApplication
                                     r = tsurl+ r;
                                 }
 
-                                tMTP.Add(new M3U8_TS_PARM() { FullURL=r,Time=tTime});
+                                tMTP.Add(new M3U8_TS_PARM() { ItemId=ts_index, FullURL=r,Time=tTime});
+                                ts_index++;
                             }
                             else if (r.Contains("#EXT-X-ENDLIST"))
                             {
@@ -500,63 +510,100 @@ namespace FCLiveToolApplication
         public async Task<string> DownloadM3U8Stream(List<M3U8_TS_PARM> mlist, string savepath, string filename)
         {
             TempFileList=new List<DownloadTempFileList>();
-            int FileIndex = 0;
+            //int FileIndex = 0;
+            int FinishCount = 0;
+            string dresult = "";
 
             foreach (var m in mlist)
             {
-                string url = m.FullURL;
-                long Filesize = 0;
-                string TempFilepath = string.Format($"{savepath}TMP{FileIndex}_{filename}.tmp");
-
-
-                using (HttpClient httpClient = new HttpClient())
+                new Thread(async () =>
                 {
-                    int statusCode;
-                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
-                    HttpResponseMessage response = null;
+                    string url = m.FullURL;
+                    long Filesize = 0;
+                    string FileID = Guid.NewGuid().ToString();
+                    string TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
 
-                    try
+
+                    using (HttpClient httpClient = new HttpClient())
                     {
-                        response = await httpClient.GetAsync(url);
+                        int statusCode;
+                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                        HttpResponseMessage response = null;
 
-                        statusCode=(int)response.StatusCode;
-                        if (!response.IsSuccessStatusCode)
+                        try
                         {
-                            return "请求失败！"+"HTTP错误代码："+statusCode;
+                            response = await httpClient.GetAsync(url);
+
+                            statusCode = (int)response.StatusCode;
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                dresult= "请求失败！" + "HTTP错误代码：" + statusCode;
+                                FinishCount++;
+                                return;
+                            }
+
+                            Filesize = response.Content.Headers.ContentLength ?? -1;
+                            if (Filesize <= 0)
+                            {
+                                dresult= "无法从 ContentLength 中获取有效的文件大小！";
+                                FinishCount++;
+                                return;
+                            }
+
+                        }
+                        catch (Exception)
+                        {
+                            dresult = "请求发生异常！";
+                            FinishCount++;
+                            return;
                         }
 
-                        Filesize = response.Content.Headers.ContentLength??-1;
-                        if (Filesize<=0)
+                        //此处要加上连续获取M3U8功能
+                        //后续加上文件已存在的判断
+
+                        FileStream fs = null;
+                        Stream ns = null;
+                        try
                         {
-                            return "无法从 ContentLength 中获取有效的文件大小！";
+                            fs = new FileStream(TempFilepath, FileMode.Create);
+
+                            ns = await response.Content.ReadAsStreamAsync();
+                            ns.CopyTo(fs);
+                        }
+                        catch(Exception)
+                        {
+                            dresult = "向临时文件写入发生异常！";
+                            FinishCount++;
+                            return;
+                        }
+                        finally
+                        {
+                            fs?.Close();
+                            ns?.Close();
                         }
 
-                    }
-                    catch (Exception)
-                    {
-                        return "请求发生异常！";
+
                     }
 
-                    //此处要加上连续获取M3U8功能
-                    //后续加上文件已存在的判断
-
-                    FileStream fs = new FileStream(TempFilepath, FileMode.Create);
-                    Stream ns = await response.Content.ReadAsStreamAsync();
-                    ns.CopyTo(fs);
+                    TempFileList.Add(new DownloadTempFileList() { ItemId = m.ItemId, FileName = TempFilepath.Replace(savepath, ""), FilePath = TempFilepath, Filesize = Filesize, FullLink = url });
+                
+                    FinishCount++;
+                }).Start();
 
 
-                    fs?.Close();
-                    ns?.Close();
-                }
-
-                TempFileList.Add(new DownloadTempFileList() { ItemId=FileIndex, FileName=TempFilepath.Replace(savepath, ""), FilePath=TempFilepath, Filesize=Filesize, FullLink=url });
-                FileIndex++;
             }
 
+            while(true)
+            {
+                if(FinishCount == mlist.Count)
+                {
+                    break;
+                }
+            }
 
             MergeTempFile(savepath+filename+".mp4");
 
-            return "";
+            return dresult;
         }
         /// <summary>
         /// 将当前播放列表更新到直播源预览页面
