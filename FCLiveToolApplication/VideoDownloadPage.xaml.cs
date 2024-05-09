@@ -124,7 +124,7 @@ public partial class VideoDownloadPage : ContentPage
 
             new Thread(async () =>
             {
-                string r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\");
+                string r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\",true);
                 if (r != "")
                 {
                     MainThread.BeginInvokeOnMainThread(()=>

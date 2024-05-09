@@ -512,7 +512,7 @@ namespace FCLiveToolApplication
 
             return "";
         }
-        public async Task<string> DownloadM3U8Stream(VideoAnalysisList valist, string savepath)
+        public async Task<string> DownloadM3U8Stream(VideoAnalysisList valist, string savepath,bool isMergeBeforeFile)
         {
             TempFileList=new List<DownloadTempFileList>();
             //int FileIndex = 0;
@@ -608,10 +608,9 @@ namespace FCLiveToolApplication
                 }
             }
 
-            if(!isEndList&&isContinueDownloadStream)
+            MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
+            if (!isEndList&&isContinueDownloadStream)
             {
-                MergeTempFile(savepath + filename + ".mp4",true);
-
                 double TS_AllTime = valist.TS_PARM.Sum(p=>p.Time)*1000;
                 await Task.Delay((int)TS_AllTime);
 
@@ -621,15 +620,11 @@ namespace FCLiveToolApplication
                 {
 
 
-                    dresult = await DownloadM3U8Stream(videoAnalysisList, savepath);
+                    dresult = await DownloadM3U8Stream(videoAnalysisList, savepath,isMergeBeforeFile);
  
                 }
 
 
-            }
-            else
-            {
-                MergeTempFile(savepath + filename + ".mp4",false);
             }
 
 
@@ -781,24 +776,26 @@ namespace FCLiveToolApplication
                     return guid;
                 }
          */
-        private void MergeTempFile(string finalFilepath,bool isNeedJoinFile)
+        private void MergeTempFile(string finalFilepath,bool isMergeBeforeFile)
         {
             int length = 0;
 
-            FileMode fileMode;
-            if(isNeedJoinFile)
-            {
-                fileMode = FileMode.Append;
-            }
-            else
-            {
-                fileMode = FileMode.Create;
-            }
+            /*
+                         FileMode fileMode;
+                        if (isNeedJoinFile)
+                        {
+                            fileMode = FileMode.Append;
+                        }
+                        else
+                        {
+                            fileMode = FileMode.Create;
+                        }
+             */
 
             try
             {
                 long fsLength = 0;
-                using (FileStream fs = new FileStream(finalFilepath, fileMode))
+                using (FileStream fs = new FileStream(finalFilepath, FileMode.Append))
                 {
                     foreach (var item in TempFileList.OrderBy(p => p.ItemId))
                     {
