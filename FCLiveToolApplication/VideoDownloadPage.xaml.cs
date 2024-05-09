@@ -13,7 +13,9 @@ public partial class VideoDownloadPage : ContentPage
     //public double DownloadProcess;
     //public int ThreadNum = 1;
     //public List<ThreadInfo> threadinfos;
-    public List<VideoAnalysisList> DownloadTaskList=new List<VideoAnalysisList>();
+    public List<VideoManager> DownloadTaskList=new List<VideoManager>();
+    public List<DownloadVideoFileList> DownloadFileLists=new List<DownloadVideoFileList>();
+
     private void SelectLocalM3U8FileBtn_Clicked(object sender, EventArgs e)
     {
 
@@ -39,7 +41,7 @@ public partial class VideoDownloadPage : ContentPage
                 return;
             }
 
-            VideoAnalysisList videoAnalysisList=new VideoAnalysisList();
+            VideoAnalysisList videoAnalysisList=new VideoAnalysisList();         
             string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { M3U8SourceURLTb.Text });
             if (readresult != "")
             {
@@ -108,25 +110,33 @@ public partial class VideoDownloadPage : ContentPage
             return;
         }
 
-        var tlist = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
-        tlist.ForEach(p => 
+        var tlist = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().Where(p=>p.IsSelected).ToList();
+        for(int i = 0; i < tlist.Count; i++)
         {
-        if(p.IsSelected)
+            var tobj = tlist[i];
+            VideoManager vmanager = new VideoManager();
+            if (DownloadFileLists.Where(p => p.M3U8FullLink==tobj.FullURL&&p.CurrentActiveObject.isContinueDownloadStream).Count()>0)
             {
-                new Thread(async ()=>
-                {
-                    string r = await new VideoManager().DownloadM3U8Stream(p.TS_PARM, SaveDownloadFolderTb.Text + "\\", p.FileName.Substring(0, p.FileName.LastIndexOf(".")));
-                    if (r != "")
-                    {
-                        await DisplayAlert("提示信息", p.FileName + "\n" + r, "确定");
-                    }
-                }).Start();
-
-
+                await DisplayAlert("提示信息", "你当前正在下载这个M3U8直播流："+tobj.FileName+" ，不能重复添加任务！", "确定");
+                continue;
             }
-        });
+            DownloadFileLists.Add(new DownloadVideoFileList() { SaveFilePath=SaveDownloadFolderTb.Text, CurrentVALIfm=tobj, CurrentActiveObject=vmanager });
 
+            new Thread(async () =>
+            {
+                string r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\");
+                if (r != "")
+                {
+                    MainThread.BeginInvokeOnMainThread(()=>
+                    {
+                        DisplayAlert("提示信息",tobj.FileName+"\n"+ r, "确定");
+                    });
 
+                }
+            }).Start();
+        }
+
+        DownloadVideoFileList.ItemsSource = DownloadFileLists;
 
     }
 
@@ -383,5 +393,46 @@ public partial class VideoDownloadPage : ContentPage
         {
             await DisplayAlert("提示信息", "您已取消了操作。", "确定");
         }
+    }
+
+    private void DownloadFileListCB_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (DownloadVideoFileList.ItemsSource is null)
+        {
+            return;
+        }
+
+        var tlist = DownloadVideoFileList.ItemsSource.Cast<DownloadVideoFileList>().ToList();
+        tlist.ForEach(p => { p.IsSelected = e.Value; });
+        DownloadVideoFileList.ItemsSource = tlist;
+    }
+
+    private async void DownloadFileStopBtn_Clicked(object sender, EventArgs e)
+    {
+        if (DownloadVideoFileList.ItemsSource is null)
+        {
+            await DisplayAlert("提示信息", "当前列表为空！", "确定");
+            return;
+        }
+
+        var tlist=DownloadVideoFileList.ItemsSource.Cast<DownloadVideoFileList>().Where(p => p.IsSelected).ToList();
+        if(tlist.Count<1)
+        {
+            await DisplayAlert("提示信息", "请先至少勾选一条要停止的任务！", "确定");
+            return;
+        }
+
+        tlist.ForEach(p =>
+        {
+            var tl= DownloadFileLists.Where(p2 => p2 == p).FirstOrDefault();
+            tl.CurrentActiveObject.isContinueDownloadStream = false;
+            //DownloadFileLists.Remove(tl);
+        });
+        DownloadFileLists.RemoveAll(p => !p.CurrentActiveObject.isContinueDownloadStream || p.CurrentActiveObject.isEndList);
+        
+
+        DownloadVideoFileList.ItemsSource = DownloadFileLists;
+        await DisplayAlert("提示信息", "已停止选定的任务！", "确定");
+
     }
 }

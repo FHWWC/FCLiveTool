@@ -134,10 +134,13 @@ namespace FCLiveToolApplication
     public class DownloadVideoFileList
     {
         public int ItemId { get; set; }
-        public string SaveFileName { get; set; }
+        public string SaveFileName { get { return CurrentVALIfm.FileName; } }
         public string SaveFilePath { get; set; }
-        public string M3U8FullLink { get; set; }
-        public int TS_FileCount { get; set; }
+        public string M3U8FullLink { get { return CurrentVALIfm.FullURL; } }
+        public int TS_FileCount { get { return CurrentVALIfm.TS_PARM.Count; } }
+        public VideoManager CurrentActiveObject { get; set; }
+        public VideoAnalysisList CurrentVALIfm { get; set; }
+        public bool IsSelected { get; set; }
     }
     public class VideoEditListDataTemplateSelector : DataTemplateSelector
     {
@@ -216,6 +219,8 @@ namespace FCLiveToolApplication
     public class VideoManager
     {
         public List<DownloadTempFileList> TempFileList;
+        public bool isContinueDownloadStream = true;
+        public bool isEndList = false;
         /// <summary>
         /// 
         /// </summary>
@@ -402,8 +407,8 @@ namespace FCLiveToolApplication
                             else if (r.Contains("#EXT-X-ENDLIST"))
                             {
                                 //添加一个标识，因为直播已结束，服务器不再提供新的数据流，所以程序将不再向服务器发请求
-                                tMTP.Add(new M3U8_TS_PARM() { FullURL = "", Time = 0 });
-                                return "";
+                                //tMTP.Add(new M3U8_TS_PARM() { FullURL = "", Time = 0 });
+                                isEndList = true;
                                 //return "直播源已播放完毕";
                             }
 
@@ -507,14 +512,15 @@ namespace FCLiveToolApplication
 
             return "";
         }
-        public async Task<string> DownloadM3U8Stream(List<M3U8_TS_PARM> mlist, string savepath, string filename)
+        public async Task<string> DownloadM3U8Stream(VideoAnalysisList valist, string savepath)
         {
             TempFileList=new List<DownloadTempFileList>();
             //int FileIndex = 0;
+            string filename = valist.FileName.Substring(0, valist.FileName.LastIndexOf("."));
             int FinishCount = 0;
             string dresult = "";
 
-            foreach (var m in mlist)
+            foreach (var m in valist.TS_PARM)
             {
                 new Thread(async () =>
                 {
@@ -538,6 +544,7 @@ namespace FCLiveToolApplication
                             if (!response.IsSuccessStatusCode)
                             {
                                 dresult= "请求失败！" + "HTTP错误代码：" + statusCode;
+                                isContinueDownloadStream = false;
                                 FinishCount++;
                                 return;
                             }
@@ -546,6 +553,7 @@ namespace FCLiveToolApplication
                             if (Filesize <= 0)
                             {
                                 dresult= "无法从 ContentLength 中获取有效的文件大小！";
+                                isContinueDownloadStream = false;
                                 FinishCount++;
                                 return;
                             }
@@ -554,12 +562,10 @@ namespace FCLiveToolApplication
                         catch (Exception)
                         {
                             dresult = "请求发生异常！";
+                            isContinueDownloadStream = false;
                             FinishCount++;
                             return;
                         }
-
-                        //此处要加上连续获取M3U8功能
-                        //后续加上文件已存在的判断
 
                         FileStream fs = null;
                         Stream ns = null;
@@ -573,6 +579,7 @@ namespace FCLiveToolApplication
                         catch(Exception)
                         {
                             dresult = "向临时文件写入发生异常！";
+                            isContinueDownloadStream = false;
                             FinishCount++;
                             return;
                         }
@@ -595,13 +602,36 @@ namespace FCLiveToolApplication
 
             while(true)
             {
-                if(FinishCount == mlist.Count)
+                if(FinishCount == valist.TS_PARM.Count)
                 {
                     break;
                 }
             }
 
-            MergeTempFile(savepath+filename+".mp4");
+            if(!isEndList&&isContinueDownloadStream)
+            {
+                MergeTempFile(savepath + filename + ".mp4",true);
+
+                double TS_AllTime = valist.TS_PARM.Sum(p=>p.Time)*1000;
+                await Task.Delay((int)TS_AllTime);
+
+                VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
+                dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL });
+                if (string.IsNullOrEmpty(dresult))
+                {
+
+
+                    dresult = await DownloadM3U8Stream(videoAnalysisList, savepath);
+ 
+                }
+
+
+            }
+            else
+            {
+                MergeTempFile(savepath + filename + ".mp4",false);
+            }
+
 
             return dresult;
         }
@@ -751,46 +781,63 @@ namespace FCLiveToolApplication
                     return guid;
                 }
          */
-        private void MergeTempFile(string finalFilepath)
+        private void MergeTempFile(string finalFilepath,bool isNeedJoinFile)
         {
             int length = 0;
-            //后续考虑加 拼接上次下载的视频 的功能，目前使用FileMode.Create覆写
-            using (FileStream fs = new FileStream(finalFilepath, FileMode.Create))
+
+            FileMode fileMode;
+            if(isNeedJoinFile)
             {
-                foreach (var item in TempFileList.OrderBy(p => p.ItemId))
+                fileMode = FileMode.Append;
+            }
+            else
+            {
+                fileMode = FileMode.Create;
+            }
+
+            try
+            {
+                long fsLength = 0;
+                using (FileStream fs = new FileStream(finalFilepath, fileMode))
                 {
-                    string tempFilePath = item.FilePath;
-                    if (!File.Exists(tempFilePath)) continue;
-
-                    try
+                    foreach (var item in TempFileList.OrderBy(p => p.ItemId))
                     {
-                        using (FileStream tempStream = new FileStream(tempFilePath, FileMode.Open))
-                        {
-                            byte[] buffer = new byte[tempStream.Length];
+                        string tempFilePath = item.FilePath;
+                        if (!File.Exists(tempFilePath)) continue;
 
-                            while ((length = tempStream.Read(buffer, 0, buffer.Length)) > 0)
+                        try
+                        {
+                            using (FileStream tempStream = new FileStream(tempFilePath, FileMode.Open))
                             {
-                                fs.Write(buffer, 0, length);
+                                byte[] buffer = new byte[tempStream.Length];
+
+                                while ((length = tempStream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    fs.Write(buffer, 0, length);
+                                }
+                                tempStream.Flush();
                             }
-                            tempStream.Flush();
+
+                        }
+                        catch
+                        {
+
                         }
 
-                    }
-                    catch
-                    {
-
-                    }
-
-                    try
-                    {
                         File.Delete(tempFilePath);
                     }
-                    catch (Exception)
-                    {
 
-                    }
-
+                    fsLength=fs.Length;
                 }
+
+                if (fsLength<=0)
+                {
+                    File.Delete(finalFilepath);
+                }
+            }
+            catch (Exception)
+            {
+
             }
 
         }

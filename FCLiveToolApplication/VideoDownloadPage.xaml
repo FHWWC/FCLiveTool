@@ -41,6 +41,36 @@
 
             </ViewCell>
         </DataTemplate>
+        <DataTemplate x:Key="DownloadVideoFileListStyle">
+            <ViewCell>
+                <Grid Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid>
+                        <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay}" VerticalOptions="Center"/>
+                    </Grid>
+                    <StackLayout Grid.Column="1">
+                        <Label Text="{Binding SaveFileName}" FontSize="Medium"/>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="下载到："/>
+                            <Label Text="{Binding SaveFilePath}"/>
+                        </StackLayout>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="TS分片文件数量："/>
+                            <Label Text="{Binding TS_FileCount}"/>
+                        </StackLayout>
+                        <StackLayout>
+                            <Label Text="直播源所在地址："/>
+                            <Label Text="{Binding M3U8FullLink}"/>
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+
+            </ViewCell>
+        </DataTemplate>
     </ContentPage.Resources>
     
     <Shell.TitleView>
@@ -93,14 +123,14 @@
                 </Button>
                 <Label x:Name="LocalM3U8Tb" LineBreakMode="WordWrap" Margin="10,0,0,0"/>
             </StackLayout>
-            <Button x:Name="M3U8AnalysisBtn" Text="开始解析" Background="LightPink" Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" Clicked="M3U8AnalysisBtn_Clicked">
+            <Button x:Name="M3U8AnalysisBtn" Text="开始解析" Background="LightBlue" Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" Clicked="M3U8AnalysisBtn_Clicked">
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
             </Button>
 
             <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2">
-                <Button x:Name="SelectSaveDownloadFolderBtn" Background="LightPink" Text="选择保存位置" Clicked="SelectSaveDownloadFolderBtn_Clicked">
+                <Button x:Name="SelectSaveDownloadFolderBtn" Background="LightBlue" Text="选择保存位置" Clicked="SelectSaveDownloadFolderBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
@@ -110,7 +140,7 @@
 
         </Grid>
 
-        <StackLayout Grid.Row="1">
+        <StackLayout Grid.Row="1" Margin="0,0,5,0">
             <Grid>
                 <StackLayout Orientation="Horizontal">
                     <CheckBox x:Name="VideoAnalysisListCB" CheckedChanged="VideoAnalysisListCB_CheckedChanged"/>
@@ -127,8 +157,20 @@
 
         </StackLayout>
 
-        <StackLayout Grid.Row="1" Grid.Column="1">
-            
+        <StackLayout Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
+            <Grid>
+                <StackLayout Orientation="Horizontal">
+                    <CheckBox x:Name="DownloadFileListCB" CheckedChanged="DownloadFileListCB_CheckedChanged"/>
+                    <Label Text="全选" VerticalOptions="Center"/>
+                </StackLayout>
+                <Button x:Name="DownloadFileStopBtn" Text="停止任务" Background="LightPink" HorizontalOptions="End" Clicked="DownloadFileStopBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            <Label Text="程序向服务器请求下一个M3U8文件的间隔时间是当前M3U8文件内所有TS分片的累计时长。停止任务后程序将不再请求新的M3U8，如需继续则需要重新手动点解析和下载。" LineBreakMode="WordWrap"/>
+            <ListView x:Name="DownloadVideoFileList" ItemTemplate="{StaticResource DownloadVideoFileListStyle}" HorizontalScrollBarVisibility="Never"/>
         </StackLayout>
     </Grid>
 </ContentPage>
