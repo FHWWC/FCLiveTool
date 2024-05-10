@@ -15,14 +15,51 @@ public partial class VideoDownloadPage : ContentPage
     //public List<ThreadInfo> threadinfos;
     public List<VideoManager> DownloadTaskList=new List<VideoManager>();
     public List<DownloadVideoFileList> DownloadFileLists=new List<DownloadVideoFileList>();
+    public List<string> LocalM3U8FilesList = new List<string>();
 
-    private void SelectLocalM3U8FileBtn_Clicked(object sender, EventArgs e)
+    private async void SelectLocalM3U8FileBtn_Clicked(object sender, EventArgs e)
     {
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
+            return;
+        }
 
+        var fileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+{
+    { DevicePlatform.iOS, new[] { "com.apple.mpegurl" , "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.macOS, new[] {  "application/vnd.apple.mpegurl" } },
+    { DevicePlatform.Android, new[] { "audio/x-mpegurl"  } },
+    { DevicePlatform.WinUI, new[] { ".m3u8"} }
+});
+
+        var filePicker = await FilePicker.PickMultipleAsync(new PickOptions()
+        {
+            PickerTitle="选择M3U8文件",
+            FileTypes=fileTypes
+        });
+
+        if (filePicker is not null&&filePicker.Count()>0)
+        {
+            LocalM3U8FilesList= filePicker.Select(p=>p.FullPath).ToList();
+            LocalM3U8Tb.Text="已经选择了"+LocalM3U8FilesList.Count+"个文件";
+        }
+        else
+        {
+            LocalM3U8Tb.Text="已取消选择";
+            await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+        }
     }
 
-    private void SelectLocalM3U8FolderBtn_Clicked(object sender, EventArgs e)
+    private async void SelectLocalM3U8FolderBtn_Clicked(object sender, EventArgs e)
     {
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
+            return;
+        }
 
     }
 
@@ -42,7 +79,7 @@ public partial class VideoDownloadPage : ContentPage
             }
 
             VideoAnalysisList videoAnalysisList=new VideoAnalysisList();         
-            string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { M3U8SourceURLTb.Text });
+            string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { M3U8SourceURLTb.Text },0);
             if (readresult != "")
             {
                 await DisplayAlert("提示信息", readresult, "确定");
@@ -69,6 +106,20 @@ public partial class VideoDownloadPage : ContentPage
         }
         else if (M3U8SourceRBtn2.IsChecked)
         {
+            if (LocalM3U8FilesList.Count<1)
+            {
+                await DisplayAlert("提示信息", "当前没有选择任何文件！请先选择文件或文件夹！", "确定");
+                return;
+            }
+
+
+
+            //待编写
+
+
+
+
+
 
         }
 
@@ -97,9 +148,15 @@ public partial class VideoDownloadPage : ContentPage
         if(string.IsNullOrWhiteSpace(SaveDownloadFolderTb.Text))
         {
             await DisplayAlert("提示信息", "请先选择下载文件要保存的位置！", "确定");
-            return; 
+            return;
         }
-        if(!Directory.Exists(SaveDownloadFolderTb.Text))
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要写入文件！", "确定");
+            return;
+        }
+        if (!Directory.Exists(SaveDownloadFolderTb.Text))
         {
             await DisplayAlert("提示信息", "当前下载文件保存位置的目录不存在，请重新选择！", "确定");
             return;
@@ -383,6 +440,13 @@ public partial class VideoDownloadPage : ContentPage
 
     private async void SelectSaveDownloadFolderBtn_Clicked(object sender, EventArgs e)
     {
+        int permResult = await new APPPermissions().CheckAndReqPermissions();
+        if (permResult!=0)
+        {
+            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
+            return;
+        }
+
         var folderPicker = await FolderPicker.PickAsync(FileSystem.AppDataDirectory, CancellationToken.None);
 
         if (folderPicker.IsSuccessful)
