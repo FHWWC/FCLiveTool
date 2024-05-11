@@ -469,7 +469,8 @@ namespace FCLiveToolApplication
                                     r =tsurl + r;
                                 }
 
-                                return await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { r },FileFrom);
+                                //解析M3U8文件后如果内部不是TS分片文件还是M3U8文件，那么它一定是一个URL，所以FileFrom传0
+                                return await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { r },0);
                             }
                             //开始读取带TS分片信息的M3U8
                             else if (r.StartsWith("#EXT-X-ALLOW-CACHE"))
@@ -716,14 +717,15 @@ namespace FCLiveToolApplication
                 double TS_AllTime = valist.TS_PARM.Sum(p=>p.Time)*1000;
                 await Task.Delay((int)TS_AllTime-500);
 
-                VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
-                dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL },FileFromIndex);
-                if (string.IsNullOrEmpty(dresult))
+                //本地文件暂时只循环一次
+                if(FileFromIndex==0)
                 {
-
-
-                    dresult = await DownloadM3U8Stream(videoAnalysisList, savepath,isMergeBeforeFile);
- 
+                    VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
+                    dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, FileFromIndex);
+                    if (string.IsNullOrEmpty(dresult))
+                    {
+                        dresult = await DownloadM3U8Stream(videoAnalysisList, savepath, isMergeBeforeFile);
+                    }
                 }
 
 

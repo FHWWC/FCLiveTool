@@ -4,23 +4,23 @@ namespace FCLiveToolApplication;
 
 public partial class VideoDownloadPage : ContentPage
 {
-	public VideoDownloadPage()
-	{
-		InitializeComponent();
-	}
+    public VideoDownloadPage()
+    {
+        InitializeComponent();
+    }
     //public long ReceiveSize = 0;
     //public long AllFilesize = 0;
     //public double DownloadProcess;
     //public int ThreadNum = 1;
     //public List<ThreadInfo> threadinfos;
-    public List<VideoManager> DownloadTaskList=new List<VideoManager>();
-    public List<DownloadVideoFileList> DownloadFileLists=new List<DownloadVideoFileList>();
+    public List<VideoManager> DownloadTaskList = new List<VideoManager>();
+    public List<DownloadVideoFileList> DownloadFileLists = new List<DownloadVideoFileList>();
     public List<string> LocalM3U8FilesList = new List<string>();
 
     private async void SelectLocalM3U8FileBtn_Clicked(object sender, EventArgs e)
     {
         int permResult = await new APPPermissions().CheckAndReqPermissions();
-        if (permResult!=0)
+        if (permResult != 0)
         {
             await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
             return;
@@ -36,18 +36,18 @@ public partial class VideoDownloadPage : ContentPage
 
         var filePicker = await FilePicker.PickMultipleAsync(new PickOptions()
         {
-            PickerTitle="选择M3U8文件",
-            FileTypes=fileTypes
+            PickerTitle = "选择M3U8文件",
+            FileTypes = fileTypes
         });
 
-        if (filePicker is not null&&filePicker.Count()>0)
+        if (filePicker is not null && filePicker.Count() > 0)
         {
-            LocalM3U8FilesList= filePicker.Select(p=>p.FullPath).ToList();
-            LocalM3U8Tb.Text="已经选择了"+LocalM3U8FilesList.Count+"个文件";
+            LocalM3U8FilesList = filePicker.Select(p => p.FullPath).ToList();
+            LocalM3U8Tb.Text = "已经选择了" + LocalM3U8FilesList.Count + "个文件";
         }
         else
         {
-            LocalM3U8Tb.Text="已取消选择";
+            LocalM3U8Tb.Text = "已取消选择";
             await DisplayAlert("提示信息", "您已取消了操作。", "确定");
         }
     }
@@ -55,7 +55,7 @@ public partial class VideoDownloadPage : ContentPage
     private async void SelectLocalM3U8FolderBtn_Clicked(object sender, EventArgs e)
     {
         int permResult = await new APPPermissions().CheckAndReqPermissions();
-        if (permResult!=0)
+        if (permResult != 0)
         {
             await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
             return;
@@ -65,7 +65,7 @@ public partial class VideoDownloadPage : ContentPage
 
     private async void M3U8AnalysisBtn_Clicked(object sender, EventArgs e)
     {
-        if(M3U8SourceRBtn1.IsChecked)
+        if (M3U8SourceRBtn1.IsChecked)
         {
             if (string.IsNullOrWhiteSpace(M3U8SourceURLTb.Text))
             {
@@ -78,21 +78,21 @@ public partial class VideoDownloadPage : ContentPage
                 return;
             }
 
-            VideoAnalysisList videoAnalysisList=new VideoAnalysisList();         
-            string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { M3U8SourceURLTb.Text },0);
+            VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
+            string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { M3U8SourceURLTb.Text }, 0);
             if (readresult != "")
             {
                 await DisplayAlert("提示信息", readresult, "确定");
                 return;
             }
 
-            List<VideoAnalysisList> videoAnalysisLists= new List<VideoAnalysisList>();
-            if(VideoAnalysisList.ItemsSource!=null)
+            List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
+            if (VideoAnalysisList.ItemsSource != null)
             {
-                videoAnalysisLists=VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
+                videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
 
                 var titem = videoAnalysisLists.FirstOrDefault(p => p.FullURL == videoAnalysisList.FullURL);
-                if (titem!=null)
+                if (titem != null)
                 {
                     videoAnalysisLists.Remove(titem);
                 }
@@ -106,18 +106,38 @@ public partial class VideoDownloadPage : ContentPage
         }
         else if (M3U8SourceRBtn2.IsChecked)
         {
-            if (LocalM3U8FilesList.Count<1)
+            if (LocalM3U8FilesList.Count < 1)
             {
                 await DisplayAlert("提示信息", "当前没有选择任何文件！请先选择文件或文件夹！", "确定");
                 return;
             }
 
+            for (int i = 0; i < LocalM3U8FilesList.Count; i++)
+            {
+                VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
+                string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { LocalM3U8FilesList[i] }, 1);
+                if (readresult != "")
+                {
+                    await DisplayAlert("提示信息", readresult, "确定");
+                    continue;
+                }
 
+                List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
+                if (VideoAnalysisList.ItemsSource != null)
+                {
+                    videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
 
-            //待编写
+                    var titem = videoAnalysisLists.FirstOrDefault(p => p.FullURL == videoAnalysisList.FullURL);
+                    if (titem != null)
+                    {
+                        videoAnalysisLists.Remove(titem);
+                    }
 
+                }
+                videoAnalysisLists.Add(videoAnalysisList);
 
-
+                VideoAnalysisList.ItemsSource = videoAnalysisLists;
+            }
 
 
 
@@ -129,29 +149,29 @@ public partial class VideoDownloadPage : ContentPage
     private void M3U8SourceRBtn_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
         RadioButton entry = sender as RadioButton;
-        
-        if(entry.StyleId=="M3U8SourceRBtn1")
+
+        if (entry.StyleId == "M3U8SourceRBtn1")
         {
             M3U8SourceURLTb.IsVisible = true;
-            LocalM3U8SelectPanel.IsVisible=false;
+            LocalM3U8SelectPanel.IsVisible = false;
         }
-        else if (entry.StyleId=="M3U8SourceRBtn2")
+        else if (entry.StyleId == "M3U8SourceRBtn2")
         {
             M3U8SourceURLTb.IsVisible = false;
-            LocalM3U8SelectPanel.IsVisible=true;
+            LocalM3U8SelectPanel.IsVisible = true;
         }
 
     }
 
     private async void M3U8DownloadBtn_Clicked(object sender, EventArgs e)
     {
-        if(string.IsNullOrWhiteSpace(SaveDownloadFolderTb.Text))
+        if (string.IsNullOrWhiteSpace(SaveDownloadFolderTb.Text))
         {
             await DisplayAlert("提示信息", "请先选择下载文件要保存的位置！", "确定");
             return;
         }
         int permResult = await new APPPermissions().CheckAndReqPermissions();
-        if (permResult!=0)
+        if (permResult != 0)
         {
             await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要写入文件！", "确定");
             return;
@@ -167,26 +187,26 @@ public partial class VideoDownloadPage : ContentPage
             return;
         }
 
-        var tlist = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().Where(p=>p.IsSelected).ToList();
-        for(int i = 0; i < tlist.Count; i++)
+        var tlist = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().Where(p => p.IsSelected).ToList();
+        for (int i = 0; i < tlist.Count; i++)
         {
             var tobj = tlist[i];
             VideoManager vmanager = new VideoManager();
-            if (DownloadFileLists.Where(p => p.M3U8FullLink==tobj.FullURL&&p.CurrentActiveObject.isContinueDownloadStream).Count()>0)
+            if (DownloadFileLists.Where(p => p.M3U8FullLink == tobj.FullURL && p.CurrentActiveObject.isContinueDownloadStream).Count() > 0)
             {
-                await DisplayAlert("提示信息", "你当前正在下载这个M3U8直播流："+tobj.FileName+" ，不能重复添加任务！", "确定");
+                await DisplayAlert("提示信息", "你当前正在下载这个M3U8直播流：" + tobj.FileName + " ，不能重复添加任务！", "确定");
                 continue;
             }
-            DownloadFileLists.Add(new DownloadVideoFileList() { SaveFilePath=SaveDownloadFolderTb.Text, CurrentVALIfm=tobj, CurrentActiveObject=vmanager });
+            DownloadFileLists.Add(new DownloadVideoFileList() { SaveFilePath = SaveDownloadFolderTb.Text, CurrentVALIfm = tobj, CurrentActiveObject = vmanager });
 
             new Thread(async () =>
             {
-                string r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\",true);
+                string r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\", true);
                 if (r != "")
                 {
-                    MainThread.BeginInvokeOnMainThread(()=>
+                    MainThread.BeginInvokeOnMainThread(() =>
                     {
-                        DisplayAlert("提示信息",tobj.FileName+"\n"+ r, "确定");
+                        DisplayAlert("提示信息", tobj.FileName + "\n" + r, "确定");
                     });
 
                 }
@@ -199,14 +219,14 @@ public partial class VideoDownloadPage : ContentPage
 
     private void VideoAnalysisListCB_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
-        if(VideoAnalysisList.ItemsSource is null)
+        if (VideoAnalysisList.ItemsSource is null)
         {
             return;
         }
 
-        var tlist= VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
-        tlist.ForEach(p => { p.IsSelected=e.Value; });
-        VideoAnalysisList.ItemsSource=tlist;
+        var tlist = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
+        tlist.ForEach(p => { p.IsSelected = e.Value; });
+        VideoAnalysisList.ItemsSource = tlist;
     }
 
     /*
@@ -441,7 +461,7 @@ public partial class VideoDownloadPage : ContentPage
     private async void SelectSaveDownloadFolderBtn_Clicked(object sender, EventArgs e)
     {
         int permResult = await new APPPermissions().CheckAndReqPermissions();
-        if (permResult!=0)
+        if (permResult != 0)
         {
             await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要读取文件！", "确定");
             return;
@@ -451,7 +471,7 @@ public partial class VideoDownloadPage : ContentPage
 
         if (folderPicker.IsSuccessful)
         {
-            SaveDownloadFolderTb.Text=folderPicker.Folder.Path;
+            SaveDownloadFolderTb.Text = folderPicker.Folder.Path;
         }
         else
         {
@@ -479,8 +499,8 @@ public partial class VideoDownloadPage : ContentPage
             return;
         }
 
-        var tlist=DownloadVideoFileList.ItemsSource.Cast<DownloadVideoFileList>().Where(p => p.IsSelected).ToList();
-        if(tlist.Count<1)
+        var tlist = DownloadVideoFileList.ItemsSource.Cast<DownloadVideoFileList>().Where(p => p.IsSelected).ToList();
+        if (tlist.Count < 1)
         {
             await DisplayAlert("提示信息", "请先至少勾选一条要停止的任务！", "确定");
             return;
@@ -488,12 +508,12 @@ public partial class VideoDownloadPage : ContentPage
 
         tlist.ForEach(p =>
         {
-            var tl= DownloadFileLists.Where(p2 => p2 == p).FirstOrDefault();
+            var tl = DownloadFileLists.Where(p2 => p2 == p).FirstOrDefault();
             tl.CurrentActiveObject.isContinueDownloadStream = false;
             //DownloadFileLists.Remove(tl);
         });
         DownloadFileLists.RemoveAll(p => !p.CurrentActiveObject.isContinueDownloadStream || p.CurrentActiveObject.isEndList);
-        
+
 
         DownloadVideoFileList.ItemsSource = DownloadFileLists;
         await DisplayAlert("提示信息", "已停止选定的任务！", "确定");
