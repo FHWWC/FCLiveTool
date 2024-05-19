@@ -331,6 +331,7 @@ namespace FCLiveToolApplication
         public async Task<string> DownloadAndReadM3U8FileForDownloadTS(VideoAnalysisList videoAnalysisList, string[] VideoIfm,int FileFrom)
         {
             FileFromIndex=FileFrom;
+            bool isNeedAddServer = false;
 
             if(FileFrom==0)
             {
@@ -468,6 +469,11 @@ namespace FCLiveToolApplication
                                 {
                                     r =tsurl + r;
                                 }
+                                //如果仍然获取不到服务器
+                                if (!r.Contains("://"))
+                                {
+                                    return "当前文件内提供的M3U8的URL是相对地址，程序无法知晓直播源的服务器，所以没有可用的数据源！";
+                                }
 
                                 //解析M3U8文件后如果内部不是TS分片文件还是M3U8文件，那么它一定是一个URL，所以FileFrom传0
                                 return await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { r },0);
@@ -498,6 +504,10 @@ namespace FCLiveToolApplication
                                 {
                                     r = tsurl+ r;
                                 }
+                                if (!r.Contains("://"))
+                                {
+                                    isNeedAddServer = true;
+                                }
 
                                 tMTP.Add(new M3U8_TS_PARM() { ItemId=ts_index, FullURL=r, Time=tTime });
                                 ts_index++;
@@ -520,16 +530,20 @@ namespace FCLiveToolApplication
                         videoAnalysisList.M3U8URL = tsurl;
                         videoAnalysisList.FileName = VideoIfm[0].Replace(tsurl, "");
                         videoAnalysisList.TS_PARM = tMTP;
+
                     }
-
-                 
-           
-
+                    
                 }
                 catch (Exception)
                 {
                     return "解析出现问题，可能是M3U8文件数据格式有问题。";
                 }
+
+                if (isNeedAddServer)
+                {
+                    return "CODE_00";
+                }
+
             }
             else
             {
@@ -539,6 +553,268 @@ namespace FCLiveToolApplication
 
             return "";
         }
+
+        /// <summary>
+        ///  下载M3U8文件并解析所有TS分片文件，该方法会返回一个TS列表，用于下载分片文件
+        /// </summary>
+        /// <param name="videoAnalysisList">从M3U8文件里解析到的所有信息</param>
+        /// <param name="VideoIfm">1：URL；</param>
+        /// <param name="FileFrom">文件来源，0表示URL地址；1表示本地文件路径；</param>
+        /// <returns></returns>
+        public async Task<List<string>> DownloadAndReadM3U8FileForDownloadTS(List<VideoAnalysisList> videoAnalysisList, List<string> VideoIfm, int FileFrom)
+        {
+            FileFromIndex=FileFrom;
+            List<string> resultList = new List<string>(); 
+
+            for (int i = 0; i<VideoIfm.Count; i++)
+            {
+                bool skipAddResult = false;
+                bool isNeedAddServer = false;
+                videoAnalysisList.Add(new VideoAnalysisList());
+
+                if (FileFrom==0)
+                {
+                    using (HttpClient httpClient = new HttpClient())
+                    {
+                        int statusCode;
+                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                        HttpResponseMessage response = null;
+
+                        try
+                        {
+                            response = await httpClient.GetAsync(VideoIfm[i]);
+
+                            statusCode = (int)response.StatusCode;
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                resultList.Add("获取文件失败，请稍后重试！\n" + "HTTP错误代码：" + statusCode);
+                                continue;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            resultList.Add("无法连接到对方服务器，请检查您的网络或者更换一个直播源！");
+                            continue;
+                        }
+
+                        try
+                        {
+                            using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                            {
+                                string r = "";
+                                string tAllowCache = "---";
+                                string tTargetDuration = "---";
+                                string tMediaSequence = "---";
+                                List<M3U8_TS_PARM> tMTP = new List<M3U8_TS_PARM>();
+                                double tTime = 0;
+                                string tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("/") + 1);
+                                int ts_index = 0;
+
+                                while ((r = await sr.ReadLineAsync()) != null)
+                                {
+                                    //如果下载M3U8文件后里面还是个M3U8文件，则继续下载并解析
+                                    if (r.Contains(".m3u8"))
+                                    {
+                                        if (!r.Contains("://"))
+                                        {
+                                            r =tsurl + r;
+                                        }
+
+                                        resultList.Add(await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList[i], new string[] { r }, FileFrom));
+                                        skipAddResult = true;
+                                        break;
+                                    }
+                                    //开始读取带TS分片信息的M3U8
+                                    else if (r.StartsWith("#EXT-X-ALLOW-CACHE"))
+                                    {
+                                        tAllowCache=r.Replace("#EXT-X-ALLOW-CACHE:", "");
+                                    }
+                                    else if (r.StartsWith("#EXT-X-TARGETDURATION"))
+                                    {
+                                        tTargetDuration=r.Replace("#EXT-X-TARGETDURATION:", "");
+                                    }
+                                    else if (r.StartsWith("#EXT-X-MEDIA-SEQUENCE"))
+                                    {
+                                        tMediaSequence=r.Replace("#EXT-X-MEDIA-SEQUENCE:", "");
+                                    }
+                                    else if (r.Contains("#EXTINF:"))
+                                    {
+                                        var tvalue = r.Replace("#EXTINF:", "");
+                                        tvalue = tvalue.Substring(0, tvalue.IndexOf(","));
+
+                                        double.TryParse(tvalue, out tTime);
+                                    }
+                                    else if (r.Contains(".ts"))
+                                    {
+                                        if (!r.Contains("://"))
+                                        {
+                                            r = tsurl+ r;
+                                        }
+
+                                        tMTP.Add(new M3U8_TS_PARM() { ItemId=ts_index, FullURL=r, Time=tTime });
+                                        ts_index++;
+                                    }
+                                    else if (r.Contains("#EXT-X-ENDLIST"))
+                                    {
+                                        //添加一个标识，因为直播已结束，服务器不再提供新的数据流，所以程序将不再向服务器发请求
+                                        //tMTP.Add(new M3U8_TS_PARM() { FullURL = "", Time = 0 });
+                                        isEndList = true;
+                                        //return "直播源已播放完毕";
+                                    }
+
+                                }
+
+
+                                videoAnalysisList[i].AllowCache = tAllowCache;
+                                videoAnalysisList[i].MediaSequence = tMediaSequence;
+                                videoAnalysisList[i].TargetDuration = tTargetDuration;
+                                videoAnalysisList[i].FullURL = VideoIfm[i];
+                                videoAnalysisList[i].M3U8URL = tsurl;
+                                videoAnalysisList[i].FileName = VideoIfm[i].Replace(tsurl, "");
+                                videoAnalysisList[i].TS_PARM = tMTP;
+                            }
+
+                        }
+                        catch (Exception)
+                        {
+                            resultList.Add("解析出现问题，可能是M3U8文件数据格式有问题。");
+                            continue;
+                        }
+
+
+                    }
+                }
+                else if (FileFrom==1)
+                {
+                    if (!File.Exists(VideoIfm[i]))
+                    {
+                        resultList.Add("程序找不到该直播源本地文件，可能是该文件已被删除或移动。");
+                        continue;
+                    }
+
+                    try
+                    {
+                        using (StringReader sr = new StringReader(File.ReadAllText(VideoIfm[i])))
+                        {
+                            string r = "";
+                            string tAllowCache = "---";
+                            string tTargetDuration = "---";
+                            string tMediaSequence = "---";
+                            List<M3U8_TS_PARM> tMTP = new List<M3U8_TS_PARM>();
+                            double tTime = 0;
+                            string tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("/") + 1);
+                            int ts_index = 0;
+
+                            while ((r = await sr.ReadLineAsync()) != null)
+                            {
+                                //如果下载M3U8文件后里面还是个M3U8文件，则继续下载并解析
+                                if (r.Contains(".m3u8"))
+                                {
+                                    if (!r.Contains("://"))
+                                    {
+                                        r =tsurl + r;
+                                    }
+                                    //如果仍然获取不到服务器
+                                    if (!r.Contains("://"))
+                                    {
+                                        resultList.Add("当前文件内提供的M3U8的URL是相对地址，程序无法知晓直播源的服务器，所以没有可用的数据源！");
+                                        skipAddResult = true;
+                                        
+                                        break;
+                                    }
+
+                                    //解析M3U8文件后如果内部不是TS分片文件还是M3U8文件，那么它一定是一个URL，所以FileFrom传0
+                                    resultList.Add(await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList[i], new string[] { r }, 0));
+                                    skipAddResult = true;
+
+                                    break;
+                                }
+                                //开始读取带TS分片信息的M3U8
+                                else if (r.StartsWith("#EXT-X-ALLOW-CACHE"))
+                                {
+                                    tAllowCache=r.Replace("#EXT-X-ALLOW-CACHE:", "");
+                                }
+                                else if (r.StartsWith("#EXT-X-TARGETDURATION"))
+                                {
+                                    tTargetDuration=r.Replace("#EXT-X-TARGETDURATION:", "");
+                                }
+                                else if (r.StartsWith("#EXT-X-MEDIA-SEQUENCE"))
+                                {
+                                    tMediaSequence=r.Replace("#EXT-X-MEDIA-SEQUENCE:", "");
+                                }
+                                else if (r.Contains("#EXTINF:"))
+                                {
+                                    var tvalue = r.Replace("#EXTINF:", "");
+                                    tvalue = tvalue.Substring(0, tvalue.IndexOf(","));
+
+                                    double.TryParse(tvalue, out tTime);
+                                }
+                                else if (r.Contains(".ts"))
+                                {
+                                    if (!r.Contains("://"))
+                                    {
+                                        r = tsurl+ r;
+                                    }
+                                    if (!r.Contains("://"))
+                                    {
+                                        isNeedAddServer = true;
+                                    }
+
+                                    tMTP.Add(new M3U8_TS_PARM() { ItemId=ts_index, FullURL=r, Time=tTime });
+                                    ts_index++;
+                                }
+                                else if (r.Contains("#EXT-X-ENDLIST"))
+                                {
+                                    //添加一个标识，因为直播已结束，服务器不再提供新的数据流，所以程序将不再向服务器发请求
+                                    //tMTP.Add(new M3U8_TS_PARM() { FullURL = "", Time = 0 });
+                                    isEndList = true;
+                                    //return "直播源已播放完毕";
+                                }
+
+                            }
+
+
+                            videoAnalysisList[i].AllowCache = tAllowCache;
+                            videoAnalysisList[i].MediaSequence = tMediaSequence;
+                            videoAnalysisList[i].TargetDuration = tTargetDuration;
+                            videoAnalysisList[i].FullURL = VideoIfm[i];
+                            videoAnalysisList[i].M3U8URL = tsurl;
+                            videoAnalysisList[i].FileName = VideoIfm[i].Replace(tsurl, "");
+                            videoAnalysisList[i].TS_PARM = tMTP;
+                        }
+
+                    }
+                    catch (Exception)
+                    {
+                        resultList.Add("解析出现问题，可能是M3U8文件数据格式有问题。");
+                        continue;
+                    }
+
+
+                    if (isNeedAddServer)
+                    {
+                        resultList.Add("CODE_00");
+                        continue;
+                    }
+
+                }
+                else
+                {
+                    //如果传参错误，则没有继续的意义。
+                    return resultList;
+                }
+
+
+                if(!skipAddResult)
+                {
+                    resultList.Add("");
+                }
+
+            }
+
+            return resultList;
+        }
+
         /// <summary>
         /// 
         /// </summary>

@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Storage;
+using System.Dynamic;
 
 namespace FCLiveToolApplication;
 
@@ -65,6 +66,9 @@ public partial class VideoDownloadPage : ContentPage
 
     private async void M3U8AnalysisBtn_Clicked(object sender, EventArgs e)
     {
+        List<VideoAnalysisList> ResultList = new List<VideoAnalysisList>();
+        List<string> readresult=new List<string>();
+
         if (M3U8SourceRBtn1.IsChecked)
         {
             if (string.IsNullOrWhiteSpace(M3U8SourceURLTb.Text))
@@ -78,30 +82,15 @@ public partial class VideoDownloadPage : ContentPage
                 return;
             }
 
-            VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
-            string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { M3U8SourceURLTb.Text }, 0);
-            if (readresult != "")
+            //后续添加批量识别，并且加入批量识别的查重
+            List<string> M3U8DownloadURLsList = new List<string>();
+            M3U8DownloadURLsList.Add(M3U8SourceURLTb.Text);
+
+            readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(ResultList, M3U8DownloadURLsList, 0);
+            if (readresult.Count<1)
             {
-                await DisplayAlert("提示信息", readresult, "确定");
                 return;
             }
-
-            List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
-            if (VideoAnalysisList.ItemsSource != null)
-            {
-                videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
-
-                var titem = videoAnalysisLists.FirstOrDefault(p => p.FullURL == videoAnalysisList.FullURL);
-                if (titem != null)
-                {
-                    videoAnalysisLists.Remove(titem);
-                }
-
-            }
-            videoAnalysisLists.Add(videoAnalysisList);
-
-
-            VideoAnalysisList.ItemsSource = videoAnalysisLists;
 
         }
         else if (M3U8SourceRBtn2.IsChecked)
@@ -112,38 +101,128 @@ public partial class VideoDownloadPage : ContentPage
                 return;
             }
 
-            for (int i = 0; i < LocalM3U8FilesList.Count; i++)
+            readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(ResultList,LocalM3U8FilesList , 1);
+            if(readresult.Count<1)
             {
-                VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
-                string readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { LocalM3U8FilesList[i] }, 1);
-                if (readresult != "")
+                return;
+            }
+            int needAddServerCount = readresult.Where(p => p.StartsWith("CODE_")).Count();
+            if (needAddServerCount> 0)
+            {
+                bool tresult = await DisplayAlert("提示信息", "当前有"+needAddServerCount+"个本地直播源文件内的分片文件URL是相对地址，程序无法知晓它们的服务器，" +
+                    "所以需要你补充直播源对应的服务器地址，你要继续补充还是跳过这些文件？", "继续", "跳过");
+                if (tresult)
                 {
-                    await DisplayAlert("提示信息", readresult, "确定");
-                    continue;
-                }
-
-                List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
-                if (VideoAnalysisList.ItemsSource != null)
-                {
-                    videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
-
-                    var titem = videoAnalysisLists.FirstOrDefault(p => p.FullURL == videoAnalysisList.FullURL);
-                    if (titem != null)
+                    for(int i = 0;i<readresult.Count;i++)
                     {
-                        videoAnalysisLists.Remove(titem);
+                        if (readresult[i].StartsWith("CODE_"))
+                        {
+                            string urlnewvalue = await DisplayPromptAsync("添加服务器", "请输入直播源的服务器地址，该地址除了文件名以外其他都要包含。\n"+
+                                "例如文件的地址是 https://example.com/abc/123.ts ，那么你应该填写 https://example.com/abc/", "保存并下一个", "取消", "URL...", -1, Keyboard.Text, "");
+                           
+                            if (string.IsNullOrWhiteSpace(urlnewvalue))
+                            {
+                                if (urlnewvalue!=null)
+                                {
+                                    await DisplayAlert("提示信息", "请输入正确的内容！", "确定");
+                                    i--;
+                                    continue;
+                                }
+                                else
+                                {
+                                    break;
+                                }
+                            }
+                            if (!urlnewvalue.Contains("://"))
+                            {
+                                await DisplayAlert("提示信息", "输入的内容不符合URL规范！", "确定");
+                                i--;
+                                continue;
+                            }
+
+                            if(!urlnewvalue.EndsWith("/"))
+                            {
+                                urlnewvalue+="/";
+                            }
+
+                            //将用户输入的内容与之前的地址进行拼接
+                            ResultList[i].TS_PARM.ForEach(p=>
+                            {
+                                p.FullURL=urlnewvalue+p.FullURL;
+                            });
+
+                            //重置标识为空值，默认用户输入的是正确的服务器
+                            readresult[i]="";
+                        }
+
                     }
 
                 }
-                videoAnalysisLists.Add(videoAnalysisList);
 
-                VideoAnalysisList.ItemsSource = videoAnalysisLists;
+                //清除剩余的CODE_标识，因为没有保留的意义
+                for (int i = readresult.Count-1; i>=0; i--)
+                {
+                    if (readresult[i].StartsWith("CODE_"))
+                    {
+                        readresult.RemoveAt(i);
+                        ResultList.RemoveAt(i);
+                    }
+                }
+
+
+                //要判断readresult是否为空
+
+
+
             }
-
-
 
         }
 
 
+        var trList = readresult.Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
+        if(trList.Count > 0)
+        {
+            string tmsg = "";
+            for (int i = readresult.Count-1;i>=0 ; i--)
+            {
+                if(!string.IsNullOrWhiteSpace(p))
+                {
+                    tmsg=ResultList[i].FullURL+"\n"+ readresult[i]+"\n\n"+tmsg;
+                    //移除全部失效
+                    readresult.RemoveAt(i);
+                    ResultList.RemoveAt(i);
+                }
+
+            }
+            await DisplayAlert("提示信息", "当前有一个或多个直播源存在问题，详细内容如下：\n\n\n"+tmsg, "确定");
+
+            if(ResultList.Count<1)
+            {
+                await DisplayAlert("提示信息", "本次不会添加新的条目，因为选择的列表里没有有效的直播源！", "确定");
+                return;
+            }
+        }
+
+
+
+        List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
+        if (VideoAnalysisList.ItemsSource != null)
+        {
+            videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
+
+            videoAnalysisLists.ForEach(p=>
+            {
+                var titem = ResultList.FirstOrDefault(p2 => p2.FullURL == p.FullURL);
+                if (titem != null)
+                {
+                    videoAnalysisLists.Remove(p);
+                }
+            });
+
+        }
+        videoAnalysisLists.AddRange(ResultList);
+
+        VideoAnalysisList.ItemsSource = videoAnalysisLists;
     }
 
     private void M3U8SourceRBtn_CheckedChanged(object sender, CheckedChangedEventArgs e)
