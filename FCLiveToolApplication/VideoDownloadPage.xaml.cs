@@ -171,7 +171,11 @@ public partial class VideoDownloadPage : ContentPage
 
 
                 //要判断readresult是否为空
-
+                if(readresult.Count<1)
+                {
+                    await DisplayAlert("提示信息", "本次不会添加新的条目，因为选择的列表里没有有效的直播源！", "确定");
+                    return;
+                }
 
 
             }
@@ -185,7 +189,7 @@ public partial class VideoDownloadPage : ContentPage
             string tmsg = "";
             for (int i = readresult.Count-1;i>=0 ; i--)
             {
-                if(!string.IsNullOrWhiteSpace(p))
+                if (!string.IsNullOrWhiteSpace(readresult[i]))
                 {
                     tmsg=ResultList[i].FullURL+"\n"+ readresult[i]+"\n\n"+tmsg;
                     //移除全部失效

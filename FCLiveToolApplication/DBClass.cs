@@ -702,7 +702,8 @@ namespace FCLiveToolApplication
                             string tMediaSequence = "---";
                             List<M3U8_TS_PARM> tMTP = new List<M3U8_TS_PARM>();
                             double tTime = 0;
-                            string tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("/") + 1);
+                            //截取本地文件的路径时，需要注意不同操作系统的斜杠会有不同
+                            string tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                             int ts_index = 0;
 
                             while ((r = await sr.ReadLineAsync()) != null)
