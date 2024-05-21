@@ -14,7 +14,6 @@ public partial class VideoDownloadPage : ContentPage
     //public double DownloadProcess;
     //public int ThreadNum = 1;
     //public List<ThreadInfo> threadinfos;
-    public List<VideoManager> DownloadTaskList = new List<VideoManager>();
     public List<DownloadVideoFileList> DownloadFileLists = new List<DownloadVideoFileList>();
     public List<string> LocalM3U8FilesList = new List<string>();
 
@@ -207,7 +206,7 @@ public partial class VideoDownloadPage : ContentPage
             }
         }
 
-
+        
 
         List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
         if (VideoAnalysisList.ItemsSource != null)
