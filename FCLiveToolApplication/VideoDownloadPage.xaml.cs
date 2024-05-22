@@ -452,21 +452,7 @@ public partial class VideoDownloadPage : ContentPage
 
                     DownloadProcess=percent;
 
-                    //byte[] buffer = new byte[ns.Length];
-                    //int readSize = ns.Read(buffer, 0, buffer.Length);
-                    //while (readSize > 0)
-                    //{
-                    //    fs.Write(buffer, 0, readSize);
 
-                    //    buffer = new byte[buffer.Length];
-
-                    //    readSize = ns.Read(buffer, 0, buffer.Length);
-
-                    //    ReceiveSize += readSize;
-                    //    double percent = (double)ReceiveSize / (double)AllFilesize * 100;
-
-                    //    DownloadProcess=percent;
-                    //}
                 }
                 currentThread.ThreadStatus = true;
             }

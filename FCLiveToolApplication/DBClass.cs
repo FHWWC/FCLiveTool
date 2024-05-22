@@ -113,6 +113,7 @@ namespace FCLiveToolApplication
         public string M3U8URL { get; set; }
         public string FileName { get; set; }
         public string FullURL { get; set; }
+        public int FileFromIndex { get; set; }
         public bool IsSelected { get; set; }
 
     }
@@ -221,7 +222,6 @@ namespace FCLiveToolApplication
         public List<DownloadTempFileList> TempFileList;
         public bool isContinueDownloadStream = true;
         public bool isEndList = false;
-        public int FileFromIndex;
         /// <summary>
         /// 
         /// </summary>
@@ -330,10 +330,10 @@ namespace FCLiveToolApplication
         /// <returns></returns>
         public async Task<string> DownloadAndReadM3U8FileForDownloadTS(VideoAnalysisList videoAnalysisList, string[] VideoIfm,int FileFrom)
         {
-            FileFromIndex=FileFrom;
             bool isNeedAddServer = false;
+            videoAnalysisList.FileFromIndex=FileFrom;
 
-            if(FileFrom==0)
+            if (FileFrom==0)
             {
                 using (HttpClient httpClient = new HttpClient())
                 {
@@ -563,14 +563,13 @@ namespace FCLiveToolApplication
         /// <returns></returns>
         public async Task<List<string>> DownloadAndReadM3U8FileForDownloadTS(List<VideoAnalysisList> videoAnalysisList, List<string> VideoIfm, int FileFrom)
         {
-            FileFromIndex=FileFrom;
             List<string> resultList = new List<string>(); 
 
             for (int i = 0; i<VideoIfm.Count; i++)
             {
                 bool skipAddResult = false;
                 bool isNeedAddServer = false;
-                videoAnalysisList.Add(new VideoAnalysisList());
+                videoAnalysisList.Add(new VideoAnalysisList() { FileFromIndex=FileFrom});
 
                 if (FileFrom==0)
                 {
@@ -995,10 +994,10 @@ namespace FCLiveToolApplication
                 await Task.Delay((int)TS_AllTime-500);
 
                 //本地文件暂时只循环一次
-                if(FileFromIndex==0)
+                if(valist.FileFromIndex==0)
                 {
                     VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
-                    dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, FileFromIndex);
+                    dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
                     if (string.IsNullOrEmpty(dresult))
                     {
                         dresult = await DownloadM3U8Stream(videoAnalysisList, savepath, isMergeBeforeFile);

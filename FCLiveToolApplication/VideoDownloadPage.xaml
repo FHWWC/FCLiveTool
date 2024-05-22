@@ -121,7 +121,7 @@
                         <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
-                <Label x:Name="LocalM3U8Tb" LineBreakMode="WordWrap" Margin="10,0,0,0"/>
+                <Label x:Name="LocalM3U8Tb" LineBreakMode="WordWrap" VerticalOptions="Center" Margin="10,0,0,0"/>
             </StackLayout>
             <Button x:Name="M3U8AnalysisBtn" Text="开始解析" Background="LightBlue" Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" Clicked="M3U8AnalysisBtn_Clicked">
                 <Button.ImageSource>
