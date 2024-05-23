@@ -664,13 +664,17 @@ namespace FCLiveToolApplication
                                 }
 
 
-                                videoAnalysisList[i].AllowCache = tAllowCache;
-                                videoAnalysisList[i].MediaSequence = tMediaSequence;
-                                videoAnalysisList[i].TargetDuration = tTargetDuration;
-                                videoAnalysisList[i].FullURL = VideoIfm[i];
-                                videoAnalysisList[i].M3U8URL = tsurl;
-                                videoAnalysisList[i].FileName = VideoIfm[i].Replace(tsurl, "");
-                                videoAnalysisList[i].TS_PARM = tMTP;
+                                if(!skipAddResult)
+                                {
+                                    videoAnalysisList[i].AllowCache = tAllowCache;
+                                    videoAnalysisList[i].MediaSequence = tMediaSequence;
+                                    videoAnalysisList[i].TargetDuration = tTargetDuration;
+                                    videoAnalysisList[i].FullURL = VideoIfm[i];
+                                    videoAnalysisList[i].M3U8URL = tsurl;
+                                    videoAnalysisList[i].FileName = VideoIfm[i].Replace(tsurl, "");
+                                    videoAnalysisList[i].TS_PARM = tMTP;
+                                }
+
                             }
 
                         }
@@ -774,13 +778,17 @@ namespace FCLiveToolApplication
                             }
 
 
-                            videoAnalysisList[i].AllowCache = tAllowCache;
-                            videoAnalysisList[i].MediaSequence = tMediaSequence;
-                            videoAnalysisList[i].TargetDuration = tTargetDuration;
-                            videoAnalysisList[i].FullURL = VideoIfm[i];
-                            videoAnalysisList[i].M3U8URL = tsurl;
-                            videoAnalysisList[i].FileName = VideoIfm[i].Replace(tsurl, "");
-                            videoAnalysisList[i].TS_PARM = tMTP;
+                            if(!skipAddResult)
+                            {
+                                videoAnalysisList[i].AllowCache = tAllowCache;
+                                videoAnalysisList[i].MediaSequence = tMediaSequence;
+                                videoAnalysisList[i].TargetDuration = tTargetDuration;
+                                videoAnalysisList[i].FullURL = VideoIfm[i];
+                                videoAnalysisList[i].M3U8URL = tsurl;
+                                videoAnalysisList[i].FileName = VideoIfm[i].Replace(tsurl, "");
+                                videoAnalysisList[i].TS_PARM = tMTP;
+                            }
+
                         }
 
                     }

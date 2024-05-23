@@ -373,7 +373,7 @@ public partial class VideoPrevPage : ContentPage
         if (folderPicker.IsSuccessful)
         {
             List<LocalM3U8List> mlist = new List<LocalM3U8List>();
-            LoadM3U8FileFromSystem(folderPicker.Folder.Path, folderPicker.Folder.Path, ref mlist);
+            LoadM3U8FileFromSystem(folderPicker.Folder.Path, ref mlist);
             CurrentLocalM3U8List.AddRange(mlist);
 
             //ÖØÐÂÌí¼ÓÐòºÅ
@@ -444,13 +444,13 @@ public partial class VideoPrevPage : ContentPage
         }
 
     }
-    public void LoadM3U8FileFromSystem(string path, string initFoldername, ref List<LocalM3U8List> list)
+    public void LoadM3U8FileFromSystem(string path, ref List<LocalM3U8List> list)
     {
         foreach (string item in Directory.EnumerateFileSystemEntries(path).ToList())
         {
             if (File.GetAttributes(item).HasFlag(FileAttributes.Directory))
             {
-                LoadM3U8FileFromSystem(item, initFoldername, ref list);
+                LoadM3U8FileFromSystem(item, ref list);
             }
             else
             {

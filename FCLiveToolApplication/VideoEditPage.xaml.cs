@@ -44,7 +44,7 @@ public partial class VideoEditPage : ContentPage
         if (folderPicker.IsSuccessful)
         {
             List<LocalM3UList> mlist = new List<LocalM3UList>();
-            LoadM3UFileFromSystem(folderPicker.Folder.Path, folderPicker.Folder.Path, ref mlist);
+            LoadM3UFileFromSystem(folderPicker.Folder.Path, ref mlist);
             CurrentLocalM3UList.AddRange(mlist);
 
             //ÖØÐÂÌí¼ÓÐòºÅ
@@ -123,13 +123,13 @@ public partial class VideoEditPage : ContentPage
         CurrentLocalM3UList.Clear();
     }
 
-    public void LoadM3UFileFromSystem(string path, string initFoldername, ref List<LocalM3UList> list)
+    public void LoadM3UFileFromSystem(string path, ref List<LocalM3UList> list)
     {
         foreach (string item in Directory.EnumerateFileSystemEntries(path).ToList())
         {
             if (File.GetAttributes(item).HasFlag(FileAttributes.Directory))
             {
-                LoadM3UFileFromSystem(item, initFoldername, ref list);
+                LoadM3UFileFromSystem(item, ref list);
             }
             else
             {

@@ -61,8 +61,52 @@ public partial class VideoDownloadPage : ContentPage
             return;
         }
 
-    }
+        var folderPicker = await FolderPicker.PickAsync(FileSystem.AppDataDirectory, CancellationToken.None);
 
+        if (folderPicker.IsSuccessful)
+        {
+            List<string> mlist = new List<string>();
+            LoadM3U8FileFromSystem(folderPicker.Folder.Path, ref mlist);
+            LocalM3U8FilesList=mlist;
+
+            if(LocalM3U8FilesList.Count<1)
+            {
+                await DisplayAlert("提示信息", "当前选择的目录下没有M3U8文件，请重新选择！", "确定");
+            }
+            LocalM3U8Tb.Text = "已经选择了" + LocalM3U8FilesList.Count + "个文件";
+
+        }
+        else
+        {
+            LocalM3U8Tb.Text = "已取消选择";
+            await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+        }
+
+
+    }
+    public void LoadM3U8FileFromSystem(string path,ref List<string> list)
+    {
+        foreach (string item in Directory.EnumerateFileSystemEntries(path).ToList())
+        {
+            if (File.GetAttributes(item).HasFlag(FileAttributes.Directory))
+            {
+                LoadM3U8FileFromSystem(item, ref list);
+            }
+            else
+            {
+                if (item.ToLower().EndsWith(".m3u8"))
+                {
+                    if (LocalM3U8FilesList.Where(p => p==item).Count()<1)
+                    {
+                        list.Add(item);
+                    }
+
+                }
+
+            }
+
+        }
+    }
     private async void M3U8AnalysisBtn_Clicked(object sender, EventArgs e)
     {
         List<VideoAnalysisList> ResultList = new List<VideoAnalysisList>();
