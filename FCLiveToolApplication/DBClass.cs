@@ -457,7 +457,12 @@ namespace FCLiveToolApplication
                         string tMediaSequence = "---";
                         List<M3U8_TS_PARM> tMTP = new List<M3U8_TS_PARM>();
                         double tTime = 0;
-                        string tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("/") + 1);
+                        string tsurl = "";
+#if ANDROID
+                        tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("/") + 1);
+#else
+tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
+#endif
                         int ts_index = 0;
 
                         while ((r = await sr.ReadLineAsync()) != null)
@@ -465,10 +470,6 @@ namespace FCLiveToolApplication
                             //如果下载M3U8文件后里面还是个M3U8文件，则继续下载并解析
                             if (r.Contains(".m3u8"))
                             {
-                                if (!r.Contains("://"))
-                                {
-                                    r =tsurl + r;
-                                }
                                 //如果仍然获取不到服务器
                                 if (!r.Contains("://"))
                                 {
@@ -500,10 +501,6 @@ namespace FCLiveToolApplication
                             }
                             else if (r.Contains(".ts"))
                             {
-                                if (!r.Contains("://"))
-                                {
-                                    r = tsurl+ r;
-                                }
                                 if (!r.Contains("://"))
                                 {
                                     isNeedAddServer = true;
@@ -706,7 +703,13 @@ namespace FCLiveToolApplication
                             List<M3U8_TS_PARM> tMTP = new List<M3U8_TS_PARM>();
                             double tTime = 0;
                             //截取本地文件的路径时，需要注意不同操作系统的斜杠会有不同
-                            string tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
+                            string tsurl = "";
+#if ANDROID
+                            tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("/") + 1);
+
+#else
+tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
+#endif
                             int ts_index = 0;
 
                             while ((r = await sr.ReadLineAsync()) != null)
@@ -714,10 +717,6 @@ namespace FCLiveToolApplication
                                 //如果下载M3U8文件后里面还是个M3U8文件，则继续下载并解析
                                 if (r.Contains(".m3u8"))
                                 {
-                                    if (!r.Contains("://"))
-                                    {
-                                        r =tsurl + r;
-                                    }
                                     //如果仍然获取不到服务器
                                     if (!r.Contains("://"))
                                     {
@@ -755,10 +754,6 @@ namespace FCLiveToolApplication
                                 }
                                 else if (r.Contains(".ts"))
                                 {
-                                    if (!r.Contains("://"))
-                                    {
-                                        r = tsurl+ r;
-                                    }
                                     if (!r.Contains("://"))
                                     {
                                         isNeedAddServer = true;
@@ -963,7 +958,7 @@ namespace FCLiveToolApplication
                             ns = await response.Content.ReadAsStreamAsync();
                             ns.CopyTo(fs);
                         }
-                        catch(Exception)
+                        catch(Exception ex)
                         {
                             dresult = "向临时文件写入发生异常！";
                             isContinueDownloadStream = false;
