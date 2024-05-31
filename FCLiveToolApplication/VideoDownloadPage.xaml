@@ -105,8 +105,10 @@
 
             <StackLayout Orientation="Horizontal" Grid.ColumnSpan="2">
                 <Label Text="选择M3U8直播源文件来源：" VerticalOptions="Center"/>
-                <RadioButton x:Name="M3U8SourceRBtn1" Content="输入URL" IsChecked="True" GroupName="M3U8SourceRBtnGroup" Margin="20,0,0,0" CheckedChanged="M3U8SourceRBtn_CheckedChanged"/>
-                <RadioButton x:Name="M3U8SourceRBtn2" Content="本地文件" GroupName="M3U8SourceRBtnGroup" Margin="5,0,0,0" CheckedChanged="M3U8SourceRBtn_CheckedChanged"/>
+                <StackLayout Orientation="{OnPlatform Horizontal,Android=Vertical}">
+                    <RadioButton x:Name="M3U8SourceRBtn1" Content="输入URL" IsChecked="True" GroupName="M3U8SourceRBtnGroup" Margin="{OnPlatform '20,0,0,0',Android='5,0,0,0'}" CheckedChanged="M3U8SourceRBtn_CheckedChanged"/>
+                    <RadioButton x:Name="M3U8SourceRBtn2" Content="本地文件" GroupName="M3U8SourceRBtnGroup" Margin="5,0,0,0" CheckedChanged="M3U8SourceRBtn_CheckedChanged"/>
+                </StackLayout>
             </StackLayout>
 
             <Entry x:Name="M3U8SourceURLTb" HeightRequest="30" ClearButtonVisibility="WhileEditing" Grid.Row="1"/>
@@ -129,7 +131,7 @@
                 </Button.ImageSource>
             </Button>
 
-            <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2">
+            <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" IsVisible="{ OnPlatform Android=False}">
                 <Button x:Name="SelectSaveDownloadFolderBtn" Background="LightBlue" Text="选择保存位置" Clicked="SelectSaveDownloadFolderBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
@@ -153,7 +155,7 @@
                 </Button>
             </Grid>
             <Label Text="TS文件在服务器上具有时效性，什么时候删除取决于直播源服务器。如出现404报错，请点击解析按钮重新获取对应的TS文件。" LineBreakMode="WordWrap"/>
-            <ListView x:Name="VideoAnalysisList" ItemTemplate="{StaticResource VideoAnalysisListStyle}" HorizontalScrollBarVisibility="Never"/>
+            <ListView x:Name="VideoAnalysisList" ItemTemplate="{StaticResource VideoAnalysisListStyle}" RowHeight="{ OnPlatform Android=150}" HorizontalScrollBarVisibility="Never"/>
 
         </StackLayout>
 
@@ -170,7 +172,7 @@
                 </Button>
             </Grid>
             <Label Text="程序向服务器请求下一个M3U8文件的间隔时间是当前M3U8文件内所有TS分片的累计时长。停止任务后程序将不再请求新的M3U8，如需继续则需要重新手动点解析和下载。" LineBreakMode="WordWrap"/>
-            <ListView x:Name="DownloadVideoFileList" ItemTemplate="{StaticResource DownloadVideoFileListStyle}" HorizontalScrollBarVisibility="Never"/>
+            <ListView x:Name="DownloadVideoFileList" ItemTemplate="{StaticResource DownloadVideoFileListStyle}"  RowHeight="{ OnPlatform Android=150}" HorizontalScrollBarVisibility="Never"/>
         </StackLayout>
     </Grid>
 </ContentPage>

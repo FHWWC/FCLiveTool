@@ -588,7 +588,7 @@ tname = item.Substring(item.LastIndexOf("\\")+1);
         using (StringWriter sw = new StringWriter())
         {
             new XmlSerializer(typeof(List<LocalM3U8List>)).Serialize(sw, tlist.Cast<LocalM3U8List>().ToList());
-            File.WriteAllText(dataPath+"/LocalM3U8.log", sw.ToString());
+            File.WriteAllText(dataPath+"LocalM3U8.log", sw.ToString());
         }
 
         await DisplayAlert("提示信息", "保存播放列表成功啦！", "确定");

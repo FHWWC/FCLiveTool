@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using CommunityToolkit.Maui.Storage;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace FCLiveToolApplication
 {
@@ -901,6 +903,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
             string filename = valist.FileName.Substring(0, valist.FileName.LastIndexOf("."));
             int FinishCount = 0;
             string dresult = "";
+            string dataPath = new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
 
             foreach (var m in valist.TS_PARM)
             {
@@ -909,7 +912,20 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                     string url = m.FullURL;
                     long Filesize = 0;
                     string FileID = Guid.NewGuid().ToString();
-                    string TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
+                    string TempFilepath = "";
+#if ANDROID            
+                    if (string.IsNullOrWhiteSpace(dataPath))
+                    {              
+                        dresult= "保存文件失败！可能是没有权限或者当前平台暂不支持保存操作！";
+                        isContinueDownloadStream = false;
+                        FinishCount++;
+                        return;
+                    }
+                    TempFilepath =dataPath+ string.Format($"{FileID}_{filename}.tmp");
+
+#else
+TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
+#endif
 
 
                     using (HttpClient httpClient = new HttpClient())
@@ -990,7 +1006,12 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                 }
             }
 
+#if ANDROID
+            MergeTempFile(dataPath + filename + ".mp4", isMergeBeforeFile);
+#else
             MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
+#endif
+
             if (!isEndList&&isContinueDownloadStream)
             {
                 double TS_AllTime = valist.TS_PARM.Sum(p=>p.Time)*1000;
@@ -1229,10 +1250,10 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
             //根据不同平台选择不同的缓存方式
             string dataPath;
 #if WINDOWS
-            dataPath = Path.Combine(FileSystem.AppDataDirectory+"/"+foldername);
+            dataPath = Path.Combine(FileSystem.AppDataDirectory+"/"+foldername)+"\\";
 #elif ANDROID
             //var test= Directory.CreateDirectory(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DataDirectory.AbsolutePath)+"/LiveStreamCache");
-            dataPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"/"+foldername);
+            dataPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"/"+foldername)+"/";
 #else
             //暂时不对苹果设备以及其他平台进行直播源缓存
 
