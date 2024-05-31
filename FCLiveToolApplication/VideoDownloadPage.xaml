@@ -111,7 +111,7 @@
                 </StackLayout>
             </StackLayout>
 
-            <Entry x:Name="M3U8SourceURLTb" HeightRequest="30" ClearButtonVisibility="WhileEditing" Grid.Row="1"/>
+            <Entry x:Name="M3U8SourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing" Grid.Row="1"/>
             <StackLayout x:Name="LocalM3U8SelectPanel" Orientation="Horizontal" Grid.Row="1" IsVisible="False">
                 <Button x:Name="SelectLocalM3U8FileBtn" Background="LightBlue" ContentLayout="Top,-3" Clicked="SelectLocalM3U8FileBtn_Clicked">
                     <Button.ImageSource>
