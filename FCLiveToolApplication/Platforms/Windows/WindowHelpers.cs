@@ -41,6 +41,7 @@ public static class WindowHelpers
             var micaController = new MicaController();
             micaController.AddSystemBackdropTarget(window.As<ICompositionSupportsSystemBackdrop>());
             micaController.SetSystemBackdropConfiguration(configurationSource);
+            micaController.Kind=MicaKind.BaseAlt;
 
             window.Activated += (object sender, WindowActivatedEventArgs args) =>
             {
@@ -52,6 +53,7 @@ public static class WindowHelpers
                         micaController = new MicaController();
                         micaController.AddSystemBackdropTarget(window.As<ICompositionSupportsSystemBackdrop>()); // Requires 'using WinRT;'
                         micaController.SetSystemBackdropConfiguration(configurationSource);
+                        micaController.Kind=MicaKind.BaseAlt;
                     }
 
                     if (configurationSource != null)
@@ -76,6 +78,7 @@ public static class WindowHelpers
             var acrylicController = new DesktopAcrylicController();
             acrylicController.AddSystemBackdropTarget(window.As<ICompositionSupportsSystemBackdrop>());
             acrylicController.SetSystemBackdropConfiguration(configurationSource);
+            acrylicController.Kind=DesktopAcrylicKind.Thin;
 
             window.Activated += (object sender, WindowActivatedEventArgs args) =>
             {
@@ -87,6 +90,7 @@ public static class WindowHelpers
                         acrylicController = new DesktopAcrylicController();
                         acrylicController.AddSystemBackdropTarget(window.As<ICompositionSupportsSystemBackdrop>()); // Requires 'using WinRT;'
                         acrylicController.SetSystemBackdropConfiguration(configurationSource);
+                        acrylicController.Kind=DesktopAcrylicKind.Thin;
                     }
                 }
 
