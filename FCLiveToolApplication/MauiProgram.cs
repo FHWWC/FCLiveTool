@@ -4,6 +4,8 @@ using CommunityToolkit.Maui;
 #if WINDOWS10_0_17763_0_OR_GREATER
 using FCLiveToolApplication.Platforms.Windows;
 using FCLiveToolApplication.WinUI;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Composition.SystemBackdrops;
 #endif
 
 namespace FCLiveToolApplication;
@@ -33,7 +35,15 @@ public static class MauiProgram
             {
                 wndLifeCycleBuilder.OnWindowCreated(window =>
                 {
-                    window.TryMicaOrAcrylic(); // requires 'using YOUR_APP.WinUI;'
+                    if (MicaController.IsSupported())
+                    {
+                        window.SystemBackdrop=new MicaBackdrop { Kind=MicaKind.BaseAlt };
+                    }
+                    else
+                    {
+                        window.TryMicaOrAcrylic(); // requires 'using YOUR_APP.WinUI;'
+                    }
+
                 });
             });
 #endif
