@@ -604,7 +604,18 @@ tname = item.Substring(item.LastIndexOf("\\")+1);
         NowPlayingTb.Background=Colors.Transparent;
     }
 
-    private async void PointerGestureRecognizer_PointerReleased(object sender, PointerEventArgs e)
+    private void PointerGestureRecognizer_PointerReleased(object sender, PointerEventArgs e)
+    {
+        ChangeCurrentPlayerSource();
+    }
+    //为了应对PointerGestureRecognizer在安卓上不起作用的方案，待微软后期修复
+    private void NowPlayingTb_Tapped(object sender, TappedEventArgs e)
+    {
+#if ANDROID
+        ChangeCurrentPlayerSource();
+#endif
+    }
+    public async void ChangeCurrentPlayerSource()
     {
         string urlnewvalue = await DisplayPromptAsync("播放一个直播源", "请输入直播源URL：", "播放", "取消", "URL...", -1, Keyboard.Text, "");
         if (string.IsNullOrWhiteSpace(urlnewvalue))
@@ -635,7 +646,7 @@ tname = item.Substring(item.LastIndexOf("\\")+1);
         M3U8PlayList.Insert(0, new string[] { "默认", urlnewvalue });
         string[] MOptions = new string[M3U8PlayList.Count];
         MOptions[0]="默认\n";
-        string WantPlayURL =urlnewvalue;
+        string WantPlayURL = urlnewvalue;
 
         if (M3U8PlayList.Count > 2)
         {

@@ -65,6 +65,7 @@
                 <Label x:Name="NowPlayingTb" TextDecorations="Underline" ToolTipProperties.Text="点击来更改想播放的直播源" x:FieldModifier="Public">
                     <Label.GestureRecognizers>
                         <PointerGestureRecognizer PointerEntered="NowPlayingTb_PointerEntered" PointerExited="NowPlayingTb_PointerExited" PointerReleased="PointerGestureRecognizer_PointerReleased"/>
+                        <TapGestureRecognizer Tapped="NowPlayingTb_Tapped"/>
                     </Label.GestureRecognizers>
                 </Label>
             </HorizontalStackLayout>
