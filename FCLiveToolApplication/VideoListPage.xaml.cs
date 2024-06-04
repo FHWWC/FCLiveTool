@@ -26,7 +26,7 @@ public partial class VideoListPage : ContentPage
     public static VideoListPage videoListPage;
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
-        if(videoListPage!=null)
+        if (videoListPage!=null)
         {
             return;
         }
@@ -1269,7 +1269,7 @@ public partial class VideoListPage : ContentPage
         ShowLoadOrRefreshDialog=false;
 
 
-        await M3U8ValidCheck(CurrentVideosDetailList);
+        M3U8ValidCheck(CurrentVideosDetailList);
 
         while (M3U8VCheckFinishCount<CurrentVideosDetailList.Count)
         {
@@ -1319,13 +1319,14 @@ public partial class VideoListPage : ContentPage
 
 
     }
-    public async Task M3U8ValidCheck(List<VideoDetailList> videodetaillist)
+    public async void M3U8ValidCheck(List<VideoDetailList> videodetaillist)
     {
+        object obj = new object();
         for (int i = 0; i<videodetaillist.Count; i++)
         {
+            var vd = videodetaillist[i];
             Thread thread = new Thread(async () =>
             {
-                int tindex = i;
                 using (HttpClient httpClient = new HttpClient())
                 {
                     httpClient.Timeout=TimeSpan.FromMinutes(2);
@@ -1339,23 +1340,23 @@ public partial class VideoListPage : ContentPage
                         //取消操作
                         M3U8ValidCheckCTS.Token.ThrowIfCancellationRequested();
 
-                        videodetaillist[tindex].HTTPStatusCode="Checking...";
-                        videodetaillist[tindex].HTTPStatusTextBKG=Colors.Gray;
+                        vd.HTTPStatusCode="Checking...";
+                        vd.HTTPStatusTextBKG=Colors.Gray;
 
-                        response = await httpClient.GetAsync(videodetaillist[tindex].SourceLink, M3U8ValidCheckCTS.Token);
+                        response = await httpClient.GetAsync(vd.SourceLink, M3U8ValidCheckCTS.Token);
 
                         statusCode=(int)response.StatusCode;
                         await MainThread.InvokeOnMainThreadAsync(() =>
                         {
                             if (response.IsSuccessStatusCode)
                             {
-                                videodetaillist[tindex].HTTPStatusCode="OK";
-                                videodetaillist[tindex].HTTPStatusTextBKG=Colors.Green;
+                                vd.HTTPStatusCode="OK";
+                                vd.HTTPStatusTextBKG=Colors.Green;
                             }
                             else
                             {
-                                videodetaillist[tindex].HTTPStatusCode=statusCode.ToString();
-                                videodetaillist[tindex].HTTPStatusTextBKG=Colors.Orange;
+                                vd.HTTPStatusCode=statusCode.ToString();
+                                vd.HTTPStatusTextBKG=Colors.Orange;
                             }
                         });
 
@@ -1368,19 +1369,23 @@ public partial class VideoListPage : ContentPage
                     {
                         await MainThread.InvokeOnMainThreadAsync(() =>
                         {
-                            videodetaillist[tindex].HTTPStatusCode="ERROR";
-                            videodetaillist[tindex].HTTPStatusTextBKG=Colors.Red;
+                            vd.HTTPStatusCode="ERROR";
+                            vd.HTTPStatusTextBKG=Colors.Red;
                         });
                     }
 
                     if (!M3U8ValidCheckCTS.IsCancellationRequested)
                     {
-                        M3U8VCheckFinishCount++;
-
-                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        lock(obj)
                         {
-                            M3U8VProgressText.Text=M3U8VCheckFinishCount+" / "+videodetaillist.Count;
-                        });
+                            M3U8VCheckFinishCount++;
+
+                            MainThread.InvokeOnMainThreadAsync(() =>
+                            {
+                                M3U8VProgressText.Text=M3U8VCheckFinishCount+" / "+videodetaillist.Count;
+                            });
+                        }
+
 
                     }
 
@@ -1573,7 +1578,7 @@ public partial class VideoListPage : ContentPage
         List<VideoEditList> videoEditLists = await new VideoManager().ReadM3UString(AllVideoData);
 
         var mainpage = ((Shell)App.Current.MainPage);
-        mainpage.CurrentItem = mainpage.Items.FirstOrDefault(p=>p.Title=="直播源编辑");
+        mainpage.CurrentItem = mainpage.Items.FirstOrDefault(p => p.Title=="直播源编辑");
         await mainpage.Navigation.PopToRootAsync();
 
         VideoEditPage.videoEditPage.VideoEditList.ItemsSource=videoEditLists;
