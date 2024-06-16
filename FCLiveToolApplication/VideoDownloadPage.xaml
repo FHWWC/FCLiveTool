@@ -83,7 +83,7 @@
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition/>
-            <RowDefinition Height="3*"/>
+            <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -111,7 +111,14 @@
                 </StackLayout>
             </StackLayout>
 
-            <Entry x:Name="M3U8SourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing" Grid.Row="1"/>
+            <StackLayout x:Name="M3U8SourcePanel" Grid.Row="1">
+                <Entry x:Name="M3U8SourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing"/>
+                <StackLayout Orientation="Horizontal">
+                    <CheckBox x:Name="MSP_OnlyDownM3U8FileCB"/>
+                    <Label Text="仅下载.M3U8文件" VerticalOptions="Center"/>
+                </StackLayout>
+            </StackLayout>
+
             <StackLayout x:Name="LocalM3U8SelectPanel" Orientation="Horizontal" Grid.Row="1" IsVisible="False">
                 <Button x:Name="SelectLocalM3U8FileBtn" Background="LightBlue" ContentLayout="Top,-3" Clicked="SelectLocalM3U8FileBtn_Clicked">
                     <Button.ImageSource>
@@ -125,7 +132,7 @@
                 </Button>
                 <Label x:Name="LocalM3U8Tb" LineBreakMode="WordWrap" VerticalOptions="Center" Margin="10,0,0,0"/>
             </StackLayout>
-            <Button x:Name="M3U8AnalysisBtn" Text="开始解析" Background="LightBlue" Grid.Row="1" Grid.Column="1" Margin="10,0,0,0" Clicked="M3U8AnalysisBtn_Clicked">
+            <Button x:Name="M3U8AnalysisBtn" Text="开始解析" Background="LightBlue" Grid.Row="1" Grid.Column="1" VerticalOptions="Start" Margin="10,0,0,0" Clicked="M3U8AnalysisBtn_Clicked">
                 <Button.ImageSource>
                     <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>

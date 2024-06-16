@@ -86,6 +86,7 @@ public partial class VideoListPage : ContentPage
     public int M3U8VCheckFinishCount = 0;
     public bool ShowLoadOrRefreshDialog = false;
     CancellationTokenSource M3U8ValidCheckCTS;
+    public const string DEFAULT_USER_AGENT = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
 
     private void Question_Clicked(object sender, EventArgs e)
     {
@@ -134,7 +135,7 @@ public partial class VideoListPage : ContentPage
         using (HttpClient httpClient = new HttpClient())
         {
 
-            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
             /*
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, selectVDL.SourceLink);
             request.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
@@ -1332,7 +1333,7 @@ public partial class VideoListPage : ContentPage
                     httpClient.Timeout=TimeSpan.FromMinutes(2);
 
                     int statusCode;
-                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
                     HttpResponseMessage response = null;
 
                     try

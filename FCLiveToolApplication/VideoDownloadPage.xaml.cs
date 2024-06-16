@@ -125,14 +125,83 @@ public partial class VideoDownloadPage : ContentPage
                 return;
             }
 
-            //后续添加批量识别，并且加入批量识别的查重
-            List<string> M3U8DownloadURLsList = new List<string>();
-            M3U8DownloadURLsList.Add(M3U8SourceURLTb.Text);
 
-            readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(ResultList, M3U8DownloadURLsList, 0);
-            if (readresult.Count<1)
+            if (!MSP_OnlyDownM3U8FileCB.IsChecked)
             {
-                return;
+                //后续添加批量识别，并且加入批量识别的查重
+                List<string> M3U8DownloadURLsList = new List<string>();
+                M3U8DownloadURLsList.Add(M3U8SourceURLTb.Text);
+
+                readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(ResultList, M3U8DownloadURLsList, 0);
+                if (readresult.Count<1)
+                {
+                    return;
+                }
+            }
+            else
+            {
+                string[] options = new string[2];
+                using (Stream stream = await new VideoManager().DownloadM3U8FileToStream(M3U8SourceURLTb.Text, options))
+                {
+                    if (stream is null)
+                    {
+                        await DisplayAlert("提示信息", options[0], "确定");
+                        return;
+                    }
+
+#if ANDROID
+                    var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, options[1], stream, CancellationToken.None);
+
+                    if (fileSaver.IsSuccessful)
+                    {
+                        await DisplayAlert("提示信息", "文件已成功保存至：\n" + fileSaver.FilePath, "确定");
+                    }
+                    else
+                    {
+                        await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                    }
+#else
+                    if (!string.IsNullOrWhiteSpace(SaveDownloadFolderTb.Text))
+                    {
+                        if (!Directory.Exists(SaveDownloadFolderTb.Text))
+                        {
+                            await DisplayAlert("提示信息", "当前下载文件保存位置的目录不存在，请重新选择！", "确定");
+                            return;
+                        }
+                        try
+                        {
+                            using (FileStream fs = new FileStream(SaveDownloadFolderTb.Text+"\\"+options[1], FileMode.Create))
+                            {
+                                stream.CopyTo(fs);
+                            }
+                        }
+                        catch(Exception)
+                        {
+                            await DisplayAlert("提示信息", "把数据流写入文件时发生异常！", "确定");
+                            return;
+                        }
+
+                        await DisplayAlert("提示信息", "文件已成功保存至：\n" +SaveDownloadFolderTb.Text+"\\"+options[1], "确定");
+                    }
+                    else
+                    {
+                        var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, options[1], stream, CancellationToken.None);
+
+                        if (fileSaver.IsSuccessful)
+                        {
+                            await DisplayAlert("提示信息", "文件已成功保存至：\n" + fileSaver.FilePath, "确定");
+                        }
+                        else
+                        {
+                            await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                        }
+                    }
+
+
+#endif
+
+                }
+
             }
 
         }
@@ -278,12 +347,12 @@ public partial class VideoDownloadPage : ContentPage
 
         if (entry.StyleId == "M3U8SourceRBtn1")
         {
-            M3U8SourceURLTb.IsVisible = true;
+            M3U8SourcePanel.IsVisible = true;
             LocalM3U8SelectPanel.IsVisible = false;
         }
         else if (entry.StyleId == "M3U8SourceRBtn2")
         {
-            M3U8SourceURLTb.IsVisible = false;
+            M3U8SourcePanel.IsVisible = false;
             LocalM3U8SelectPanel.IsVisible = true;
         }
 

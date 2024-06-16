@@ -224,6 +224,8 @@ namespace FCLiveToolApplication
         public List<DownloadTempFileList> TempFileList;
         public bool isContinueDownloadStream = true;
         public bool isEndList = false;
+        public const string DEFAULT_USER_AGENT = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+
         /// <summary>
         /// 
         /// </summary>
@@ -236,7 +238,7 @@ namespace FCLiveToolApplication
             using (HttpClient httpClient = new HttpClient())
             {
                 int statusCode;
-                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
                 HttpResponseMessage response = null;
 
                 try
@@ -340,7 +342,7 @@ namespace FCLiveToolApplication
                 using (HttpClient httpClient = new HttpClient())
                 {
                     int statusCode;
-                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
                     HttpResponseMessage response = null;
 
                     try
@@ -575,7 +577,7 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
                     using (HttpClient httpClient = new HttpClient())
                     {
                         int statusCode;
-                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
                         HttpResponseMessage response = null;
 
                         try
@@ -931,7 +933,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     using (HttpClient httpClient = new HttpClient())
                     {
                         int statusCode;
-                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(@"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36");
+                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
                         HttpResponseMessage response = null;
 
                         try
@@ -1241,6 +1243,46 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
 
             }
 
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="retruns">请求结果；文件名；</param>
+        /// <returns></returns>
+        public async Task<Stream> DownloadM3U8FileToStream(string url,string[] returns)
+        {
+            Stream returnStream = null;
+            using (HttpClient httpClient = new HttpClient())
+            {
+                int statusCode;
+                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
+                HttpResponseMessage response = null;
+
+                try
+                {
+                    response = await httpClient.GetAsync(url);
+                    returns[1]= response.RequestMessage.RequestUri.Segments.LastOrDefault();
+
+                    statusCode = (int)response.StatusCode;
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        returns[0]= "获取文件失败，请稍后重试！\n" + "HTTP错误代码：" + statusCode;
+                        return null;
+                    }
+
+                    returnStream=await response.Content.ReadAsStreamAsync();
+                }
+                catch (Exception)
+                {
+                    returns[0]= "无法连接到对方服务器，请检查您的网络或者更换一个直播源！";
+                    return null;
+                }
+
+    
+            }
+
+            return returnStream;
         }
     }
     public class APPFileManager
