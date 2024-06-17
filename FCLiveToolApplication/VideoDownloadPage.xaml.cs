@@ -202,6 +202,9 @@ public partial class VideoDownloadPage : ContentPage
 
                 }
 
+
+                //如果勾选了仅下载M3U8文件，那么不需要执行后续代码。
+                return;
             }
 
         }

@@ -235,33 +235,19 @@ namespace FCLiveToolApplication
         public async Task<string> DownloadAndReadM3U8File(List<string[]> M3U8PlayList, string[] VideoIfm)
         {
             M3U8PlayList.Clear();
-            using (HttpClient httpClient = new HttpClient())
+
+            string[] treturn = new string[2];
+            using (Stream stream = await DownloadM3U8FileToStream(VideoIfm[1], treturn))
             {
-                int statusCode;
-                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
-                HttpResponseMessage response = null;
-
-                try
+                if(stream is null)
                 {
-                    //detail.SourceLink 不清除\n和\r符可能会带来影响，这里暂时不清除
-                    response = await httpClient.GetAsync(VideoIfm[1]);
-
-                    statusCode=(int)response.StatusCode;
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return "获取文件失败，请稍后重试！\n"+"HTTP错误代码："+statusCode;
-                    }
+                    return treturn[0];
                 }
-                catch (Exception)
-                {
-                    return "无法连接到对方服务器，请检查您的网络或者更换一个直播源！";
-                }
-
 
                 VideoIfm[0]=VideoIfm[0].Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
                 try
                 {
-                    using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                    using (StreamReader sr = new StreamReader(stream))
                     {
                         string r = "";
                         string tProperties = "";
@@ -318,11 +304,8 @@ namespace FCLiveToolApplication
                 {
                     return "解析出现问题，可能是M3U8文件数据格式有问题。";
                 }
-
-
             }
-
-
+               
             return "";
         }
         /// <summary>
@@ -339,30 +322,17 @@ namespace FCLiveToolApplication
 
             if (FileFrom==0)
             {
-                using (HttpClient httpClient = new HttpClient())
+                string[] treturn = new string[2];
+                using (Stream stream = await DownloadM3U8FileToStream(VideoIfm[0], treturn))
                 {
-                    int statusCode;
-                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
-                    HttpResponseMessage response = null;
-
-                    try
+                    if (stream is null)
                     {
-                        response = await httpClient.GetAsync(VideoIfm[0]);
-
-                        statusCode = (int)response.StatusCode;
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            return "获取文件失败，请稍后重试！\n" + "HTTP错误代码：" + statusCode;
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        return "无法连接到对方服务器，请检查您的网络或者更换一个直播源！";
+                        return treturn[0];
                     }
 
                     try
                     {
-                        using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                        using (StreamReader sr = new StreamReader(stream))
                         {
                             string r = "";
                             string tAllowCache = "---";
@@ -440,9 +410,8 @@ namespace FCLiveToolApplication
                     {
                         return "解析出现问题，可能是M3U8文件数据格式有问题。";
                     }
-
-
                 }
+
             }
             else if(FileFrom==1)
             {
@@ -574,32 +543,18 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
 
                 if (FileFrom==0)
                 {
-                    using (HttpClient httpClient = new HttpClient())
+                    string[] treturn = new string[2];
+                    using (Stream stream = await DownloadM3U8FileToStream(VideoIfm[i], treturn))
                     {
-                        int statusCode;
-                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
-                        HttpResponseMessage response = null;
-
-                        try
+                        if (stream is null)
                         {
-                            response = await httpClient.GetAsync(VideoIfm[i]);
-
-                            statusCode = (int)response.StatusCode;
-                            if (!response.IsSuccessStatusCode)
-                            {
-                                resultList.Add("获取文件失败，请稍后重试！\n" + "HTTP错误代码：" + statusCode);
-                                continue;
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            resultList.Add("无法连接到对方服务器，请检查您的网络或者更换一个直播源！");
+                            resultList.Add(treturn[0]);
                             continue;
                         }
 
                         try
                         {
-                            using (StreamReader sr = new StreamReader(await response.Content.ReadAsStreamAsync()))
+                            using (StreamReader sr = new StreamReader(stream))
                             {
                                 string r = "";
                                 string tAllowCache = "---";
@@ -665,7 +620,7 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
                                 }
 
 
-                                if(!skipAddResult)
+                                if (!skipAddResult)
                                 {
                                     videoAnalysisList[i].AllowCache = tAllowCache;
                                     videoAnalysisList[i].MediaSequence = tMediaSequence;
@@ -684,9 +639,8 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
                             resultList.Add("解析出现问题，可能是M3U8文件数据格式有问题。");
                             continue;
                         }
-
-
                     }
+
                 }
                 else if (FileFrom==1)
                 {
@@ -1248,7 +1202,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
         /// 
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="retruns">请求结果；文件名；</param>
+        /// <param name="retruns">返回的信息；服务器返回的文件名；</param>
         /// <returns></returns>
         public async Task<Stream> DownloadM3U8FileToStream(string url,string[] returns)
         {
