@@ -389,24 +389,32 @@ public partial class VideoListPage : ContentPage
             tsourcelink="(http|https)://\\S+\\.m3u8(\\?(.*?))?";
         }
 
-        if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex=="5")
+        try
         {
-            return null;
+            if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex=="5")
+            {
+                return null;
+            }
+            else if (regexIndex=="3")
+            {
+                string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?("+tsourcelink+"(?=\n))";
+                return Regex.Match(AllVideoData, reg).Groups[0].Value;
+            }
+            else if (regexIndex=="3.2")
+            {
+                string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
+                return Regex.Match(AllVideoData, reg).Groups[0].Value;
+            }
+            else if (regexIndex=="4")
+            {
+                string reg = "(.*?),?((tvg-logo=\""+tlogolink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
+                return Regex.Match(AllVideoData, reg).Groups[0].Value;
+            }
+
         }
-        else if (regexIndex=="3")
+        catch(Exception)
         {
-            string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?("+tsourcelink+"(?=\n))";
-            return Regex.Match(AllVideoData, reg).Groups[0].Value;
-        }
-        else if (regexIndex=="3.2")
-        {
-            string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
-            return Regex.Match(AllVideoData, reg).Groups[0].Value;
-        }
-        else if (regexIndex=="4")
-        {
-            string reg = "(.*?),?((tvg-logo=\""+tlogolink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
-            return Regex.Match(AllVideoData, reg).Groups[0].Value;
+
         }
 
         return "";
@@ -1347,19 +1355,16 @@ public partial class VideoListPage : ContentPage
                         response = await httpClient.GetAsync(vd.SourceLink, M3U8ValidCheckCTS.Token);
 
                         statusCode=(int)response.StatusCode;
-                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        if (response.IsSuccessStatusCode)
                         {
-                            if (response.IsSuccessStatusCode)
-                            {
-                                vd.HTTPStatusCode="OK";
-                                vd.HTTPStatusTextBKG=Colors.Green;
-                            }
-                            else
-                            {
-                                vd.HTTPStatusCode=statusCode.ToString();
-                                vd.HTTPStatusTextBKG=Colors.Orange;
-                            }
-                        });
+                            vd.HTTPStatusCode="OK";
+                            vd.HTTPStatusTextBKG=Colors.Green;
+                        }
+                        else
+                        {
+                            vd.HTTPStatusCode=statusCode.ToString();
+                            vd.HTTPStatusTextBKG=Colors.Orange;
+                        }
 
                     }
                     catch (OperationCanceledException)
@@ -1368,11 +1373,8 @@ public partial class VideoListPage : ContentPage
                     }
                     catch (Exception)
                     {
-                        await MainThread.InvokeOnMainThreadAsync(() =>
-                        {
-                            vd.HTTPStatusCode="ERROR";
-                            vd.HTTPStatusTextBKG=Colors.Red;
-                        });
+                        vd.HTTPStatusCode="ERROR";
+                        vd.HTTPStatusTextBKG=Colors.Red;
                     }
 
                     if (!M3U8ValidCheckCTS.IsCancellationRequested)
