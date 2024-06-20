@@ -802,8 +802,10 @@ public partial class VideoListPage : ContentPage
                 UseGroup =new int[] { 2, 1, 3 };
                 return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n))";
             case "3":
-                UseGroup =new int[] { 3, 5, 8 };
-                return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+\.m3u8(\?(.*?))?(?=\n)))";
+                UseGroup =new int[] { 2, 4, 7 };
+                return @"((?:tvg-logo=""([^""]*)""(.*?)?,(.+?)(,)?(\n)?(?=((http|https):\S+\.m3u8(\?(.*?))?(?=\n)))))";
+            //UseGroup =new int[] { 3, 5, 8 };
+            //return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+\.m3u8(\?(.*?))?(?=\n)))";
             //3.2为3的不限制M3U8后缀的版本
             case "3.2":
                 UseGroup =new int[] { 3, 5, 8 };
