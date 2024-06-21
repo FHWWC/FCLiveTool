@@ -391,14 +391,9 @@ public partial class VideoListPage : ContentPage
 
         try
         {
-            if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex=="5")
+            if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2")||regexIndex.StartsWith("3")||regexIndex=="5")
             {
                 return null;
-            }
-            else if (regexIndex=="3")
-            {
-                string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?("+tsourcelink+"(?=\n))";
-                return Regex.Match(AllVideoData, reg).Groups[0].Value;
             }
             else if (regexIndex=="3.2")
             {
@@ -766,7 +761,7 @@ public partial class VideoListPage : ContentPage
                 LogoLink=match[i].Groups[UseGroup[0]].Value=="" ? "fclive_tvicon.png" : match[i].Groups[UseGroup[0]].Value,
                 SourceName=match[i].Groups[UseGroup[1]].Value,
                 SourceLink=match[i].Groups[UseGroup[2]].Value,
-                FullM3U8Str=match[i].Groups[0].Value,
+                FullM3U8Str = MakeFullStr(match[i],recreg),
                 isHTTPS=match[i].Groups[UseGroup[2]].Value.ToLower().StartsWith("https://") ? true : false,
                 FileName=Regex.Match(match[i].Groups[UseGroup[2]].Value, @"\/([^\/]+\.m3u8)").Groups[1].Value
             };
@@ -802,14 +797,16 @@ public partial class VideoListPage : ContentPage
                 UseGroup =new int[] { 2, 1, 3 };
                 return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n))";
             case "3":
-                UseGroup =new int[] { 2, 4, 7 };
-                return @"((?:tvg-logo=""([^""]*)""(.*?)?,(.+?)(,)?(\n)?(?=((http|https):\S+\.m3u8(\?(.*?))?(?=\n)))))";
+                UseGroup =new int[] { 4, 6, 9 };
+                return @"((#EXTINF)(.*?)(?:tvg-logo=""([^""]*)""(.*?)?,(.+?)(,)?(\n)?(?=((http|https):\S+\.m3u8(\?(.*?))?(?=\n)))))";
             //UseGroup =new int[] { 3, 5, 8 };
             //return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+\.m3u8(\?(.*?))?(?=\n)))";
             //3.2为3的不限制M3U8后缀的版本
             case "3.2":
-                UseGroup =new int[] { 3, 5, 8 };
-                return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
+                UseGroup = new int[] { 4, 6, 9 };
+                return @"((#EXTINF)(.*?)(?:tvg-logo=""([^""]*)""(.*?)?,(.+?)(,)?(\n)?(?=((http|https):\S+(.*?))(?=\n))))";
+                //UseGroup =new int[] { 3, 5, 8 };
+                //return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
             case "4":
                 UseGroup =new int[] { 3, 5, 8 };
                 return @",?((tvg-logo=""([^""]*)"")(.*?)),(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
@@ -820,6 +817,19 @@ public partial class VideoListPage : ContentPage
                 return "";
         }
 
+    }
+    public string MakeFullStr(Match match, string recreg)
+    {
+        if (recreg.StartsWith("1") || recreg.StartsWith("2") || recreg == "5")
+        {
+            return match.Groups[0].Value;
+        }
+        else if(recreg.StartsWith("3"))
+        {
+            return match.Groups[1].Value+ match.Groups[9].Value;
+        }
+
+        return "";
     }
     /// <summary>
     /// 重置M3U列表的页码
