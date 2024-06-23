@@ -245,18 +245,18 @@ public partial class VideoListPage : ContentPage
                     await DisplayAlert("提示信息", "无法更新当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
                     return;
                 }
-         */
 
-        string m3u8Str = GetFullM3U8Str(selectVDL);
+
+
+
+                string m3u8Str = GetFullM3U8Str(selectVDL);
         if (m3u8Str is "")
         {
             await DisplayAlert("提示信息", "无法更新当前直播源，在M3U文件内找不到当前直播源！", "确定");
             return;
         }
 
-        CurrentVideosDetailList.Where(p => p==selectVDL).FirstOrDefault().SourceName=newvalue; ;
-
-        string regexIndex = GetRegexOptionIndex();
+                string regexIndex = GetRegexOptionIndex();
         if (regexIndex=="0")
             regexIndex=RecommendReg;
         if (regexIndex.StartsWith("1")||regexIndex.StartsWith("2"))
@@ -269,6 +269,28 @@ public partial class VideoListPage : ContentPage
             vname=","+vname;
             newvalue=","+newvalue;
         }
+         */
+
+
+
+        var tlist = CurrentVideosDetailList.Where(p => p==selectVDL).FirstOrDefault();
+        if(tlist is null)
+        {
+            await DisplayAlert("提示信息", "未在当前列表内查找到所选的直播源，请刷新列表重试。", "确定");
+            return;
+        }
+        tlist.SourceName=newvalue;
+
+        if(tlist.FullM3U8Str.Contains("tvg-name="))
+        {
+            newvalue="tvg-name=\""+newvalue+"\"";
+        }
+        else
+        {
+
+        }
+
+        //代码未完成。
 
         if (m3u8Str is null)
         {
@@ -328,9 +350,10 @@ public partial class VideoListPage : ContentPage
                  await DisplayAlert("提示信息", "无法移除当前直播源，因为M3U文件内包含多个和当前直播源相同的名称+URL！", "确定");
                  return;
              }
-             */
 
-            string m3u8Str = GetFullM3U8Str(selectVDL);
+
+
+                        string m3u8Str = GetFullM3U8Str(selectVDL);
             if (m3u8Str is "")
             {
                 await DisplayAlert("提示信息", "无法移除当前直播源，在M3U文件内找不到当前直播源！", "确定");
@@ -344,6 +367,9 @@ public partial class VideoListPage : ContentPage
             {
                 AllVideoData=AllVideoData.Replace(m3u8Str, "");
             }
+             */
+
+            AllVideoData=AllVideoData.Replace(selectVDL.FullM3U8Str, "");
             CurrentVideosDetailList.Remove(selectVDL);
 
             //仅在调试 AllVideoData是否被正确修改 以及 AllVideoData能否正常被加载到列表 时使用
@@ -373,7 +399,8 @@ public partial class VideoListPage : ContentPage
 
     }
 
-    public string GetFullM3U8Str(VideoDetailList vdlList)
+    /*
+         public string GetFullM3U8Str(VideoDetailList vdlList)
     {
         //如果正则表达式更改，这里可能也需要更新
         string regexIndex = GetRegexOptionIndex();
@@ -395,11 +422,6 @@ public partial class VideoListPage : ContentPage
             {
                 return null;
             }
-            else if (regexIndex=="3.2")
-            {
-                string reg = "(.*?)((tvg-logo=\""+tlogolink+"\")(.*?))?,("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
-                return Regex.Match(AllVideoData, reg).Groups[0].Value;
-            }
             else if (regexIndex=="4")
             {
                 string reg = "(.*?),?((tvg-logo=\""+tlogolink+"\")(.*?)),("+vdlList.SourceName+")(,)?(\n)?((http|https)://\\S+(.*?)(?=\n))";
@@ -415,7 +437,6 @@ public partial class VideoListPage : ContentPage
         return "";
     }
 
-    /*
          public string GetOLDStr(string videodata, string name, string link)
         {
             string oldvalue;
@@ -808,8 +829,10 @@ public partial class VideoListPage : ContentPage
                 //UseGroup =new int[] { 3, 5, 8 };
                 //return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
             case "4":
-                UseGroup =new int[] { 3, 5, 8 };
-                return @",?((tvg-logo=""([^""]*)"")(.*?)),(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
+                UseGroup =new int[] { 5, 7, 10 };
+                return @"#EXTINF(.*?)(,?((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n))))";
+                //UseGroup =new int[] { 3, 5, 8 };
+                //return @",?((tvg-logo=""([^""]*)"")(.*?)),(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
             case "5":
                 UseGroup =new int[] { 2, 5, 7 };
                 return @"(((http|https)://\S+)(,))?(.*?)(,)((http|https)://\S+(?=\n|\s{1}))";
@@ -820,13 +843,17 @@ public partial class VideoListPage : ContentPage
     }
     public string MakeFullStr(Match match, string recreg)
     {
-        if (recreg.StartsWith("1") || recreg.StartsWith("2") || recreg == "5")
+        if (recreg.StartsWith("1") || recreg.StartsWith("2") || recreg.StartsWith("5"))
         {
             return match.Groups[0].Value;
         }
         else if(recreg.StartsWith("3"))
         {
             return match.Groups[1].Value+ match.Groups[9].Value;
+        }    
+        else if(recreg.StartsWith("4"))
+        {
+            return match.Groups[0].Value+ match.Groups[10].Value;
         }
 
         return "";
@@ -1177,16 +1204,16 @@ public partial class VideoListPage : ContentPage
         +"****************************************"+"\n\n"
         +"规则3"+"\n"
         +"匹配：台标(tvg-logo)，台名(两逗号之间文本)，URL"+"\n\n"
-        +"tvg-logo=\"台标\"(可选)"+"\n"
+        +"tvg-logo=\"台标\""+"\n"
         +","+"\n"
         +"台名"+"\n"
         +",或\\n(可选)"+"\n"
         +"http://或https://(+任意字符).m3u8?参数名=值&参数名=值...(全部可选)"+"\n\n"
         +"****************************************"+"\n\n"
         +"规则4"+"\n"
-        +"和第三项相同，区别在于#EXTINF字符和台标字符之间有多个逗号"+"\n\n"
+        +"和第三项相同，台标是可选的"+"\n\n"
         +","+"\n"
-        +"tvg-logo=\"台标\""+"\n"
+        +"tvg-logo=\"台标\"(可选)"+"\n"
         +","+"\n"
         +"台名"+"\n"
         +",或\\n(可选)"+"\n"
@@ -1448,7 +1475,10 @@ public partial class VideoListPage : ContentPage
         {
             if (p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null)
             {
-                string vname = p.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
+                AllVideoData=AllVideoData.Replace(p.FullM3U8Str, "");
+
+                /*
+                                 string vname = p.SourceName.Replace("\r", "").Replace("\n", "").Replace("\r\n", "");
 
                 string m3u8Str = GetFullM3U8Str(p);
                 if (m3u8Str is "")
@@ -1466,7 +1496,7 @@ public partial class VideoListPage : ContentPage
                     AllVideoData=AllVideoData.Replace(m3u8Str, "");
                     tOKRemoveCount++;
                 }
-
+                 */
             }
         });
         CurrentVideosDetailList.RemoveAll(p => p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null);
