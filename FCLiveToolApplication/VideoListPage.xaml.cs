@@ -113,7 +113,11 @@ public partial class VideoListPage : ContentPage
                 break;
         }
     }
-
+    /// <summary>
+    /// 已弃用，仅做备份
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private async void DownloadBtn_Clicked(object sender, EventArgs e)
     {
         if (VideoDetailList.SelectedItem==null)
@@ -214,6 +218,11 @@ public partial class VideoListPage : ContentPage
         }
 
      */
+    /// <summary>
+    /// 已弃用，仅做备份
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private async void EditBtn_Clicked(object sender, EventArgs e)
     {
         if (VideoDetailList.SelectedItem==null)
@@ -290,16 +299,6 @@ public partial class VideoListPage : ContentPage
 
         }
 
-        //代码未完成。
-
-        if (m3u8Str is null)
-        {
-            AllVideoData=AllVideoData.Replace(selectVDL.FullM3U8Str, selectVDL.FullM3U8Str.Replace(vname, newvalue));
-        }
-        else
-        {
-            AllVideoData=AllVideoData.Replace(m3u8Str, m3u8Str.Replace(vname, newvalue));
-        }
 
         //仅在调试 AllVideoData是否被正确修改 以及 AllVideoData能否正常被加载到列表 时使用
         /*
@@ -324,6 +323,19 @@ public partial class VideoListPage : ContentPage
 
         await DisplayAlert("提示信息", "更新成功！", "确定");
     }
+    /*
+        public string CombieNewM3U8Str(string oldFullStr, string newvalue)
+        {
+            Match match = Regex.Match(oldFullStr, UseRegex(RecommendReg));
+
+            if(RecommendReg=="")
+            {
+                return "";
+            }
+
+            return "";
+        }
+     */
     private async void DeleteBtn_Clicked(object sender, EventArgs e)
     {
         if (VideoDetailList.SelectedItem==null)
@@ -795,6 +807,7 @@ public partial class VideoListPage : ContentPage
     }
     /// <summary>
     /// 根据提供的索引来获取对应的正则表达式
+    /// <para>如要修改表达式，可能需要同步修改UseGroup，MakeFullStr，</para>
     /// </summary>
     /// <param name="index">索引</param>
     /// <returns>索引对应的正则表达式</returns>

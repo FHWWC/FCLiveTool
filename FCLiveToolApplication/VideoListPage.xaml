@@ -178,7 +178,7 @@
         <StackLayout Margin="5,10,0,0" Grid.Row="1" Grid.Column="1">
             <Grid>
                 <StackLayout VerticalOptions="Start">
-                    <Label Text="简易编辑模式"/>
+                    <Label Text="更多操作"/>
                     <Switch x:Name="VDLToogleBtn" IsToggled="False" HorizontalOptions="Start"/>
                 </StackLayout>
                 <HorizontalStackLayout x:Name="EditModeRightPanel" HorizontalOptions="End" VerticalOptions="Start" Margin="{ OnPlatform Android='0,60,0,0'}" IsVisible="{Binding Source={x:Reference VDLToogleBtn}, Path=IsToggled}">
@@ -187,7 +187,8 @@
                             <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
-                    <Button x:Name="EditBtn" Background="LightYellow" HeightRequest="40" Text="编辑" Margin="10,0,0,0" Clicked="EditBtn_Clicked">
+<!--
+                                        <Button x:Name="EditBtn" Background="LightYellow" HeightRequest="40" Text="台名" Margin="10,0,0,0" Clicked="EditBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
@@ -197,6 +198,7 @@
                             <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
+                    -->
                 </HorizontalStackLayout>
             </Grid>
             <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
