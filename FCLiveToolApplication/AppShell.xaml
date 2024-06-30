@@ -53,6 +53,13 @@
             <FontImageSource Glyph="&#xE896;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
         </ShellContent.Icon>
     </ShellContent>
+    <ShellContent Title="直播源检测" 
+        ContentTemplate="{DataTemplate local:VideoCheckPage}"
+        Route="VideoCheckPage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE896;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+        </ShellContent.Icon>
+    </ShellContent>
 
 
     <Shell.FlyoutFooter>

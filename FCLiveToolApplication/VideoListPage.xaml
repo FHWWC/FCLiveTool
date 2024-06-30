@@ -242,8 +242,8 @@
 
             <Label Text="解析方案：" FontSize="Medium" Margin="0,20,0,0"/>
             <HorizontalStackLayout Margin="0,10,0,0">
-                <Picker x:Name="RegexSelectBox" Title="选择解析方案：" ItemsSource="{Binding RegexOption}" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
-                <Button x:Name="RegexSelectIfmBtn" Background="LightGray" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectIfmBtn_Clicked">
+                <Picker x:Name="RegexSelectBox" Title="选择解析方案：" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
+                <Button x:Name="RegexSelectTipBtn" Background="LightGray" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectTipBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE946;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>

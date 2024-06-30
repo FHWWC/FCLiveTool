@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FCLiveToolApplication.VideoCheckPage"
+             Title="VideoCheckPage">
+
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="VideoCheckListStyle">
+            <ViewCell>
+                <Grid Margin="20,10" HeightRequest="100">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+
+                    <StackLayout HorizontalOptions="End" Margin="{ OnPlatform Android='0,5,0,0'}">
+                        <StackLayout BackgroundColor="{Binding HTTPStatusTextBKG}" Padding="5,0">
+                            <Label TextColor="White" Text="{Binding HTTPStatusCode}"/>
+                        </StackLayout>
+
+                    </StackLayout>
+                    <Grid Margin="0,20,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image HeightRequest="40" MaximumWidthRequest="85" Source="{Binding LogoLink}"  HorizontalOptions="Start"/>
+
+                        <StackLayout WidthRequest="2" HorizontalOptions="Start" VerticalOptions="Fill" Grid.Column="1">
+                            <StackLayout.Background>
+                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="Transparent" Offset="0"/>
+                                    <GradientStop Color="Black" Offset="0.5"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </StackLayout.Background>
+                        </StackLayout>
+
+                        <!--此处待添加其他数据-->
+                        <Label Text="{Binding SourceName}" FontAttributes="Bold" HorizontalOptions="Start" Margin="15,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
+                    </Grid>
+
+                    <Grid Margin="0,10,0,0" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" HorizontalOptions="Start" Padding="5,0">
+                            <Label TextColor="White" Text="HTTPS"/>
+                        </StackLayout>
+                        <Label Text="{Binding SourceLink}" HorizontalOptions="Start" Margin="10,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
+                    </Grid>
+
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="CheckNOKErrorCodeListStyle">
+            <ViewCell>
+                <StackLayout Orientation="Horizontal">
+                    <Border StrokeShape="RoundRectangle 3,3,3,3" BackgroundColor="{Binding HTTPStatusTextBKG}" Padding="5,0">
+                        <Label TextColor="White" Text="{Binding HTTPStatusCode}"/>
+                    </Border>
+
+                    <Label Text="{Binding ErrorCodeCount}" FontAttributes="Bold" VerticalOptions="Center"/>
+                </StackLayout>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+    
+    <Shell.TitleView>
+        <HorizontalStackLayout>
+            <Label Text="直播源检测" TextColor="#A0F0FFFF" FontSize="Large" VerticalTextAlignment="Center"/>
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+    
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+
+            <StackLayout Orientation="Horizontal">
+                <Label Text="选择直播源文件来源：" VerticalOptions="Center"/>
+                <StackLayout Orientation="{OnPlatform Horizontal,Android=Vertical}">
+                    <RadioButton x:Name="M3USourceRBtn1" Content="本地文件"  IsChecked="True" GroupName="M3USourceRBtnGroup" Margin="{OnPlatform '20,0,0,0',Android='5,0,0,0'}" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
+                    <RadioButton x:Name="M3USourceRBtn2" Content="输入URL" GroupName="M3USourceRBtnGroup" Margin="5,0,0,0" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
+                </StackLayout>
+            </StackLayout>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="400"/>
+                </Grid.ColumnDefinitions>
+
+                <StackLayout x:Name="LocalM3USelectPanel" VerticalOptions="Start" Orientation="Horizontal">
+                    <Button x:Name="SelectLocalM3UFileBtn" Background="LightBlue" Text="选择一个M3U" Clicked="SelectLocalM3UFileBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE8E5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Label x:Name="LocalMFileTb" LineBreakMode="WordWrap" VerticalOptions="Center" Margin="10,0,0,0"/>
+                </StackLayout>
+                <StackLayout x:Name="M3USourcePanel" IsVisible="False">
+                    <Entry x:Name="M3USourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing"/>
+                    <Button x:Name="M3UAnalysisBtn" Text="解析" Background="LightPink"  Margin="0,5,0,0" Clicked="M3UAnalysisBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </StackLayout>
+
+                <Grid Grid.Column="1" Margin="10,0,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <StackLayout>
+                        <HorizontalStackLayout>
+                            <Picker x:Name="RegexSelectBox" Title="选择解析方案：" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
+                            <Button x:Name="RegexSelectTipBtn" Background="LightGray" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectTipBtn_Clicked">
+                                <Button.ImageSource>
+                                    <FontImageSource Glyph="&#xE946;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                                </Button.ImageSource>
+                            </Button>
+                        </HorizontalStackLayout>
+                        <StackLayout>
+                            <HorizontalStackLayout>
+                                <CheckBox x:Name="RegexOptionCB"/>
+                                <Label Text="仅匹配M3U8文件名" VerticalOptions="Center"/>
+                            </HorizontalStackLayout>
+                        </StackLayout>
+                    </StackLayout>
+                    
+                    <Button x:Name="StartCheckBtn" Text="开始检测" Background="LightBlue" VerticalOptions="Start" Grid.Column="1" Clicked="StartCheckBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE9D5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </Grid>
+
+            </Grid>
+
+            <StackLayout Grid.Row="2">
+                
+            </StackLayout>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>          
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <Border StrokeShape="RoundRectangle 6,6,6,6" Stroke="DeepSkyBlue" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand">
+                    <Grid Margin="10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="检测进度" FontSize="Medium" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
+                        <Label Text="计&#10;数" Grid.Row="1"/>
+                        <Label x:Name="CheckProgressText" Text="0 / 0" FontAttributes="Bold" Grid.Row="1" Grid.Column="1"/>
+                    </Grid>
+                </Border>
+                <Border StrokeShape="RoundRectangle 6,6,6,6" Stroke="LimeGreen" Margin="5,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1">
+                    <Grid Margin="10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="OK信息" FontSize="Medium" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
+                        <Label Text="计&#10;数" Grid.Row="1"/>
+                        <Label x:Name="CheckOKCountText" Text="0" TextColor="LimeGreen" FontAttributes="Bold" Grid.Row="1" Grid.Column="1"/>
+                    </Grid>
+                </Border>                
+                <Border StrokeShape="RoundRectangle 6,6,6,6" Stroke="Red" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Column="2">
+                    <Grid Margin="10,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>               
+                            <ColumnDefinition/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Text="NOK信息" FontSize="Medium" HorizontalOptions="Center" Grid.ColumnSpan="4"/>
+                        <Label Text="计&#10;数" Grid.Row="1"/>
+                        <Label x:Name="CheckNOKCountText" Text="0" TextColor="Red" FontAttributes="Bold" Grid.Row="1" Grid.Column="1"/>
+                        <Label Text="详&#10;情" Grid.Row="1" Grid.Column="2"/>
+                        <ListView x:Name="CheckNOKErrorCodeList" ItemTemplate="{StaticResource CheckNOKErrorCodeListStyle}" Grid.Row="1" Grid.Column="3"/>
+                    </Grid>
+                </Border>       
+            </Grid>
+
+        </Grid>
+
+
+        <Grid Grid.Row="1">
+            <ListView x:Name="VideoCheckList" ItemTemplate="{StaticResource VideoCheckListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never"  PropertyChanged="VideoCheckList_PropertyChanged"/>
+            <Label x:Name="VCLIfmText" Text="这里空空如也~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Grid>
+        <Grid HorizontalOptions="Center" Grid.Row="1">
+            <ActivityIndicator x:Name="VideoCheckListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
+        </Grid>
+    </Grid>
+    
+</ContentPage>

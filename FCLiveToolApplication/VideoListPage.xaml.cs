@@ -60,8 +60,7 @@ public partial class VideoListPage : ContentPage
     /// </summary>
     public void InitRegexList()
     {
-        RegexSelectBox.BindingContext = this;
-        RegexOption = new List<string>() { "自动匹配", "规则1", "规则2", "规则3", "规则4", "规则5" };
+        List<string> RegexOption = new List<string>() { "自动匹配", "规则1", "规则2", "规则3", "规则4", "规则5" };
         RegexSelectBox.ItemsSource = RegexOption;
 
         //RegexSelectBox.SelectedIndex = 0;
@@ -74,12 +73,10 @@ public partial class VideoListPage : ContentPage
     public const int VL_COUNT_PER_PAGE = 15;
     public const int VDL_COUNT_PER_PAGE = 100;
     public string AllVideoData;
-    public int[] UseGroup;
     public List<VideoList> CurrentVideosList;
     public List<VideoDetailList> CurrentVideosDetailList;
     public string CurrentVURL = "";
     public string RecommendReg = "0";
-    public List<string> RegexOption;
     public bool IgnoreSelectionEvents = false;
     public List<string[]> M3U8PlayList = new List<string[]>();
     public bool isFinishM3U8VCheck = true;
@@ -713,7 +710,7 @@ public partial class VideoListPage : ContentPage
             RegexSelectBox.SelectedIndex = 0;
             IgnoreSelectionEvents=false;
 
-            CurrentVideosDetailList = DoRegex(AllVideoData, RecommendReg);
+            CurrentVideosDetailList =new RegexManager().DoRegex(AllVideoData, RecommendReg);
             VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
             SetVDLPage(1);
             MakeVideosDataToPage(CurrentVideosDetailList, 0);
@@ -738,139 +735,7 @@ public partial class VideoListPage : ContentPage
 
         VideoDetailListRing.IsRunning = false;
     }
-    /// <summary>
-    /// 获取当前选择的规则索引
-    /// </summary>
-    /// <returns></returns>
-    public string GetRegexOptionIndex()
-    {
-        bool isOnlyM3U8 = RegexOptionCB.IsChecked;
-        switch (RegexSelectBox.SelectedIndex.ToString())
-        {
-            case "1":
-                if (!isOnlyM3U8)
-                {
-                    return "1.2";
-                }
-                return "1";
-            case "2":
-                if (!isOnlyM3U8)
-                {
-                    return "2.2";
-                }
-                return "2";
-            case "3":
-                if (!isOnlyM3U8)
-                {
-                    return "3.2";
-                }
-                return "3";
-            case "4":
-                return "4";
-            case "5":
-                return "5";
-            default:
-                return "0";
-        }
 
-    }
-    /// <summary>
-    /// 使用正则表达式解析直播源数据，直播源数据是包含若干个M3U8直播源的字符串
-    /// </summary>
-    /// <param name="videodata">直播源数据</param>
-    /// <param name="recreg">正则表达式</param>
-    /// <returns>正则表达式匹配出的列表</returns>
-    public List<VideoDetailList> DoRegex(string videodata, string recreg)
-    {
-        MatchCollection match = Regex.Matches(videodata, UseRegex(recreg));
-
-        List<VideoDetailList> result = new List<VideoDetailList>();
-        for (int i = 0; i<match.Count; i++)
-        {
-            VideoDetailList videoDetail = new VideoDetailList()
-            {
-                //ID，台标，台名，直播源地址
-                Id=i,
-                LogoLink=match[i].Groups[UseGroup[0]].Value=="" ? "fclive_tvicon.png" : match[i].Groups[UseGroup[0]].Value,
-                SourceName=match[i].Groups[UseGroup[1]].Value,
-                SourceLink=match[i].Groups[UseGroup[2]].Value,
-                FullM3U8Str = MakeFullStr(match[i],recreg),
-                isHTTPS=match[i].Groups[UseGroup[2]].Value.ToLower().StartsWith("https://") ? true : false,
-                FileName=Regex.Match(match[i].Groups[UseGroup[2]].Value, @"\/([^\/]+\.m3u8)").Groups[1].Value
-            };
-            //videoDetail.LogoLink=videoDetail.LogoLink=="" ? "fclive_tvicon.png" : videoDetail.LogoLink;
-
-            result.Add(videoDetail);
-        }
-
-        return result;
-    }
-    /// <summary>
-    /// 根据提供的索引来获取对应的正则表达式
-    /// <para>如要修改表达式，可能需要同步修改UseGroup，MakeFullStr，</para>
-    /// </summary>
-    /// <param name="index">索引</param>
-    /// <returns>索引对应的正则表达式</returns>
-    public string UseRegex(string index)
-    {
-        switch (index)
-        {
-            case "1":
-                UseGroup =new int[] { 1, 2, 3 };
-                return @"(?:.*?tvg-logo=""([^""]*)"")?(?:.*?tvg-name=""([^""]*)"")?.*\r?\n?((http|https)://\S+\.m3u8(\?(.*?))?(?=\n))";
-            //1.2为1的不限制M3U8后缀的版本
-            case "1.2":
-                UseGroup =new int[] { 1, 2, 3 };
-                return @"(?:.*?tvg-logo=""([^""]*)"")?(?:.*?tvg-name=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n))";
-            //只有2方案是先匹配台名后匹配台标
-            case "2":
-                UseGroup =new int[] { 2, 1, 3 };
-                return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+\.m3u8(\?(.*?))?(?=\n))";
-            //2.2为2的不限制M3U8后缀的版本
-            case "2.2":
-                UseGroup =new int[] { 2, 1, 3 };
-                return @"(?:.*?tvg-name=""([^""]*)"")(?:.*?tvg-logo=""([^""]*)"")?.*\r?\n?((http|https)://\S+(.*?)(?=\n))";
-            case "3":
-                UseGroup =new int[] { 4, 6, 9 };
-                return @"((#EXTINF)(.*?)(?:tvg-logo=""([^""]*)""(.*?)?,(.+?)(,)?(\n)?(?=((http|https):\S+\.m3u8(\?(.*?))?(?=\n)))))";
-            //UseGroup =new int[] { 3, 5, 8 };
-            //return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+\.m3u8(\?(.*?))?(?=\n)))";
-            //3.2为3的不限制M3U8后缀的版本
-            case "3.2":
-                UseGroup = new int[] { 4, 6, 9 };
-                return @"((#EXTINF)(.*?)(?:tvg-logo=""([^""]*)""(.*?)?,(.+?)(,)?(\n)?(?=((http|https):\S+(.*?))(?=\n))))";
-                //UseGroup =new int[] { 3, 5, 8 };
-                //return @"((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
-            case "4":
-                UseGroup =new int[] { 5, 7, 10 };
-                return @"#EXTINF(.*?)(,?((tvg-logo=""([^""]*)"")(.*?))?,(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n))))";
-                //UseGroup =new int[] { 3, 5, 8 };
-                //return @",?((tvg-logo=""([^""]*)"")(.*?)),(.+?)(,)?(\n)?(?=((http|https)://\S+(.*?)(?=\n)))";
-            case "5":
-                UseGroup =new int[] { 2, 5, 7 };
-                return @"(((http|https)://\S+)(,))?(.*?)(,)((http|https)://\S+(?=\n|\s{1}))";
-            default:
-                return "";
-        }
-
-    }
-    public string MakeFullStr(Match match, string recreg)
-    {
-        if (recreg.StartsWith("1") || recreg.StartsWith("2") || recreg.StartsWith("5"))
-        {
-            return match.Groups[0].Value;
-        }
-        else if(recreg.StartsWith("3"))
-        {
-            return match.Groups[1].Value+ match.Groups[9].Value;
-        }    
-        else if(recreg.StartsWith("4"))
-        {
-            return match.Groups[0].Value+ match.Groups[10].Value;
-        }
-
-        return "";
-    }
     /// <summary>
     /// 重置M3U列表的页码
     /// </summary>
@@ -1165,7 +1030,7 @@ public partial class VideoListPage : ContentPage
         VDLIfmText.Text="";
         string treg;
 
-        string regexIndex = GetRegexOptionIndex();
+        string regexIndex = new RegexManager().GetRegexOptionIndex(RegexOptionCB.IsChecked, RegexSelectBox.SelectedIndex.ToString());
         if (regexIndex!="0")
         {
             treg=regexIndex;
@@ -1175,7 +1040,7 @@ public partial class VideoListPage : ContentPage
             treg=RecommendReg;
         }
 
-        CurrentVideosDetailList = DoRegex(AllVideoData, treg);
+        CurrentVideosDetailList = new RegexManager().DoRegex(AllVideoData, treg);
         VDLMaxPageIndex= (int)Math.Ceiling(CurrentVideosDetailList.Count/100.0);
         SetVDLPage(1);
 
@@ -1183,7 +1048,7 @@ public partial class VideoListPage : ContentPage
 
     }
 
-    private void RegexSelectIfmBtn_Clicked(object sender, EventArgs e)
+    private void RegexSelectTipBtn_Clicked(object sender, EventArgs e)
     {
         //以文件读取复杂的文本
         /*
@@ -1196,51 +1061,8 @@ public partial class VideoListPage : ContentPage
                 }
          */
         ;
-        string showmsg = "由于不同的M3U文件里的数据格式各有不同，甚至一个文件内有多种不同的格式，因此本程序提供了多种解析方案，来尽可能的完整解析M3U文件里的数据。"+"\n"
-        +"如果您发现许多直播源没有名称，无法播放以及URL有错误等情况，您可以尝试更换解析方案。"+"\n\n\n"
-        +"以下是所有复选框的解释："+"\n\n"
-        +"“仅匹配M3U8文件名”：勾选则表示，仅匹配直播源URL的文件名为“M3U8”后缀的文件，其他文件则不获取。"+"\n\n\n"
-        +"以下是所有规则的解释："+"\n\n"
-        +"规则1"+"\n"
-        +"匹配：台标(tvg-logo)，台名(tvg-name)，URL"+"\n\n"
-        +"tvg-logo=\"台标\"(可选)"+"\n"
-        +"tvg-name=\"台名\"(可选，不建议为空)"+"\n"
-        +"\\r或\\n(可选)"+"\n"
-        +"http://或https://(+任意字符).m3u8?参数名=值&参数名=值...(全部可选)"+"\n\n"
-        +"****************************************"+"\n\n"
-        +"规则2"+"\n"
-        +"与第一条相反，匹配：台名(tvg-name)，台标(tvg-logo)，URL"+"\n\n"
-        +"tvg-name=\"台名\""+"\n"
-        +"tvg-logo=\"台标\"(可选)"+"\n"
-        +"\\r或\\n(可选)"+"\n"
-        +"http://或https://(+任意字符).m3u8?参数名=值&参数名=值...(全部可选)"+"\n\n"
-        +"****************************************"+"\n\n"
-        +"规则3"+"\n"
-        +"匹配：台标(tvg-logo)，台名(两逗号之间文本)，URL"+"\n\n"
-        +"tvg-logo=\"台标\""+"\n"
-        +","+"\n"
-        +"台名"+"\n"
-        +",或\\n(可选)"+"\n"
-        +"http://或https://(+任意字符).m3u8?参数名=值&参数名=值...(全部可选)"+"\n\n"
-        +"****************************************"+"\n\n"
-        +"规则4"+"\n"
-        +"和第三项相同，台标是可选的"+"\n\n"
-        +","+"\n"
-        +"tvg-logo=\"台标\"(可选)"+"\n"
-        +","+"\n"
-        +"台名"+"\n"
-        +",或\\n(可选)"+"\n"
-        +"http://或https://(+任意字符，不限.m3u8后缀)?参数名=值&参数名=值...(全部可选)"+"\n\n"
-        +"****************************************"+"\n\n"
-        +"规则5"+"\n"
-        +"简单粗暴，无附加格式，匹配：台标，台名，URL"+"\n\n"
-        +"台标(可选)"+"\n"
-        +","+"\n"
-        +"台名"+"\n"
-        +","+"\n"
-        +"http://或https://(+任意字符，不限.m3u8后缀)?参数名=值&参数名=值...(全部可选)";
-
-        DisplayAlert("帮助信息", showmsg, "关闭");
+       
+        DisplayAlert("帮助信息", new MsgManager().GetRegexOptionTip(), "关闭");
 
     }
 
@@ -1540,14 +1362,14 @@ public partial class VideoListPage : ContentPage
     }
     public void GetCurrentIndexAndLoadData(int skipcount)
     {
-        string regexIndex = GetRegexOptionIndex();
+        string regexIndex = new RegexManager().GetRegexOptionIndex(RegexOptionCB.IsChecked, RegexSelectBox.SelectedIndex.ToString());
         if (regexIndex!="0")
         {
-            MakeVideosDataToPage(DoRegex(AllVideoData, regexIndex), skipcount);
+            MakeVideosDataToPage(new RegexManager().DoRegex(AllVideoData, regexIndex), skipcount);
         }
         else
         {
-            MakeVideosDataToPage(DoRegex(AllVideoData, RecommendReg), skipcount);
+            MakeVideosDataToPage(new RegexManager().DoRegex(AllVideoData, RecommendReg), skipcount);
         }
     }
 
@@ -1598,7 +1420,7 @@ public partial class VideoListPage : ContentPage
 
         VDLIfmText.Text="";
         string treg;
-        string regexIndex = GetRegexOptionIndex();
+        string regexIndex = new RegexManager().GetRegexOptionIndex(RegexOptionCB.IsChecked, RegexSelectBox.SelectedIndex.ToString());
         if (regexIndex!="0")
         {
             treg=regexIndex;
@@ -1608,10 +1430,10 @@ public partial class VideoListPage : ContentPage
             treg=RecommendReg;
         }
 
-        List<VideoDetailList> tlist = DoRegex(AllVideoData, treg);
+        List<VideoDetailList> tlist = new RegexManager().DoRegex(AllVideoData, treg);
         if (tlist.Count<1)
         {
-            tlist = DoRegex(AllVideoData, RecommendReg);
+            tlist = new RegexManager().DoRegex(AllVideoData, RecommendReg);
             DisplayAlert("提示信息", "当前解析方案未能解析出直播源，已改为推荐的方案去解析并执行搜索。", "确定");
         }
         //暂时不编写智能搜索
