@@ -1,3 +1,5 @@
+using CommunityToolkit.Maui.Storage;
+
 namespace FCLiveToolApplication;
 
 public partial class VideoCheckPage : ContentPage
@@ -14,7 +16,7 @@ public partial class VideoCheckPage : ContentPage
     {
         List<string> RegexOption = new List<string>() { "规则1", "规则2", "规则3", "规则4", "规则5" };
         RegexSelectBox.ItemsSource = RegexOption;
-        RegexSelectBox.SelectedIndex=0;
+        RegexSelectBox.SelectedIndex=2;
     }
 
     List<VideoDetailList> CurrentCheckList=new List<VideoDetailList>();
@@ -72,15 +74,62 @@ public partial class VideoCheckPage : ContentPage
         }
 
     }
-    public void LoadDataToCheckList()
+    public async void LoadDataToCheckList()
     {
+        if (string.IsNullOrWhiteSpace(AllVideoData))
+        {
+            await DisplayAlert("提示信息", "什么都没获取到，请检查数据源！", "确定");
+            return;
+        }
+        if(AllVideoData.Contains("tvg-name="))
+        {
+           RecommendRegexTb.Text = "1或2";
+        }      
+        else
+        {
+            RecommendRegexTb.Text = "-";
+        }
+
         RegexManager regexManager = new RegexManager();
         CurrentCheckList=regexManager.DoRegex(AllVideoData, regexManager.GetRegexOptionIndex(RegexOptionCB.IsChecked, (RegexSelectBox.SelectedIndex+1).ToString()));
         VideoCheckList.ItemsSource= CurrentCheckList;
     }
-    private void M3UAnalysisBtn_Clicked(object sender, EventArgs e)
+    private async void M3UAnalysisBtn_Clicked(object sender, EventArgs e)
     {
+        if (string.IsNullOrWhiteSpace(M3USourceURLTb.Text))
+        {
+            await DisplayAlert("提示信息", "请输入直播源M3U8地址！", "确定");
+            return;
+        }
+        if (!M3USourceURLTb.Text.Contains("://"))
+        {
+            await DisplayAlert("提示信息", "输入的内容不符合URL规范！", "确定");
+            return;
+        }
 
+
+        string[] options = new string[2];
+        using (Stream stream = await new VideoManager().DownloadM3U8FileToStream(M3USourceURLTb.Text, options))
+        {
+            if (stream is null)
+            {
+                await DisplayAlert("提示信息", options[0], "确定");
+                return;
+            }
+
+            string result = "";
+            using (StreamReader sr = new StreamReader(stream))
+            {
+                string r = "";
+                while ((r = await sr.ReadLineAsync()) != null)
+                {
+                    result+=r+"\n";
+                }
+            }
+
+            AllVideoData=result;
+            LoadDataToCheckList();
+        }
     }
 
     private void StartCheckBtn_Clicked(object sender, EventArgs e)

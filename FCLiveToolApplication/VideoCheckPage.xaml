@@ -133,11 +133,17 @@
                     <StackLayout>
                         <HorizontalStackLayout>
                             <Picker x:Name="RegexSelectBox" Title="选择解析方案：" SelectedIndexChanged="RegexSelectBox_SelectedIndexChanged"/>
-                            <Button x:Name="RegexSelectTipBtn" Background="LightGray" Margin="5,0,0,0" ContentLayout="Top,-2" Clicked="RegexSelectTipBtn_Clicked">
-                                <Button.ImageSource>
-                                    <FontImageSource Glyph="&#xE946;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                                </Button.ImageSource>
-                            </Button>
+                            <StackLayout  Margin="5,0,0,0">
+                                <Button x:Name="RegexSelectTipBtn" Background="LightGray" ContentLayout="Top,-2" HorizontalOptions="Start" Clicked="RegexSelectTipBtn_Clicked">
+                                    <Button.ImageSource>
+                                        <FontImageSource Glyph="&#xE946;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                                    </Button.ImageSource>
+                                </Button>
+                                <StackLayout>
+                                    <Label Text="推荐选择：" TextColor="Brown"/>
+                                    <Label x:Name="RecommendRegexTb" TextColor="Brown" HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </StackLayout>
                         </HorizontalStackLayout>
                         <StackLayout>
                             <HorizontalStackLayout>
