@@ -101,7 +101,7 @@
                 </StackLayout>
             </StackLayout>
 
-            <Grid Grid.Row="1">
+            <Grid x:Name="CheckDataSourcePanel" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="400"/>
@@ -163,7 +163,21 @@
             </Grid>
 
             <StackLayout Grid.Row="2">
-                
+                <StackLayout Orientation="Horizontal">
+                    <Button x:Name="StopCheckBtn" Background="LightPink" Text="停止" IsEnabled="False" Clicked="StopCheckBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Button x:Name="RemoveNOKBtn" Background="LightPink" Text="移除无效" IsEnabled="False" Margin="10,0,0,0" Clicked="RemoveNOKBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
+                    <Label Text="测试文本" Margin="20,0,0,0"/>
+                </StackLayout>
             </StackLayout>
 
             <Grid Grid.Row="3">

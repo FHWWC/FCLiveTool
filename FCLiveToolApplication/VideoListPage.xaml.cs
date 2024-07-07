@@ -1304,8 +1304,8 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
-        int tNOKRemoveCount = 0;
-        int tOKRemoveCount = 0;
+        //int tNOKRemoveCount = 0;
+        //int tOKRemoveCount = 0;
         CurrentVideosDetailList.ForEach(p =>
         {
             if (p.HTTPStatusCode!="OK"&&p.HTTPStatusCode!=null)
@@ -1340,7 +1340,8 @@ public partial class VideoListPage : ContentPage
         SetVDLPage(1);
         MakeVideosDataToPage(CurrentVideosDetailList, 0);
 
-        await DisplayAlert("提示信息", "已成功从列表里移除所有无效的直播信号！\n已从M3U文件缓存里移除无效的直播信号"+tOKRemoveCount+"条，未成功移除"+tNOKRemoveCount+"条。", "确定");
+        //await DisplayAlert("提示信息", "已成功从列表里移除所有无效的直播信号！\n已从M3U文件缓存里移除无效的直播信号"+tOKRemoveCount+"条，未成功移除"+tNOKRemoveCount+"条。", "确定");
+        await DisplayAlert("提示信息", "已成功从列表里移除所有无效的直播信号！", "确定");
 
     }
 
