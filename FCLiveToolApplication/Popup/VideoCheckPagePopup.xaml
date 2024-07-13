@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="FCLiveToolApplication.VideoCheckPagePopup" Color="AliceBlue">
+
+
+    <Grid x:Name="MainGrid" x:FieldModifier="Public" Padding="20,10" Loaded="MainGrid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <Label Text="更多检测选项" HorizontalOptions="Center" FontSize="Medium"/>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="同时检测的线程数：" VerticalOptions="Center"/>
+            <StackLayout Grid.Column="1">
+                <Entry x:Name="UseThreadNumTb" VerticalOptions="Center"/>
+                <Label Text="设定最多可以同时有几个线程进行检测，每检测一个直播源就要开一个线程"  TextColor="Gray" FontSize="12"/>
+            </StackLayout>
+
+            <Label Text="User-Agent：" Grid.Row="1" VerticalOptions="Center"/>
+            <StackLayout Grid.Row="1" Grid.Column="1" >
+                <Entry x:Name="UseUATb" VerticalOptions="Center"/>
+                <Label Text="设定向直播源服务器发请求时使用的User-Agent"  TextColor="Gray" FontSize="12"/>
+            </StackLayout>
+
+        </Grid>
+
+        <StackLayout VerticalOptions="End" Grid.Row="2">
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button x:Name="SaveOptionBtn" Background="Azure" Clicked="SaveOptionBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>           
+                <Button x:Name="ResetOptionBtn" Background="Azure" Clicked="ResetOptionBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE777;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout  HorizontalOptions="Center">
+                <Label Text="&#xE946;"  TextColor="Gray" FontSize="14" FontFamily="Segoe MDL2 Assets"/>
+                <Label Text="  在此页面修改的参数会保存到本地缓存中"  TextColor="Gray" FontSize="12"/>
+            </HorizontalStackLayout>
+
+            <Label Text="点击窗口外任意区域关闭窗口"  TextColor="Gray" FontSize="12" HorizontalOptions="Center"/>
+        </StackLayout>
+
+    </Grid>
+
+</toolkit:Popup>
