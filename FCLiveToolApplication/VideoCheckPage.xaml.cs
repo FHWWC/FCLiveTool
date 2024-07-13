@@ -1,4 +1,5 @@
 using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Maui.Views;
 
 namespace FCLiveToolApplication;
 
@@ -10,6 +11,12 @@ public partial class VideoCheckPage : ContentPage
     }
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
+        if(videoCheckPage!=null)
+        {
+            return;
+        }
+
+        videoCheckPage=this;
         InitRegexList();
     }
     public void InitRegexList()
@@ -19,13 +26,13 @@ public partial class VideoCheckPage : ContentPage
         RegexSelectBox.SelectedIndex=2;
     }
 
+    public static VideoCheckPage videoCheckPage;
     List<VideoDetailList> CurrentCheckList = new List<VideoDetailList>();
     string AllVideoData;
     public int CheckFinishCount = 0;
     public int CheckOKCount = 0;
     public int CheckNOKCount = 0;
     CancellationTokenSource M3U8ValidCheckCTS;
-    public const string DEFAULT_USER_AGENT = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
     public bool ShowLoadOrRefreshDialog = false;
     public bool isFinishCheck = false;
 
@@ -235,18 +242,21 @@ public partial class VideoCheckPage : ContentPage
     }
     public async void ValidCheck(List<VideoDetailList> videodetaillist)
     {
+        SemaphoreSlim semaphoreSlim = new SemaphoreSlim(Preferences.Get("VideoCheckThreadNum", GlobalParameter.VideoCheckThreadNum));
+
         object obj = new object();
         for (int i = 0; i<videodetaillist.Count; i++)
         {
             var vd = videodetaillist[i];
             Thread thread = new Thread(async () =>
             {
+               await semaphoreSlim.WaitAsync();
                 using (HttpClient httpClient = new HttpClient())
                 {
                     httpClient.Timeout=TimeSpan.FromMinutes(2);
 
                     int statusCode;
-                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
+                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(Preferences.Get("VideoCheckUA", GlobalParameter.VideoCheckUA));
                     HttpResponseMessage response = null;
 
                     try
@@ -313,7 +323,7 @@ public partial class VideoCheckPage : ContentPage
                         }
 
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         vd.HTTPStatusCode="ERROR";
                         vd.HTTPStatusTextBKG=Colors.Red;
@@ -343,8 +353,9 @@ public partial class VideoCheckPage : ContentPage
 
 
                     }
-
                 }
+
+                semaphoreSlim.Release();
             });
             thread.Start();
 
@@ -414,5 +425,22 @@ public partial class VideoCheckPage : ContentPage
 
         VideoCheckList.ItemsSource = CurrentCheckList.Take(CurrentCheckList.Count);
         await DisplayAlert("提示信息", "已成功从列表里移除所有共"+notokcount+"条无效的直播信号！", "确定");
+    }
+
+    private void ShowPopupBtn_Clicked(object sender, EventArgs e)
+    {
+        var checkPagePopup = new VideoCheckPagePopup();
+        checkPagePopup.MainGrid.HeightRequest = Window.Height/1.5;
+        checkPagePopup.MainGrid.WidthRequest =Window.Width/1.5;
+        this.ShowPopup(checkPagePopup);
+    }
+
+    public async void PopShowMsg(string msg)
+    {
+        await DisplayAlert("提示信息", msg, "确定");
+    }    
+    public async Task<bool> PopShowMsgAndReturn(string msg)
+    {
+        return await DisplayAlert("提示信息", msg, "确定","取消");
     }
 }

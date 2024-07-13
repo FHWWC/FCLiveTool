@@ -152,12 +152,21 @@
                             </HorizontalStackLayout>
                         </StackLayout>
                     </StackLayout>
-                    
-                    <Button x:Name="StartCheckBtn" Text="开始检测" Background="LightBlue" VerticalOptions="Start" Grid.Column="1" Clicked="StartCheckBtn_Clicked">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE9D5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                        </Button.ImageSource>
-                    </Button>
+
+                    <StackLayout Grid.Column="1">
+                        <Button x:Name="StartCheckBtn" Text="开始检测" Background="LightBlue" FontSize="Medium" HeightRequest="50" Clicked="StartCheckBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE9D5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+
+                        <Button x:Name="ShowPopupBtn" Text="更多检测选项" Background="LightPink" Margin="0,10,0,0" Clicked="ShowPopupBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </StackLayout>
+
                 </Grid>
 
             </Grid>
@@ -176,7 +185,7 @@
                     </Button>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
-                    <Label Text="测试文本" Margin="20,0,0,0"/>
+                    <Label Text="" Margin="20,0,0,0"/>
                 </StackLayout>
             </StackLayout>
 

@@ -57,7 +57,7 @@
         ContentTemplate="{DataTemplate local:VideoCheckPage}"
         Route="VideoCheckPage">
         <ShellContent.Icon>
-            <FontImageSource Glyph="&#xE896;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+            <FontImageSource Glyph="&#xEADF;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
         </ShellContent.Icon>
     </ShellContent>
 

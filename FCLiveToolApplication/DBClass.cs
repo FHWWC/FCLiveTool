@@ -1468,4 +1468,14 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
 
         }
     }
+
+    public static class GlobalParameter
+    {
+        public const string DefaultPlayM3U8Name = "CGTN (法语)";
+        public const string DefaultPlayM3U8URL = @"https://livefr.cgtn.com/1000f/prog_index.m3u8";
+        public const bool StartAutoPlayM3U8 = true;
+        public const bool AppDarkMode = false;
+        public const int VideoCheckThreadNum = 50;
+        public const string VideoCheckUA = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
+  }
 }

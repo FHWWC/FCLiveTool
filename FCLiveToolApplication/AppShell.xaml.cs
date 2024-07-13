@@ -10,12 +10,14 @@ public partial class AppShell : Shell
     }
     private void Shell_Loaded(object sender, EventArgs e)
     {
-        Preferences.Set("DefaultPlayM3U8Name", Preferences.Get("DefaultPlayM3U8Name", "CGTN (法语)"));
-        Preferences.Set("DefaultPlayM3U8URL", Preferences.Get("DefaultPlayM3U8URL", @"https://livefr.cgtn.com/1000f/prog_index.m3u8"));
-        Preferences.Set("StartAutoPlayM3U8", Preferences.Get("StartAutoPlayM3U8", true));
-        Preferences.Set("AppDarkMode", Preferences.Get("AppDarkMode", false));
-
-        if(Preferences.Get("AppDarkMode", false))
+        Preferences.Set("DefaultPlayM3U8Name", Preferences.Get("DefaultPlayM3U8Name", GlobalParameter.DefaultPlayM3U8Name));
+        Preferences.Set("DefaultPlayM3U8URL", Preferences.Get("DefaultPlayM3U8URL",GlobalParameter.DefaultPlayM3U8URL));
+        Preferences.Set("StartAutoPlayM3U8", Preferences.Get("StartAutoPlayM3U8", GlobalParameter.StartAutoPlayM3U8));
+        Preferences.Set("AppDarkMode", Preferences.Get("AppDarkMode", GlobalParameter.AppDarkMode));
+        Preferences.Set("VideoCheckThreadNum", Preferences.Get("VideoCheckThreadNum",GlobalParameter.VideoCheckThreadNum));
+        Preferences.Set("VideoCheckUA", Preferences.Get("VideoCheckUA",GlobalParameter.VideoCheckUA));
+       
+        if(Preferences.Get("AppDarkMode", GlobalParameter.AppDarkMode))
         {
             Application.Current.UserAppTheme = AppTheme.Dark;
         }
