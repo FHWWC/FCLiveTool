@@ -18,6 +18,7 @@ public partial class VideoCheckPage : ContentPage
 
         videoCheckPage=this;
         InitRegexList();
+        InitErrorCodeList();
     }
     public void InitRegexList()
     {
@@ -28,6 +29,7 @@ public partial class VideoCheckPage : ContentPage
 
     public static VideoCheckPage videoCheckPage;
     List<VideoDetailList> CurrentCheckList = new List<VideoDetailList>();
+    List<CheckNOKErrorCodeList> CurrentErrorCodeList = new List<CheckNOKErrorCodeList>();
     string AllVideoData;
     public int CheckFinishCount = 0;
     public int CheckOKCount = 0;
@@ -35,6 +37,7 @@ public partial class VideoCheckPage : ContentPage
     CancellationTokenSource M3U8ValidCheckCTS;
     public bool ShowLoadOrRefreshDialog = false;
     public bool isFinishCheck = false;
+    object errorcodeObj = new object();
 
     private void M3USourceRBtn_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
@@ -169,6 +172,7 @@ public partial class VideoCheckPage : ContentPage
         CheckDataSourcePanel.IsEnabled=false;
         ShowLoadOrRefreshDialog=false;
         isFinishCheck = false;
+        CurrentErrorCodeList=new List<CheckNOKErrorCodeList>();
 
         ValidCheck(CurrentCheckList);
         while (CheckFinishCount<CurrentCheckList.Count)
@@ -184,6 +188,7 @@ public partial class VideoCheckPage : ContentPage
         StopCheckBtn.IsEnabled=false;
         CheckDataSourcePanel.IsEnabled = true;
         RemoveNOKBtn.IsEnabled=true;
+        CheckNOKErrorCodeList.ItemsSource=CurrentErrorCodeList.Take(CurrentErrorCodeList.Count);
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
         {
@@ -219,7 +224,8 @@ public partial class VideoCheckPage : ContentPage
         //CheckProgressText.Text="0 / "+CurrentCheckList.Count;
         CheckOKCountText.Text="0";
         CheckNOKCountText.Text="0";
-        CheckNOKErrorCodeList.ItemsSource=null;
+        //CheckNOKErrorCodeList.ItemsSource=null;
+        InitErrorCodeList();
         CheckFinishCount = 0;
         CheckOKCount = 0;
         CheckNOKCount = 0;
@@ -299,6 +305,8 @@ public partial class VideoCheckPage : ContentPage
                                     CheckNOKCountText.Text=CheckNOKCount.ToString();
                                 });
                             }
+
+                            AddToErrorCodeList(new CheckNOKErrorCodeList() {  HTTPStatusCode=statusCode.ToString(), HTTPStatusTextBKG=Colors.Orange });
                         }
 
                     }
@@ -320,6 +328,7 @@ public partial class VideoCheckPage : ContentPage
                                 });
                             }
 
+                            AddToErrorCodeList(new CheckNOKErrorCodeList() { HTTPStatusCode="Timeout", HTTPStatusTextBKG=Colors.Purple });
                         }
 
                     }
@@ -337,6 +346,8 @@ public partial class VideoCheckPage : ContentPage
                                 CheckNOKCountText.Text=CheckNOKCount.ToString();
                             });
                         }
+
+                        AddToErrorCodeList(new CheckNOKErrorCodeList() { HTTPStatusCode="ERROR", HTTPStatusTextBKG=Colors.Red });
                     }
 
                     if (!M3U8ValidCheckCTS.IsCancellationRequested)
@@ -442,5 +453,35 @@ public partial class VideoCheckPage : ContentPage
     public async Task<bool> PopShowMsgAndReturn(string msg)
     {
         return await DisplayAlert("提示信息", msg, "确定","取消");
+    }
+
+    public void AddToErrorCodeList(CheckNOKErrorCodeList errorcodeList)
+    {
+        lock (errorcodeObj)
+        {
+            var eclist = CurrentErrorCodeList.Where(p => p.HTTPStatusCode==errorcodeList.HTTPStatusCode);
+            if (eclist.Count()<1)
+            {
+                errorcodeList.ErrorCodeCount = 1;
+                CurrentErrorCodeList.Add(errorcodeList);
+            }
+            else
+            {
+              eclist.FirstOrDefault().ErrorCodeCount+=1;
+            }
+
+            //MainThread.InvokeOnMainThreadAsync(() =>
+            //{
+            //    CheckNOKErrorCodeList.ItemsSource=CurrentErrorCodeList.Take(CurrentErrorCodeList.Count);
+            //});
+        }
+
+    }
+
+    public void InitErrorCodeList()
+    {
+        List<CheckNOKErrorCodeList> tlist = new List<CheckNOKErrorCodeList>();
+        tlist.Add(new CheckNOKErrorCodeList() { HTTPStatusCode="检测结束后生成" ,HTTPStatusTextBKG=Colors.Black}) ;
+        CheckNOKErrorCodeList.ItemsSource=tlist;
     }
 }

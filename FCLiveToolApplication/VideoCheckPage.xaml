@@ -65,7 +65,7 @@
                         <Label TextColor="White" Text="{Binding HTTPStatusCode}"/>
                     </Border>
 
-                    <Label Text="{Binding ErrorCodeCount}" FontAttributes="Bold" VerticalOptions="Center"/>
+                    <Label Text="{Binding ErrorCodeCount}" FontAttributes="Bold" VerticalOptions="Center" Margin="5,0,0,0"/>
                 </StackLayout>
             </ViewCell>
         </DataTemplate>
@@ -203,13 +203,13 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="50"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
                         <Label Text="检测进度" FontSize="Medium" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
                         <Label Text="计&#10;数" Grid.Row="1"/>
-                        <Label x:Name="CheckProgressText" Text="0 / 0" FontAttributes="Bold" Grid.Row="1" Grid.Column="1"/>
+                        <Label x:Name="CheckProgressText" Text="0 / 0" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="1" Grid.Column="1"/>
                     </Grid>
                 </Border>
                 <Border StrokeShape="RoundRectangle 6,6,6,6" Stroke="LimeGreen" Margin="5,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1">
@@ -235,9 +235,9 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition/>
-                            <ColumnDefinition/>               
-                            <ColumnDefinition/>
+                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="100"/>               
+                            <ColumnDefinition Width="50"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
@@ -245,7 +245,7 @@
                         <Label Text="计&#10;数" Grid.Row="1"/>
                         <Label x:Name="CheckNOKCountText" Text="0" TextColor="Red" FontAttributes="Bold" Grid.Row="1" Grid.Column="1"/>
                         <Label Text="详&#10;情" Grid.Row="1" Grid.Column="2"/>
-                        <ListView x:Name="CheckNOKErrorCodeList" ItemTemplate="{StaticResource CheckNOKErrorCodeListStyle}" Grid.Row="1" Grid.Column="3"/>
+                        <ListView x:Name="CheckNOKErrorCodeList" ItemTemplate="{StaticResource CheckNOKErrorCodeListStyle}" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Always" Grid.Row="1" Grid.Column="3"/>
                     </Grid>
                 </Border>       
             </Grid>
