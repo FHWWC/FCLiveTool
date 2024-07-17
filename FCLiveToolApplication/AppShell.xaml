@@ -4,7 +4,7 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:FCLiveToolApplication"
-    Shell.NavBarIsVisible="{ OnPlatform False,Android=True}" Shell.BackgroundColor="LightSkyBlue" Title="FCLiveTool 直播源预览+下载"
+    Shell.NavBarIsVisible="{ OnPlatform False,Android=True}" Shell.BackgroundColor="LightSkyBlue" Title="FCLiveTool"
     Loaded="Shell_Loaded" Navigating="Shell_Navigating">
 
 
@@ -32,7 +32,7 @@
     <Shell.FlyoutHeader>
         <VerticalStackLayout Padding="0,10,0,20">
             <Image Source="fclive_logo.png" HeightRequest="100" />
-            <Label HorizontalTextAlignment="Center">FCLiveTool 直播源预览+下载</Label>
+            <Label HorizontalTextAlignment="Center">FCLiveTool 直播源管理工具</Label>
         </VerticalStackLayout>
     </Shell.FlyoutHeader>
 
