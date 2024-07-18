@@ -182,10 +182,19 @@
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
+                    </Button>                  
+                    <Button x:Name="SaveCheckListBtn" Background="LightPink" Text="保存列表" Margin="10,0,0,0" Clicked="SaveCheckListBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
                     </Button>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
-                    <Label Text="" Margin="20,0,0,0"/>
+                    <Button x:Name="PrintCheckLogBtn" Background="LightBlue" Text="输出检测报告" Margin="20,0,0,0" Clicked="PrintCheckLogBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xEDE1;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
                 </StackLayout>
             </StackLayout>
 

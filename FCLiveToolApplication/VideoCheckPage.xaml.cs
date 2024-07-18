@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Maui.Views;
+using System.Text;
 
 namespace FCLiveToolApplication;
 
@@ -173,6 +174,8 @@ public partial class VideoCheckPage : ContentPage
         ShowLoadOrRefreshDialog=false;
         isFinishCheck = false;
         CurrentErrorCodeList=new List<CheckNOKErrorCodeList>();
+        SaveCheckListBtn.IsEnabled=false;
+        PrintCheckLogBtn.IsEnabled=false;
 
         ValidCheck(CurrentCheckList);
         while (CheckFinishCount<CurrentCheckList.Count)
@@ -188,6 +191,8 @@ public partial class VideoCheckPage : ContentPage
         StopCheckBtn.IsEnabled=false;
         CheckDataSourcePanel.IsEnabled = true;
         RemoveNOKBtn.IsEnabled=true;
+        SaveCheckListBtn.IsEnabled=true;
+        PrintCheckLogBtn.IsEnabled=true;
         CheckNOKErrorCodeList.ItemsSource=CurrentErrorCodeList.Take(CurrentErrorCodeList.Count);
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
@@ -483,5 +488,66 @@ public partial class VideoCheckPage : ContentPage
         List<CheckNOKErrorCodeList> tlist = new List<CheckNOKErrorCodeList>();
         tlist.Add(new CheckNOKErrorCodeList() { HTTPStatusCode="检测结束后生成" ,HTTPStatusTextBKG=Colors.Black}) ;
         CheckNOKErrorCodeList.ItemsSource=tlist;
+    }
+
+    private async void SaveCheckListBtn_Clicked(object sender, EventArgs e)
+    {
+        if(string.IsNullOrWhiteSpace(AllVideoData))
+        {
+            await DisplayAlert("提示信息", "请先获取直播源！", "确定");
+            return;
+        }
+
+
+        using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(AllVideoData)))
+        {
+            var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, ".M3U", ms, CancellationToken.None);
+
+            if (fileSaver.IsSuccessful)
+            {
+                await DisplayAlert("提示信息", "文件已成功保存至：\n"+fileSaver.FilePath, "确定");
+            }
+            else
+            {
+                await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+            }
+
+        }
+    }
+
+    private async void PrintCheckLogBtn_Clicked(object sender, EventArgs e)
+    {
+        if(CurrentCheckList.Count<1)
+        {
+            await DisplayAlert("提示信息", "当前列表为空，请选择直播源并进行检测，之后再输出报告！", "确定");
+            return;
+        }
+        if(CurrentCheckList.Where(p=>!string.IsNullOrWhiteSpace(p.HTTPStatusCode)).Count()<1)
+        {
+            await DisplayAlert("提示信息", "请先进行检测再输出报告！", "确定");
+            return;
+        }
+
+
+        string printStr = "台名,URL,检测结果";
+        for(int i=0;i<CurrentCheckList.Count; i++)
+        {
+            printStr+="\n"+ CurrentCheckList[i].SourceName+","+CurrentCheckList[i].SourceLink+","+CurrentCheckList[i].HTTPStatusCode;
+        }
+
+        using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(printStr)))
+        {
+            var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, "CheckLog.csv", ms, CancellationToken.None);
+
+            if (fileSaver.IsSuccessful)
+            {
+                await DisplayAlert("提示信息", "文件已成功保存至：\n"+fileSaver.FilePath, "确定");
+            }
+            else
+            {
+                await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+            }
+
+        }
     }
 }
