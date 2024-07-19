@@ -27,7 +27,9 @@ FCLiveTool是一款直播源观看和管理的工具，您可以随时下载想�
 ![FCLiveToolAPPSS1](GitMPIMG/IMG8.png)  
   
 **如有意见或者问题请提出，感谢您的支持。项目会不断更新，少不了各位的贡献。**
+
   
-开发者联系方式  
+# 开发者联系方式  
 邮箱：justineedyoumost@163.com  
+开发者账户：wzzedznhl3@outlook.com  
 QQ：3524984135
