@@ -15,7 +15,7 @@
         </DataTemplate>
         <DataTemplate x:Key="VideoDetailListStyle">
             <ViewCell>
-                <Grid Margin="20,10" HeightRequest="100">
+                <Grid Margin="20,10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition />
@@ -45,8 +45,14 @@
                                 </LinearGradientBrush>
                             </StackLayout.Background>
                         </StackLayout>
-                       
-                        <Label Text="{Binding SourceName}" FontAttributes="Bold" HorizontalOptions="Start" Margin="15,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
+
+                        <StackLayout HorizontalOptions="Start" Margin="15,0,0,0"  Grid.Column="1">
+                            <Label Text="{Binding SourceName}" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding GroupTitle}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding TVGID}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding TVGCountry}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding TVGLanguage}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                        </StackLayout>
                     </Grid>
 
                     <Grid Margin="0,10,0,0" Grid.Row="1">
@@ -55,7 +61,7 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" HorizontalOptions="Start" Padding="5,0">
+                        <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" VerticalOptions="Start" Padding="5,0">
                             <Label TextColor="White" Text="HTTPS"/>
                         </StackLayout>
                         <Label Text="{Binding FileName}" HorizontalOptions="Start" Margin="10,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>

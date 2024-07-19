@@ -27,6 +27,15 @@ namespace FCLiveToolApplication
         public string FileName { get; set; }
         public string HTTPStatusCode { get; set; }
         public Color HTTPStatusTextBKG { get; set; }
+        //更多参数
+        private string groupTitle;
+        public string GroupTitle { get { return "分组标题："+groupTitle; } set { groupTitle=value; } }
+        private string tvgID;
+        public string TVGID { get { return "频道ID    ："+tvgID; } set { tvgID=value; } }
+        private string tvgCountry;
+        public string TVGCountry { get { return "频道地区："+tvgCountry; } set { tvgCountry=value; } }
+        private string tvgLanguage;
+        public string TVGLanguage { get { return "频道语言："+tvgLanguage; } set { tvgLanguage=value; } }
     }
     public class RecentVList
     {
@@ -1354,6 +1363,10 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     SourceName=match[i].Groups[UseGroup[1]].Value,
                     SourceLink=match[i].Groups[UseGroup[2]].Value,
                     FullM3U8Str = MakeFullStr(match[i], recreg),
+                    GroupTitle=Regex.Match(MakeFullStr(match[i], recreg), @"group-title=""(.*?)""").Groups[1].Value,
+                    TVGID=Regex.Match(MakeFullStr(match[i], recreg), @"tvg-id=""(.*?)""").Groups[1].Value,
+                    TVGCountry=Regex.Match(MakeFullStr(match[i], recreg), @"tvg-country=""(.*?)""").Groups[1].Value,
+                    TVGLanguage=Regex.Match(MakeFullStr(match[i], recreg), @"tvg-language=""(.*?)""").Groups[1].Value,
                     isHTTPS=match[i].Groups[UseGroup[2]].Value.ToLower().StartsWith("https://") ? true : false,
                     FileName=Regex.Match(match[i].Groups[UseGroup[2]].Value, @"\/([^\/]+\.m3u8)").Groups[1].Value
                 };
