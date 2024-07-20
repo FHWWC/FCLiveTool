@@ -1,127 +1,20 @@
 #EXTM3U
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv1.png",CCTV1
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000018602&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv1.png",测试
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000018602&livemode=1&stbId=2&channel-id=ystenlive
+#EXTINF:-1 tvg-name="凤凰中文" tvg-logo="https://live.fanmingming.com/tv/凤凰卫视中文台.png" group-title="卫视频道",凤凰中文
+http://116.162.6.192/1.v.smtcdns.net/qctv.fengshows.cn/live/0701pcc72.m3u8
+#EXTINF:-1 tvg-name="凤凰资讯" tvg-logo="https://live.fanmingming.com/tv/凤凰卫视资讯台.png" group-title="卫视频道",凤凰资讯
+http://116.162.6.192/1.v.smtcdns.net/qctv.fengshows.cn/live/0701pin72.m3u8
+#EXTINF:-1 tvg-name="凤凰香港" tvg-logo="https://live.fanmingming.com/tv/凤凰卫视香港台.png" group-title="卫视频道",凤凰香港
+http://116.162.6.192/1.v.smtcdns.net/qctv.fengshows.cn/live/0701phk72.m3u8
+#EXTINF:-1 tvg-name="内蒙古蒙语卫视" tvg-logo="https://live.fanmingming.com/tv/内蒙古蒙语卫视.png" group-title="内蒙频道",蒙语卫视
+https://livestream-bt.nmtv.cn/nmtv/2315general.m3u8?txSecret=e2b255285dd119a92c8aa5cdf00f8b84&txTime=771EF880
+#EXTINF:-1 tvg-id="18" tvg-name="大湾区卫视" tvg-logo="https://gitee.com/yuanzl77/TVBox-logo/raw/main/png/大湾区卫视.png" group-title="广东频道",大湾区卫视
+http://14.212.185.27:9901/tsfile/live/1004_1.m3u8?key=txiptv&playlive=0&authid=0$LR•IPV4『线路18』
+#EXTINF:-1 tvg-id="19" tvg-name="大湾区卫视" tvg-logo="https://gitee.com/yuanzl77/TVBox-logo/raw/main/png/大湾区卫视.png" group-title="广东频道",大湾区卫视
+http://58.248.112.229:8114/GD.m3u8?Authinfo=F8UQ%2BEevMmd%2FnekE5YOOKpcF6cxV02%2F2vamAvq3NTjZdp1PqnpHZJhFc1mqvBHwl&p=GITV&area=GD_CUCC&partnerCode=GD_CUCC&token=0C760427464F16BC52147D30B20FE4AFCF076375187B56B35E8BDB02A2F6902DE9292062EA71D873A44BBEEB2412BDB1EC6FB05780A8EA269429663960F75A0E38AD629F8C7EE56B792DC687DBB007AA5A7E6BA759697151C58F0015A49D684681688F54CF181FEA9885C669F98E6157C28D65F01F79AD703ABEC36AB5501CEAAAA270038E8B9D34B33962FE84B6D2A996DBE32DF2BA88F913DE2ED98DD12A30&version=0.0.0.0&apkVersion=4.2.33&mac=fc:57:03:56:49:16&multicast=0&platform=LIVE&gAreaId=CHN&gAppChannel=DEFAULT&gSoftTermId=TERMINAL&gManufacturer=Hisense&gModel=IP108H&gMac=fc:57:03:56:49:16&gStbId=00000444000710800001FC5703564916&gOsType=android&gOsVersion=4.4.2&gApiLevel=19&gAppVersionCode=4233&gAppVersionName=4.2.33&gDowngrade=EMERGENCY&gProductLineCode=LIVOD&gRomVersion=3.17.2.4602&gTimestamp=1715182632351&gRequests=1&gThirdPartyCDN=0&gGroupCode=&gUserId=002040101532912&isIty=1&gCityCode=DEFAULT&verType=0&Fsv_Tgid=517e5e52029fd0c6&FvSeid=77fd5578ee70a687&Fsv_filetype=1&Fsv_ctype=LIVES&Fsv_cid=4393&Fsv_chan_hls_se_idx=25&Fsv_TBt=2287792&Fsv_ShiftEnable=1&Fsv_ShiftTsp=120&Fsv_SV_PARAM1=0&Fsv_otype=0&Provider_id=GD_CUCC&Pcontent_id=G_NANFANG&Fsv_CMSID=GD_CUCC07-06-2024$LR•IPV4『线路19』
+#EXTINF:-1 tvg-id="21" tvg-name="大湾区卫视" tvg-logo="https://gitee.com/yuanzl77/TVBox-logo/raw/main/png/大湾区卫视.png" group-title="广东频道",大湾区卫视
+http://58.248.112.229:8114/GD_CUCC/G_NANFANG.m3u8?Authinfo=F8UQ%2BEevMmd%2FnekE5YOOKpcF6cxV02%2F2vamAvq3NTjZdp1PqnpHZJhFc1mqvBHwl&p=GITV&area=GD_CUCC&partnerCode=GD_CUCC&token=0C760427464F16BC52147D30B20FE4AFCF076375187B56B35E8BDB02A2F6902DE9292062EA71D873A44BBEEB2412BDB1EC6FB05780A8EA269429663960F75A0E38AD629F8C7EE56B792DC687DBB007AA5A7E6BA759697151C58F0015A49D684681688F54CF181FEA9885C669F98E6157C28D65F01F79AD703ABEC36AB5501CEAAAA270038E8B9D34B33962FE84B6D2A996DBE32DF2BA88F913DE2ED98DD12A30&version=0.0.0.0&apkVersion=4.2.33&mac=fc:57:03:56:49:16&multicast=0&platform=LIVE&gAreaId=CHN&gAppChannel=DEFAULT&gSoftTermId=TERMINAL&gManufacturer=Hisense&gModel=IP108H&gMac=fc:57:03:56:49:16&gStbId=00000444000710800001FC5703564916&gOsType=android&gOsVersion=4.4.2&gApiLevel=19&gAppVersionCode=4233&gAppVersionName=4.2.33&gDowngrade=EMERGENCY&gProductLineCode=LIVOD&gRomVersion=3.17.2.4602&gTimestamp=1715182632351&gRequests=1&gThirdPartyCDN=0&gGroupCode=&gUserId=002040101532912&isIty=1&gCityCode=DEFAULT&verType=0&Fsv_Tgid=517e5e52029fd0c6&FvSeid=77fd5578ee70a687&Fsv_filetype=1&Fsv_ctype=LIVES&Fsv_cid=4393&Fsv_chan_hls_se_idx=25&Fsv_TBt=2287792&Fsv_ShiftEnable=1&Fsv_ShiftTsp=120&Fsv_SV_PARAM1=0&Fsv_otype=0&Provider_id=GD_CUCC&Pcontent_id=G_NANFANG&Fsv_CMSID=GD_CUCC$LR•IPV4『线路21』
 
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv2.png",CCTV2
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000012442&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv3.png",CCTV3
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000011218&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv3.png",CCTV3
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000013682&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv4.png",CCTV4
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000002000031664&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv5.png",CCTV5
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000004794&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv5+.png",CCTV5+
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000018504&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv6.png",CCTV6
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000001737&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv6.png",CCTV6
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000016466&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv7.png",CCTV7
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000017218&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv8.png",CCTV8
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000003736&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv8.png",CCTV8
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000031433&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv9.png",CCTV9
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000014583&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv10.png",CCTV10
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000023734&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv11.png",CCTV11
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000002000019789&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv12.png",CCTV12
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000001640&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv12.png",CCTV12
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000032494&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv13.png",CCTV13
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=6918130250570453526&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv14.png",CCTV14
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000008170&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/cctv15.png",CCTV15
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000002000008163&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 ,CCTV-1综合 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225618/index.m3u8
-#EXTINF:-1 ,CCTV-2财经 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225619/index.m3u8
-#EXTINF:-1 ,CCTV-3综艺 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225634/index.m3u8
-#EXTINF:-1 ,CCTV-5体育 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225633/index.m3u8
-#EXTINF:-1 ,CCTV-5+体育赛事 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225649/index.m3u8
-#EXTINF:-1 ,CCTV-6电影 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225632/index.m3u8
-#EXTINF:-1 ,CCTV-7国防军事 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225624/index.m3u8
-#EXTINF:-1 ,CCTV-8电视剧 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225631/index.m3u8
-#EXTINF:-1 ,CCTV-9纪录 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225646/index.m3u8
-#EXTINF:-1 ,CCTV-10科教 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225636/index.m3u8
-#EXTINF:-1 ,CCTV-11戏曲 (1080p)
-http://39.135.138.59:18890/PLTV/88888910/224/3221225628/index.m3u8
-#EXTINF:-1 ,CCTV-12社会与法制 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225637/index.m3u8
-#EXTINF:-1 ,CCTV-13新闻 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225638/index.m3u8
-#EXTINF:-1 ,CCTV-17农业农村 (1080p)
-http://39.134.115.163:8080/PLTV/88888910/224/3221225908/index.m3u8
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/tianjin.png",天津卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000000831&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/tianjin.png",天津卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000003475&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/chongqing.png",重庆卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=4995134319251569870&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/chongqing.png",重庆卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000002000018937&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/jiangsu.png",江苏卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000004684&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/dongfang.png",东方卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000005866&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/dongfang.png",东方卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000030202&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/beijing.png",北京卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000017156&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/beijing.png",北京卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000021288&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/dongnan.png",东南卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000002000009263&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/beijingjishi.png",冬奥纪实
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000001910&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/heilongjiang.png",黑龙江卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000001925&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/heilongjiang.png",黑龙江卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000009082&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/shandong.png",山东卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000012807&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/jiangxi.png",江西卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000013731&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/hubei.png",湖北卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000010355&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/hunan.png",湖南卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000009115&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/hunan.png",湖南卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000032695&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/jinyingjishi.png",金鹰纪实
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000002000011724&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/guangdong.png",广东卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000014176&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/shenzhen.png",深圳卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000009227&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/shenzhen.png",深圳卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000011645&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/zhejiang.png",浙江卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000014260&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/zhejiang.png",浙江卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000009806&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/anhui.png",安徽卫视
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000030159&livemode=1&stbId=2&channel-id=ystenlive
-#EXTINF:-1 group-title="易视腾" tvg-logo="http://n.ysyz.top:99/buyaolian/shanghaijishi.png",上海纪实人文
-http://111.40.196.9/0000000000001001/1/index.m3u8?Contentid=1000000001000010606&livemode=1&stbId=2&channel-id=ystenlive
+
 #EXTINF:-1 group-title="江西移动" tvg-logo="http://epg.51zmt.top:8000/tb1/CCTV/CCTV1.png",CCTV1
 http://39.134.115.163:8080/TVOD/88888910/224/3221225642/index.m3u8
 #EXTINF:-1 group-title="江西移动" tvg-logo="http://epg.51zmt.top:8000/tb1/CCTV/CCTV2.png",CCTV2
