@@ -104,6 +104,7 @@
                 <StackLayout Orientation="{OnPlatform Horizontal,Android=Vertical}">
                     <RadioButton x:Name="M3USourceRBtn1" Content="本地文件"  IsChecked="True" GroupName="M3USourceRBtnGroup" Margin="{OnPlatform '20,0,0,0',Android='5,0,0,0'}" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
                     <RadioButton x:Name="M3USourceRBtn2" Content="输入URL" GroupName="M3USourceRBtnGroup" Margin="5,0,0,0" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
+                    <RadioButton x:Name="M3USourceRBtn3" Content="输入文本快速检测" GroupName="M3USourceRBtnGroup" Margin="5,0,0,0" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
                 </StackLayout>
             </StackLayout>
 
@@ -124,6 +125,14 @@
                 <StackLayout x:Name="M3USourcePanel" IsVisible="False">
                     <Entry x:Name="M3USourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing"/>
                     <Button x:Name="M3UAnalysisBtn" Text="解析" Background="LightPink"  Margin="0,5,0,0" Clicked="M3UAnalysisBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </StackLayout>            
+                <StackLayout x:Name="M3UTextPanel" IsVisible="False">
+                    <Editor x:Name="M3UStringTb" HeightRequest="{ OnPlatform 30,Android=40}"  AutoSize="TextChanges"/>
+                    <Button x:Name="M3UAnalysisStringBtn" Text="解析" Background="LightPink"  Margin="0,5,0,0" Clicked="M3UAnalysisStringBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>

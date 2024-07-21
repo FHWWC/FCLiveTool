@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Maui.Views;
+using Microsoft.Maui.Storage;
 using System.Text;
 
 namespace FCLiveToolApplication;
@@ -48,11 +49,19 @@ public partial class VideoCheckPage : ContentPage
         {
             LocalM3USelectPanel.IsVisible = true;
             M3USourcePanel.IsVisible = false;
+            M3UTextPanel.IsVisible = false;
         }
         else if (entry.StyleId == "M3USourceRBtn2")
         {
             LocalM3USelectPanel.IsVisible = false;
             M3USourcePanel.IsVisible = true;
+            M3UTextPanel.IsVisible = false;
+        }     
+        else if (entry.StyleId == "M3USourceRBtn3")
+        {
+            LocalM3USelectPanel.IsVisible = false;
+            M3USourcePanel.IsVisible = false;
+            M3UTextPanel.IsVisible = true;
         }
     }
 
@@ -549,5 +558,17 @@ public partial class VideoCheckPage : ContentPage
             }
 
         }
+    }
+
+    private void M3UAnalysisStringBtn_Clicked(object sender, EventArgs e)
+    {
+        if(string.IsNullOrWhiteSpace(M3UStringTb.Text))
+        {
+            return;
+        }
+
+
+        AllVideoData=M3UStringTb.Text.Replace("\r","\n");
+        LoadDataToCheckList();
     }
 }
