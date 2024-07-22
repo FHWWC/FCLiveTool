@@ -177,6 +177,7 @@ public partial class VideoCheckPage : ContentPage
         }
 
         ClearAllCount();
+        CheckProgressText.Text="0 / "+CurrentCheckList.Count;
         M3U8ValidCheckCTS=new CancellationTokenSource();
         StopCheckBtn.IsEnabled=true;
         CheckDataSourcePanel.IsEnabled=false;
@@ -238,6 +239,7 @@ public partial class VideoCheckPage : ContentPage
         //CheckProgressText.Text="0 / "+CurrentCheckList.Count;
         CheckOKCountText.Text="0";
         CheckNOKCountText.Text="0";
+        CheckPercentText.Text="(0 %)";
         //CheckNOKErrorCodeList.ItemsSource=null;
         InitErrorCodeList();
         CheckFinishCount = 0;
@@ -373,6 +375,8 @@ public partial class VideoCheckPage : ContentPage
                             MainThread.InvokeOnMainThreadAsync(() =>
                             {
                                 CheckProgressText.Text=CheckFinishCount+" / "+videodetaillist.Count;
+                                double tpercent = (double)CheckFinishCount/(double)videodetaillist.Count*100;
+                                CheckPercentText.Text="("+Math.Round(tpercent,2)+" %)";
                             });
                         }
 

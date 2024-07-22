@@ -233,7 +233,11 @@
 
                         <Label Text="检测进度" FontSize="Medium" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
                         <Label Text="计&#10;数" Grid.Row="1"/>
-                        <Label x:Name="CheckProgressText" Text="0 / 0" FontAttributes="Bold" HorizontalOptions="Center" Grid.Row="1" Grid.Column="1"/>
+                        <StackLayout HorizontalOptions="Center" Grid.Row="1" Grid.Column="1">
+                            <Label x:Name="CheckProgressText" Text="0 / 0" FontAttributes="Bold"/>
+                            <Label x:Name="CheckPercentText" Text="(0 %)" />
+                        </StackLayout>
+
                     </Grid>
                 </Border>
                 <Border StrokeShape="RoundRectangle 6,6,6,6" Stroke="LimeGreen" Margin="5,0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Column="1">
