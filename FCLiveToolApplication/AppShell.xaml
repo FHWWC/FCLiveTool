@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:FCLiveToolApplication"
     Shell.NavBarIsVisible="{ OnPlatform False,Android=True}" Shell.BackgroundColor="LightSkyBlue" Title="FCLiveTool"
-    Loaded="Shell_Loaded" Navigating="Shell_Navigating">
+    Loaded="Shell_Loaded" Navigating="Shell_Navigating" Shell.FlyoutBackgroundColor="{AppThemeBinding Light=#A0F0FFFF, Dark=SteelBlue}">
 
 
     <!--  
@@ -21,13 +21,13 @@
         </HorizontalStackLayout>
     </Shell.TitleView>
     -->
-    
+
     <Shell.TabBarBackgroundColor>
         <Color>#A0F0FFFF</Color>
     </Shell.TabBarBackgroundColor>
-    <Shell.FlyoutBackgroundColor>
+    <Shell.FlyoutBackdrop>
         <Color>#A0F0FFFF</Color>
-    </Shell.FlyoutBackgroundColor>
+    </Shell.FlyoutBackdrop>
     
     <Shell.FlyoutHeader>
         <VerticalStackLayout Padding="0,10,0,20">
