@@ -33,6 +33,6 @@ public partial class AboutPage : ContentPage
 
     private void GroupsBtn_Clicked(object sender, EventArgs e)
     {
-        DisplayAlert("提示信息", "我们的群组：\n TG群 t.me/fclivetoolgroup\n QQ群 暂无", "确定");
+        DisplayAlert("提示信息", "我们的群组：\n TG群 t.me/fclivetoolgroup\n QQ群 877202338", "确定");
     }
 }
