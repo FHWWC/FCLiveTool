@@ -1,4 +1,6 @@
-﻿using CommunityToolkit.Maui.Views;
+﻿#if WINDOWS
+using Windows.UI.ViewManagement;
+#endif
 
 namespace FCLiveToolApplication;
 
@@ -28,6 +30,7 @@ public partial class AppShell : Shell
 
     }
 
+
     private async void AboutBtn_Clicked(object sender, EventArgs e)
     {
         await Navigation.PopAsync();
@@ -50,7 +53,19 @@ Shell.Current.FlyoutIsPresented = false;
 
     private void Shell_Navigating(object sender, ShellNavigatingEventArgs e)
     {
-
+#if WINDOWS
+        var uiSettings = new UISettings();
+        if (uiSettings.GetColorValue(UIColorType.Background) == Windows.UI.Color.FromArgb(255, 0, 0, 0))
+        {
+            Preferences.Set("AppDarkMode", true);
+            Application.Current.UserAppTheme = AppTheme.Dark;
+        }
+        else
+        {
+            Preferences.Set("AppDarkMode", false);
+            Application.Current.UserAppTheme = AppTheme.Light;
+        }
+#endif
         /*
                  if (!e.Target.Location.ToString().Contains("VideoPrevPage"))
                 {
