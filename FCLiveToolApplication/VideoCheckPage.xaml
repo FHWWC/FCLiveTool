@@ -210,6 +210,25 @@
                             <FontImageSource Glyph="&#xE9F9;" Size="Large" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
+                    <Grid x:Name="VCLPagePanel" HorizontalOptions="FillAndExpand" Margin="20,0,0,0" IsVisible="False">
+                        <Button x:Name="VCLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" Clicked="VCLBackBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                            <Label x:Name="VCLCurrentPage" Text="1/1" FontSize="24" HorizontalOptions="Center"/>
+                            <Entry x:Name="VCLPageTb" MaxLength="3" Placeholder="输入页码" Keyboard="Numeric" Margin="20,0,0,0"/>
+                            <Button x:Name="VCLJumpBtn" Background="LightBlue" HeightRequest="35" Text="跳转" Margin="{ OnPlatform '5,0,0,0', Android=0}" Clicked="VCLJumpBtn_Clicked"/>
+                        </StackLayout>
+                        <Button x:Name="VCLNextBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="End" Clicked="VCLNextBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </Grid>
                 </StackLayout>
             </StackLayout>
 

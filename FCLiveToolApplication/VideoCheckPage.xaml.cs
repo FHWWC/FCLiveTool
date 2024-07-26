@@ -40,7 +40,10 @@ public partial class VideoCheckPage : ContentPage
     public bool ShowLoadOrRefreshDialog = false;
     public bool isFinishCheck = false;
     object errorcodeObj = new object();
-
+    public int VCLCurrentPageIndex = 1;
+    public int VCLMaxPageIndex;
+    public const int VCL_COUNT_PER_PAGE = 100;
+    public const double D_VCL_COUNT_PER_PAGE = 100.0;
     private void M3USourceRBtn_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
         RadioButton entry = sender as RadioButton;
@@ -128,7 +131,7 @@ public partial class VideoCheckPage : ContentPage
         CurrentCheckList=regexManager.DoRegex(AllVideoData, regexManager.GetRegexOptionIndex(RegexOptionCB.IsChecked, (RegexSelectBox.SelectedIndex+1).ToString()));
        
         CheckProgressText.Text="0 / "+CurrentCheckList.Count;
-        VideoCheckList.ItemsSource= CurrentCheckList;
+        ProcessPageJump(CurrentCheckList, 1);
     }
     private async void M3UAnalysisBtn_Clicked(object sender, EventArgs e)
     {
@@ -207,8 +210,7 @@ public partial class VideoCheckPage : ContentPage
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
         {
-            VideoCheckList.ItemsSource=CurrentCheckList.Take(CurrentCheckList.Count);
-
+            ProcessPageJump(CurrentCheckList, 1);
             await DisplayAlert("提示信息", "已全部检测完成！", "确定");
         }
         else
@@ -218,7 +220,7 @@ public partial class VideoCheckPage : ContentPage
                 bool tresult = await DisplayAlert("提示信息", "是要查看部分检测完的结果还是要重新加载列表？", "查看结果", "重新加载");
                 if (tresult)
                 {
-                    VideoCheckList.ItemsSource=CurrentCheckList.Take(CurrentCheckList.Count);
+                    ProcessPageJump(CurrentCheckList, 1);
                 }
                 else
                 {
@@ -255,10 +257,12 @@ public partial class VideoCheckPage : ContentPage
             if (VideoCheckList.ItemsSource is not null&&VideoCheckList.ItemsSource.Cast<VideoDetailList>().Count()>0)
             {
                 VCLIfmText.IsVisible=false;
+                VCLPagePanel.IsVisible=true;
             }
             else
             {
                 VCLIfmText.IsVisible=true;
+                VCLPagePanel.IsVisible=false;
             }
         }
     }
@@ -452,7 +456,7 @@ public partial class VideoCheckPage : ContentPage
             }
         }
 
-        VideoCheckList.ItemsSource = CurrentCheckList.Take(CurrentCheckList.Count);
+        ProcessPageJump(CurrentCheckList, 1);
         await DisplayAlert("提示信息", "已成功从列表里移除所有共"+notokcount+"条无效的直播信号！", "确定");
     }
 
@@ -574,5 +578,91 @@ public partial class VideoCheckPage : ContentPage
 
         AllVideoData=M3UStringTb.Text.Replace("\r","\n");
         LoadDataToCheckList();
+    }
+
+    private void VCLBackBtn_Clicked(object sender, EventArgs e)
+    {
+        if (VCLCurrentPageIndex<=1)
+        {
+            return;
+        }
+
+        ProcessPageJump(CurrentCheckList, VCLCurrentPageIndex-1);
+    }
+
+    private async void VCLJumpBtn_Clicked(object sender, EventArgs e)
+    {
+        int TargetPage = 1;
+        if (!int.TryParse(VCLPageTb.Text, out TargetPage))
+        {
+            await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
+            return;
+        }
+        if (TargetPage<1||TargetPage>VCLMaxPageIndex)
+        {
+            await DisplayAlert("提示信息", "请输入正确的页码！", "确定");
+            return;
+        }
+
+        ProcessPageJump(CurrentCheckList, TargetPage);
+    }
+
+    private void VCLNextBtn_Clicked(object sender, EventArgs e)
+    {
+        if (VCLCurrentPageIndex>=VCLMaxPageIndex)
+        {
+            return;
+        }
+
+        ProcessPageJump(CurrentCheckList, VCLCurrentPageIndex+1);
+    }
+    /// <summary>
+    /// 跳转页面的操作
+    /// </summary>
+    /// <param name="videoCheckList">要操作的列表</param>
+    /// <param name="TargetPage">目标页码</param>
+    /// <param name="skipcount">跳过的条目数</param>
+    public void ProcessPageJump(List<VideoDetailList> videoCheckList,int TargetPage)
+    {
+        VCLMaxPageIndex= (int)Math.Ceiling(videoCheckList.Count/D_VCL_COUNT_PER_PAGE);
+
+        VCLCurrentPageIndex=TargetPage;
+        VCLCurrentPage.Text=TargetPage+"/"+VCLMaxPageIndex;
+
+        MakeVideosDataToPage(videoCheckList, (VCLCurrentPageIndex-1)*VCL_COUNT_PER_PAGE);
+    }
+    public void MakeVideosDataToPage(List<VideoDetailList> list, int skipcount)
+    {
+        if (list.Count()<1)
+        {
+            VideoCheckList.ItemsSource=new List<VideoDetailList>() { };
+            return;
+        }
+
+        if (VCLCurrentPageIndex==VCLMaxPageIndex)
+        {
+            VideoCheckList.ItemsSource=list.Skip(skipcount).Take(list.Count-skipcount);
+        }
+        else
+        {
+            VideoCheckList.ItemsSource=list.Skip(skipcount).Take(VCL_COUNT_PER_PAGE);
+        }
+
+        if (VCLCurrentPageIndex>=VCLMaxPageIndex)
+        {
+            VCLBackBtn.IsEnabled = true;
+            VCLNextBtn.IsEnabled = false;
+        }
+        else if (VCLCurrentPageIndex<=1)
+        {
+            VCLBackBtn.IsEnabled = false;
+            VCLNextBtn.IsEnabled = true;
+        }
+        else
+        {
+            VCLBackBtn.IsEnabled = true;
+            VCLNextBtn.IsEnabled = true;
+        }
+
     }
 }
