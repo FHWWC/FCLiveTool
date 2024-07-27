@@ -131,6 +131,7 @@ public partial class VideoCheckPage : ContentPage
         CurrentCheckList=regexManager.DoRegex(AllVideoData, regexManager.GetRegexOptionIndex(RegexOptionCB.IsChecked, (RegexSelectBox.SelectedIndex+1).ToString()));
        
         CheckProgressText.Text="0 / "+CurrentCheckList.Count;
+        TVLogoVisibleCb_CheckedChanged(null, new CheckedChangedEventArgs(TVLogoVisibleCb.IsChecked));
         ProcessPageJump(CurrentCheckList, 1);
     }
     private async void M3UAnalysisBtn_Clicked(object sender, EventArgs e)
@@ -189,6 +190,7 @@ public partial class VideoCheckPage : ContentPage
         CurrentErrorCodeList=new List<CheckNOKErrorCodeList>();
         SaveCheckListBtn.IsEnabled=false;
         PrintCheckLogBtn.IsEnabled=false;
+        TVLogoVisibleCb.IsEnabled=false;
 
         ValidCheck(CurrentCheckList);
         while (CheckFinishCount<CurrentCheckList.Count)
@@ -206,6 +208,7 @@ public partial class VideoCheckPage : ContentPage
         RemoveNOKBtn.IsEnabled=true;
         SaveCheckListBtn.IsEnabled=true;
         PrintCheckLogBtn.IsEnabled=true;
+        TVLogoVisibleCb.IsEnabled=true;
         CheckNOKErrorCodeList.ItemsSource=CurrentErrorCodeList.Take(CurrentErrorCodeList.Count);
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
@@ -662,6 +665,36 @@ public partial class VideoCheckPage : ContentPage
         {
             VCLBackBtn.IsEnabled = true;
             VCLNextBtn.IsEnabled = true;
+        }
+
+    }
+
+    private async void TVLogoVisibleCb_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (CurrentCheckList.Count<1)
+        {
+            await DisplayAlert("提示信息", "当前列表为空！", "确定");
+            return;
+        }
+
+        if (e.Value)
+        {
+            CurrentCheckList.ForEach(p =>
+            {
+                p.LogoLink=p._LogoLink;
+            });
+        }
+        else
+        {
+            CurrentCheckList.ForEach(p =>
+            {
+                p.LogoLink=null;
+            });
+        }
+
+        if(sender is not null)
+        {
+            ProcessPageJump(CurrentCheckList, VCLCurrentPageIndex);
         }
 
     }

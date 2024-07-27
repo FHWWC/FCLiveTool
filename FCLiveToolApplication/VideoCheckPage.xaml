@@ -212,6 +212,12 @@
                     </Button>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
+                    <StackLayout Orientation="Horizontal" Margin="20,0,0,0">
+                        <CheckBox x:Name="TVLogoVisibleCb" IsChecked="True" CheckedChanged="TVLogoVisibleCb_CheckedChanged"/>
+                        <Label Text="显示台标" VerticalOptions="Center"/>
+                    </StackLayout>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
                     <Grid x:Name="VCLPagePanel" HorizontalOptions="FillAndExpand" Margin="20,0,0,0" IsVisible="False">
                         <Button x:Name="VCLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" Clicked="VCLBackBtn_Clicked">
                             <Button.ImageSource>

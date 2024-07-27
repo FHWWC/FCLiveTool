@@ -18,6 +18,7 @@ namespace FCLiveToolApplication
     public class VideoDetailList
     {
         public int Id { get; set; }
+        public string _LogoLink;
         public string LogoLink { get; set; }
         public string SourceName { get; set; }
         public string SourceLink { get; set; }
@@ -1360,6 +1361,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     //ID，台标，台名，直播源地址
                     Id=i,
                     LogoLink=match[i].Groups[UseGroup[0]].Value=="" ? "fclive_tvicon.png" : match[i].Groups[UseGroup[0]].Value,
+                    _LogoLink=match[i].Groups[UseGroup[0]].Value=="" ? "fclive_tvicon.png" : match[i].Groups[UseGroup[0]].Value,
                     SourceName=match[i].Groups[UseGroup[1]].Value,
                     SourceLink=match[i].Groups[UseGroup[2]].Value,
                     FullM3U8Str = MakeFullStr(match[i], recreg),
