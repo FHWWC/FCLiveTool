@@ -96,12 +96,61 @@ public partial class VideoCheckPage : ContentPage
             LocalMFileTb.Text=filePicker.FullPath;
             AllVideoData =File.ReadAllText(filePicker.FullPath);
 
-            LoadDataToCheckList();
+            //LoadDataToCheckList();
+            AutoSelectRecommendRegex();
         }
         else
         {
             LocalMFileTb.Text = "已取消选择";
             await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+        }
+
+    }
+    public async void AutoSelectRecommendRegex()
+    {
+        if (string.IsNullOrWhiteSpace(AllVideoData))
+        {
+            await DisplayAlert("提示信息", "什么都没获取到，请检查数据源！", "确定");
+            return;
+        }
+
+        int tvglogoIndex = AllVideoData.IndexOf("tvg-logo=");
+        int tvgnameIndex = AllVideoData.IndexOf("tvg-name=");
+        int OldSelectedIndex = RegexSelectBox.SelectedIndex;
+
+        if(tvglogoIndex>-1&&tvgnameIndex>-1)
+        {
+            if(tvgnameIndex<tvglogoIndex)
+            {
+                RegexSelectBox.SelectedIndex=1;
+                RecommendRegexTb.Text = "2";
+            }
+            else
+            {
+                RegexSelectBox.SelectedIndex=0;
+                RecommendRegexTb.Text = "1";
+            }
+        }
+        else if (tvglogoIndex>-1)
+        {
+            RegexSelectBox.SelectedIndex=2;
+            RecommendRegexTb.Text = "3";
+        }
+        else if (tvglogoIndex<0&&tvgnameIndex<0&&!AllVideoData.Contains("#EXTINF:"))
+        {
+            RegexSelectBox.SelectedIndex=4;
+            RecommendRegexTb.Text = "5";
+        }
+        else
+        {
+            RegexSelectBox.SelectedIndex=3;
+            RecommendRegexTb.Text = "4";
+        }
+
+        //手动触发
+        if (OldSelectedIndex==RegexSelectBox.SelectedIndex)
+        {
+            LoadDataToCheckList();
         }
 
     }
@@ -111,18 +160,6 @@ public partial class VideoCheckPage : ContentPage
         {
             await DisplayAlert("提示信息", "什么都没获取到，请检查数据源！", "确定");
             return;
-        }
-        if (AllVideoData.Contains("tvg-name="))
-        {
-            RecommendRegexTb.Text = "1或2";
-        }
-        else if (AllVideoData.Contains("tvg-logo=")&&!AllVideoData.Contains("tvg-name="))
-        {
-            RecommendRegexTb.Text = "3或4";
-        }
-        else
-        {
-            RecommendRegexTb.Text = "-";
         }
 
         ClearAllCount();
@@ -168,7 +205,8 @@ public partial class VideoCheckPage : ContentPage
             }
 
             AllVideoData=result;
-            LoadDataToCheckList();
+            //LoadDataToCheckList();
+            AutoSelectRecommendRegex();
         }
     }
 
@@ -580,7 +618,8 @@ public partial class VideoCheckPage : ContentPage
 
 
         AllVideoData=M3UStringTb.Text.Replace("\r","\n");
-        LoadDataToCheckList();
+        //LoadDataToCheckList();
+        AutoSelectRecommendRegex();
     }
 
     private void VCLBackBtn_Clicked(object sender, EventArgs e)
