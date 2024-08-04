@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             x:Class="FCLiveToolApplication.Popup.VideoDetailListPopup">
+
+
+    <Grid x:Name="MainGrid" x:FieldModifier="Public" Padding="20,10" Loaded="MainGrid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="150"/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <Label Text="选择条件" HorizontalOptions="Center" FontSize="Medium"/>
+
+        <StackLayout Grid.Row="1">
+            <HorizontalStackLayout>
+                <CheckBox x:Name="TVGLogoCB" x:FieldModifier="Public"/>
+                <Label Text="台标" VerticalOptions="Center"/>
+            </HorizontalStackLayout>          
+            <HorizontalStackLayout>
+                <CheckBox x:Name="TVGNameCB" x:FieldModifier="Public"/>
+                <Label Text="台名" VerticalOptions="Center"/>
+            </HorizontalStackLayout>        
+            <HorizontalStackLayout>
+                <CheckBox x:Name="URLCB" IsChecked="True" x:FieldModifier="Public"/>
+                <Label Text="URL" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+        </StackLayout>
+
+        <StackLayout VerticalOptions="End" Grid.Row="2">
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button x:Name="SaveOptionBtn" Background="Azure" Clicked="SaveOptionBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xEDB5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="CancelOptionBtn" Background="Azure" Clicked="CancelOptionBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+
+            <Label Text="点击窗口外任意区域关闭窗口则视为取消操作"  TextColor="Gray" FontSize="12" HorizontalOptions="Center"/>
+        </StackLayout>
+
+    </Grid>
+    
+</toolkit:Popup>

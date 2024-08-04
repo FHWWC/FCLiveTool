@@ -2,7 +2,7 @@ using CommunityToolkit.Maui.Views;
 
 namespace FCLiveToolApplication;
 
-public partial class VideoCheckPagePopup : Popup
+public partial class VideoCheckPagePopup : CommunityToolkit.Maui.Views.Popup
 {
 	public VideoCheckPagePopup()
 	{
