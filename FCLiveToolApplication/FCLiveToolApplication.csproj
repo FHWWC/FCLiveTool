@@ -30,11 +30,10 @@
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<GenerateAppInstallerFile>False</GenerateAppInstallerFile>
-		<AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
-		<PackageCertificateKeyFile>FCLiveToolApplication_TemporaryKey.pfx</PackageCertificateKeyFile>
+		<AppxPackageSigningEnabled>False</AppxPackageSigningEnabled>
 		<AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
 		<AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
-		<AppxSymbolPackageEnabled>False</AppxSymbolPackageEnabled>
+		<AppxSymbolPackageEnabled>True</AppxSymbolPackageEnabled>
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
 	</PropertyGroup>
@@ -47,6 +46,7 @@
 	  <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.22621.0</TargetFrameworks>
 	  <Title>FCLiveTool</Title>
 	  <DefaultLanguage>zh-cn</DefaultLanguage>
+	  <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android33.0|AnyCPU'">
@@ -138,6 +138,11 @@
 	  <None Remove="Resources\AppIcon\appicon_win.targetsize-48.png" />
 	  <None Remove="Resources\AppIcon\appicon_win.targetsize-48_altform-lightunplated.png" />
 	  <None Remove="Resources\AppIcon\appicon_win.targetsize-48_altform-unplated.png" />
+	  <None Remove="Resources\AppIcon\BadgeLogo.scale-100.png" />
+	  <None Remove="Resources\AppIcon\BadgeLogo.scale-125.png" />
+	  <None Remove="Resources\AppIcon\BadgeLogo.scale-150.png" />
+	  <None Remove="Resources\AppIcon\BadgeLogo.scale-200.png" />
+	  <None Remove="Resources\AppIcon\BadgeLogo.scale-400.png" />
 	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-100.png" />
 	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-125.png" />
 	  <None Remove="Resources\AppIcon\fclive_big_logo.scale-150.png" />
@@ -184,6 +189,11 @@
 	  <Content Include="Resources\AppIcon\appicon_win.targetsize-48.png" />
 	  <Content Include="Resources\AppIcon\appicon_win.targetsize-48_altform-lightunplated.png" />
 	  <Content Include="Resources\AppIcon\appicon_win.targetsize-48_altform-unplated.png" />
+	  <Content Include="Resources\AppIcon\BadgeLogo.scale-100.png" />
+	  <Content Include="Resources\AppIcon\BadgeLogo.scale-125.png" />
+	  <Content Include="Resources\AppIcon\BadgeLogo.scale-150.png" />
+	  <Content Include="Resources\AppIcon\BadgeLogo.scale-200.png" />
+	  <Content Include="Resources\AppIcon\BadgeLogo.scale-400.png" />
 	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-100.png" />
 	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-125.png" />
 	  <Content Include="Resources\AppIcon\fclive_big_logo.scale-150.png" />
@@ -203,6 +213,7 @@
 	  <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.3" />
     <PackageReference Include="Microsoft.Maui.Controls" Version="8.0.10" />
     <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.10" />
+    <PackageReference Include="Microsoft.Win32.SystemEvents" Version="8.0.0" />
 	</ItemGroup>
   
 <!--
@@ -263,6 +274,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Popup\VideoCheckPagePopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Popup\VideoDetailListPopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="VideoDownloadPage.xaml">
