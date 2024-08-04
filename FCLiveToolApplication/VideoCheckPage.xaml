@@ -205,11 +205,18 @@
                     </Button>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
-                    <Button x:Name="PrintCheckLogBtn" Background="LightBlue" Text="输出检测报告" Margin="20,0,0,0" Clicked="PrintCheckLogBtn_Clicked">
-                        <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE9F9;" Size="Large" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                        </Button.ImageSource>
-                    </Button>
+                    <HorizontalStackLayout x:Name="VCLButtonPanel" Margin="20,0,0,0">
+                        <Button x:Name="PrintCheckLogBtn" Background="LightBlue" Text="输出检测报告" Clicked="PrintCheckLogBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE9F9;" Size="Large" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <Button x:Name="ShowVDLPopupBtn" Background="LightBlue" Text="删除重复项" Margin="10,0,0,0" Clicked="ShowVDLPopupBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE75C;" Size="Large" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </HorizontalStackLayout>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
                     <StackLayout Orientation="Horizontal" Margin="20,0,0,0">

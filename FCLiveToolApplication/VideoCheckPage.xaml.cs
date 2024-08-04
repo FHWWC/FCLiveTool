@@ -1,5 +1,6 @@
 using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Maui.Views;
+using FCLiveToolApplication.Popup;
 using Microsoft.Maui.Storage;
 using System.Text;
 
@@ -227,7 +228,7 @@ public partial class VideoCheckPage : ContentPage
         isFinishCheck = false;
         CurrentErrorCodeList=new List<CheckNOKErrorCodeList>();
         SaveCheckListBtn.IsEnabled=false;
-        PrintCheckLogBtn.IsEnabled=false;
+        VCLButtonPanel.IsEnabled=false;
         TVLogoVisibleCb.IsEnabled=false;
 
         ValidCheck(CurrentCheckList);
@@ -245,7 +246,7 @@ public partial class VideoCheckPage : ContentPage
         CheckDataSourcePanel.IsEnabled = true;
         RemoveNOKBtn.IsEnabled=true;
         SaveCheckListBtn.IsEnabled=true;
-        PrintCheckLogBtn.IsEnabled=true;
+        VCLButtonPanel.IsEnabled=true;
         TVLogoVisibleCb.IsEnabled=true;
         CheckNOKErrorCodeList.ItemsSource=CurrentErrorCodeList.Take(CurrentErrorCodeList.Count);
 
@@ -734,6 +735,49 @@ public partial class VideoCheckPage : ContentPage
         if(sender is not null)
         {
             ProcessPageJump(CurrentCheckList, VCLCurrentPageIndex);
+        }
+
+    }
+
+    private async void ShowVDLPopupBtn_Clicked(object sender, EventArgs e)
+    {
+        if (CurrentCheckList.Count<1)
+        {
+            await DisplayAlert("提示信息", "当前列表为空！", "确定");
+            return;
+        }
+
+        VideoDetailListPopup vdlPopup = new VideoDetailListPopup();
+        await this.ShowPopupAsync(vdlPopup);
+
+        if(vdlPopup.isStartRun)
+        {
+            List<VideoDetailList> findResult = CurrentCheckList.GroupBy(p=>new
+            {
+             LogoLink= vdlPopup.TVGLogoCB.IsChecked?p.LogoLink:null,
+             SourceName=vdlPopup.TVGNameCB.IsChecked?p.SourceName:null,
+             SourceLink=vdlPopup.URLCB.IsChecked?p.SourceLink:null
+            }).Where(p2=>p2.Count()>1).SelectMany(p3=>p3.Skip(1)).ToList();
+        
+        
+            if(findResult.Count>0)
+            {
+                for (int i = 0; i<findResult.Count; i++)
+                {
+                    CurrentCheckList.Remove(findResult[i]);
+
+                    int trindex = AllVideoData.IndexOf(findResult[i].FullM3U8Str);
+                    AllVideoData=AllVideoData.Remove(trindex, findResult[i].FullM3U8Str.Length);
+                }
+
+                ProcessPageJump(CurrentCheckList, 1);
+                await DisplayAlert("提示信息", "已根据指定的条件移除了 "+findResult.Count+" 条重复项！", "确定");
+            }
+            else
+            {
+                await DisplayAlert("提示信息", "没有根据指定的条件查找到重复项！", "确定");
+            }
+
         }
 
     }
