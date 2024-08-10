@@ -1486,8 +1486,8 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
 
     public static class GlobalParameter
     {
-        public const string DefaultPlayM3U8Name = "CGTN (法语)";
-        public const string DefaultPlayM3U8URL = @"https://livefr.cgtn.com/1000f/prog_index.m3u8";
+        public const string DefaultPlayM3U8Name = "CGTN (英语)";
+        public const string DefaultPlayM3U8URL = @"https://english-livetx.cgtn.com/hls/yypdyyctzb_hd.m3u8";
         public const bool StartAutoPlayM3U8 = true;
         public const bool AppDarkMode = false;
         public const int VideoCheckThreadNum = 50;
