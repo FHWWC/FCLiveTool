@@ -1,4 +1,4 @@
-@model FCLiveTool.Models.VideoListModel.AllModel
+﻿@model FCLiveTool.Models.VideoListModel.AllModel
 @using System.Text.RegularExpressions;
 @using System.Net.Http;
 @using FCLiveTool.Models;
@@ -29,7 +29,10 @@
 
     <table class="topvideo">
         <tr>
-            <td></td>
+            <td>
+                <h3 class="whitetext" style="display:contents;">正在播放：</h3>
+                <b id="NowPlaying" style="color:lightgreen;">CGTN (法语)</b>
+            </td>
             <td>
                 <h3 class="whitetext">大家都在看：</h3>
             </td>
@@ -37,14 +40,14 @@
         <tr>
             <td>
                 <video id="my-player" class="video-js" controls data-setup='{}' autoplay="autoplay" preload="auto" crossorign="anonymous">
-                    <source type="application/x-mpegURL" src="/index.m3u" />
+                    <source type="application/x-mpegURL" src="/live.m3u" />
                 </video>
             </td>
             <td>
                 <div style="margin-left: 10px;height: 350px;" class="aycBKG allAyc ScrollbarStyle">
                     @foreach (AllModel.RecentVList recentVList in Model.RLists)
                     {
-                        <div class="RecentLists" onclick="RecentSetSource('@recentVList.SourceLink')">
+                        <div class="RecentLists" onclick="RecentSetSource('@recentVList.SourceLink','@recentVList.SourceName')">
                             <table class="RecentTable whitetext">
                                 <tr>
                                     <td class="RTWidth" rowspan="2">
@@ -114,6 +117,8 @@
     <div id="VList" class="ScrollbarStyle">
         @foreach (AllModel.VideoList videoList in Model.TVideos)
         {
+            string LiveType = videoList.LiveType;
+
             <table>
                 <tr>
                     <td>
@@ -128,7 +133,17 @@
                 </tr>
                 <tr>
                     <td>
-                        <input class="VListBtn hover-lightblue focus-white" type="button" value="查看详情" onclick="GetVD('@videoList.SourceLink',@videoList.RecommendReg)" />
+                        @{
+                            if (LiveType=="M3U")
+                            {
+                                <input class="VListBtn hover-lightblue focus-white" type="button" value="查看详情" onclick="GetVD('@videoList.SourceLink',@videoList.RecommendReg)" />
+                            }
+                            else
+                            {
+                                <b style="color:lightgreen;">EPG资源暂时不支持解析</b>
+                            }
+                        }
+
                     </td>
                 </tr>
                 <tr>
@@ -146,6 +161,7 @@
         string FirstPageTag = CurrentPage<2 ? "none" : "auto";
         string LastPageTag = CurrentPage>=(int)Context.Session.GetInt32("VTempMaxPage") ? "none" : "auto";
     }
+
     <div class="CVListPanel">
         <div class="CVListBtn">
             <form asp-action="VideoPage" method="post">
@@ -219,7 +235,7 @@
                                 <p>
                                     规则 1
                                     <br />
-                                    匹配台标(tvg-logo)，台名(tvg-name)，URL
+                                    匹配：台标(tvg-logo)，台名(tvg-name)，URL
                                 </p>
                             </div>
                             <div class="rmreg">
@@ -233,9 +249,25 @@
                         <div class="RM3UList" onclick="ChangeReadM3U(2,this.innerText)">
                             <div class="rmnum">
                                 <p>
-                                    规则2
+                                    规则 2
                                     <br />
-                                    匹配台标(tvg-logo)，台名(两逗号之间文本)，URL
+                                    与第一条相反，匹配：台名(tvg-name)，台标(tvg-logo)，URL
+                                </p>
+                            </div>
+                            <div class="rmreg">
+                                tvg-name="台名" <br />
+                                tvg-logo="台标"(可选) <br />
+                                \r或\n(可选) <br />
+                                http://或https://(+任意字符).m3u8 <br />
+                                ?参数名=值&参数名=值...(全部可选)
+                            </div>
+                        </div>
+                        <div class="RM3UList" onclick="ChangeReadM3U(3,this.innerText)">
+                            <div class="rmnum">
+                                <p>
+                                    规则3
+                                    <br />
+                                    匹配：台标(tvg-logo)，台名(两逗号之间文本)，URL
                                 </p>
                             </div>
                             <div class="rmreg">
@@ -247,12 +279,12 @@
                                 ?参数名=值&参数名=值...(全部可选)
                             </div>
                         </div>
-                        <div class="RM3UList" onclick="ChangeReadM3U(3,this.innerText)">
+                        <div class="RM3UList" onclick="ChangeReadM3U(4,this.innerText)">
                             <div class="rmnum">
                                 <p>
-                                    规则3
+                                    规则4
                                     <br />
-                                    和第二项相同，区别在于#EXTINF字符和台标字符之间有多个逗号
+                                    和第三项相同，区别在于#EXTINF字符和台标字符之间有多个逗号
                                 </p>
                             </div>
                             <div class="rmreg">
@@ -265,12 +297,12 @@
                                 ?参数名=值&参数名=值...(全部可选)
                             </div>
                         </div>
-                        <div class="RM3UList" onclick="ChangeReadM3U(4,this.innerText)">
+                        <div class="RM3UList" onclick="ChangeReadM3U(5,this.innerText)">
                             <div class="rmnum">
                                 <p>
-                                    规则4
+                                    规则5
                                     <br />
-                                    简单粗暴，无附加格式，匹配：台标(可选)，台名，URL
+                                    简单粗暴，无附加格式，匹配：台标，台名，URL
                                 </p>
                             </div>
                             <div class="rmreg">
@@ -313,6 +345,13 @@
                     </div>
                 </td>
             </tr>
+            <tr>
+                <td id="SCPanel" class="whitetext">
+                    <p>搜索到了</p>
+                    <b id="SRCount" style="color:lightgreen;"></b>
+                    <p>条结果</p>
+                </td>
+            </tr>
         </table>
     </div>
     <div id="testtest" class="aycBKG allAyc ScrollbarStyle"></div>
@@ -344,6 +383,10 @@
             document.querySelector(".RM3UBtnR").style.backgroundImage = "";
         }
 
+        /*
+                        document.querySelectorAll(".RM3UList")[0].innerText = "tvg-logo=\"台标\"(可选) \ntvg-name=\"台名\"(可选) \n\\r或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
+                        document.querySelectorAll(".RM3UList")[1].innerText = "tvg-logo=\"台标\"(可选) \n, \n台名 \n,或\\n(可选) \nhttp://或https://(+任意字符).m3u8(不带参数)";
+        */
     </script>
 </body>
 </html>
