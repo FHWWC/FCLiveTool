@@ -25,6 +25,7 @@ namespace FCLiveToolApplication
         //客户端专用
         public string FullM3U8Str { get; set; }
         public bool isHTTPS { get; set; }
+        public bool isIPV6 { get; set; }
         public string FileName { get; set; }
         public string HTTPStatusCode { get; set; }
         public Color HTTPStatusTextBKG { get; set; }
@@ -1370,6 +1371,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     TVGCountry=Regex.Match(MakeFullStr(match[i], recreg), @"tvg-country=""(.*?)""").Groups[1].Value,
                     TVGLanguage=Regex.Match(MakeFullStr(match[i], recreg), @"tvg-language=""(.*?)""").Groups[1].Value,
                     isHTTPS=match[i].Groups[UseGroup[2]].Value.ToLower().StartsWith("https://") ? true : false,
+                    isIPV6= Regex.Match(match[i].Groups[UseGroup[2]].Value, @"(\[[0-9a-fA-F:]+\])").Success,
                     FileName=Regex.Match(match[i].Groups[UseGroup[2]].Value, @"\/([^\/]+\.m3u8)").Groups[1].Value
                 };
                 //videoDetail.LogoLink=videoDetail.LogoLink=="" ? "fclive_tvicon.png" : videoDetail.LogoLink;

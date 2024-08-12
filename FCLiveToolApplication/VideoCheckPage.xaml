@@ -55,9 +55,15 @@
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
-                        <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" VerticalOptions="Start" Padding="5,0">
-                            <Label TextColor="White" Text="HTTPS"/>
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Start">
+                            <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" Padding="5,0">
+                                <Label TextColor="White" Text="HTTPS"/>
+                            </StackLayout>                       
+                            <StackLayout BackgroundColor="Purple" IsVisible="{Binding isIPV6}" Padding="5,0" Margin="5,0,0,0">
+                                <Label TextColor="White" Text="IPV6"/>
+                            </StackLayout>
                         </StackLayout>
+
                         <Label Text="{Binding SourceLink}" HorizontalOptions="Start" Margin="10,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
                     </Grid>
 
