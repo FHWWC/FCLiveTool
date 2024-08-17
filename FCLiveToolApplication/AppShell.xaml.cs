@@ -28,6 +28,8 @@ public partial class AppShell : Shell
             Application.Current.UserAppTheme = AppTheme.Light;
         }
 
+        Window.Height=720;
+        Window.Width=1200;
     }
 
 

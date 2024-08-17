@@ -116,8 +116,32 @@
             </Button>
         </Grid>
 
+        <StackLayout Margin="0,10,5,0"  Grid.Row="1">
+            <ListView x:Name="VideosList" ItemTemplate="{StaticResource VideosListStyle}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never" ItemTapped="VideosList_ItemTapped" Refreshing="VideosList_Refreshing"/>
+            <Grid IsVisible="{ OnPlatform Android=False}">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
 
-        <ListView x:Name="VideosList" ItemTemplate="{StaticResource VideosListStyle}" HorizontalOptions="FillAndExpand" Margin="0,10,5,0" Grid.Row="1" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never" ItemTapped="VideosList_ItemTapped" Refreshing="VideosList_Refreshing"/>
+                <Button Background="LightPink" IsEnabled="{Binding Source={x:Reference VLBackBtn}, Path=IsEnabled, Mode=TwoWay}" ContentLayout="0" HorizontalOptions="Start" Clicked="VLBackBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Label Text="{Binding Source={x:Reference VLCurrentPage}, Path=Text, Mode=TwoWay}" FontSize="24" HorizontalOptions="Center"/>
+                <Button Background="LightPink" IsEnabled="{Binding Source={x:Reference VLNextBtn}, Path=IsEnabled, Mode=TwoWay}" ContentLayout="0" HorizontalOptions="End" Clicked="VLNextBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="0,5,0,0" Grid.Row="1">
+                    <Entry MaxLength="3" Placeholder="输入页码" Text="{Binding Source={x:Reference VLPageTb}, Path=Text, Mode=TwoWay}" Keyboard="Numeric"/>
+                    <Button Background="LightBlue" HeightRequest="35" Text="跳转" Margin="5,0,0,0" Clicked="VLJumpBtn_Clicked"/>
+                </StackLayout>
+            </Grid>
+        </StackLayout>
         <StackLayout x:Name="VideosListPanel" Background="#A0F0FFFF" Padding="5" Margin="0,10,5,0" Grid.Row="1" TranslationY="-1000">
             <HorizontalStackLayout HorizontalOptions="End">
                 <Button x:Name="VLRefreshBtn" Background="LightPink"  ContentLayout="Top,-3" Clicked="VLRefreshBtn_Clicked">
@@ -152,6 +176,7 @@
             </StackLayout>
 
         </StackLayout>
+
 
         <Grid HorizontalOptions="Center" Grid.Row="1">
             <ActivityIndicator x:Name="VideosListRing" HorizontalOptions="Center" VerticalOptions="Center"/>
