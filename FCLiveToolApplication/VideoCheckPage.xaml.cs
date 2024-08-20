@@ -14,7 +14,7 @@ public partial class VideoCheckPage : ContentPage
     }
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
-        if(videoCheckPage!=null)
+        if (videoCheckPage!=null)
         {
             return;
         }
@@ -60,7 +60,7 @@ public partial class VideoCheckPage : ContentPage
             LocalM3USelectPanel.IsVisible = false;
             M3USourcePanel.IsVisible = true;
             M3UTextPanel.IsVisible = false;
-        }     
+        }
         else if (entry.StyleId == "M3USourceRBtn3")
         {
             LocalM3USelectPanel.IsVisible = false;
@@ -119,9 +119,9 @@ public partial class VideoCheckPage : ContentPage
         int tvgnameIndex = AllVideoData.IndexOf("tvg-name=");
         int OldSelectedIndex = RegexSelectBox.SelectedIndex;
 
-        if(tvglogoIndex>-1&&tvgnameIndex>-1)
+        if (tvglogoIndex>-1&&tvgnameIndex>-1)
         {
-            if(tvgnameIndex<tvglogoIndex)
+            if (tvgnameIndex<tvglogoIndex)
             {
                 RegexSelectBox.SelectedIndex=1;
                 RecommendRegexTb.Text = "2";
@@ -167,7 +167,7 @@ public partial class VideoCheckPage : ContentPage
 
         RegexManager regexManager = new RegexManager();
         CurrentCheckList=regexManager.DoRegex(AllVideoData, regexManager.GetRegexOptionIndex(RegexOptionCB.IsChecked, (RegexSelectBox.SelectedIndex+1).ToString()));
-       
+
         CheckProgressText.Text="0 / "+CurrentCheckList.Count;
         TVLogoVisibleCb_CheckedChanged(null, new CheckedChangedEventArgs(TVLogoVisibleCb.IsChecked));
         ProcessPageJump(CurrentCheckList, 1);
@@ -318,7 +318,7 @@ public partial class VideoCheckPage : ContentPage
             var vd = videodetaillist[i];
             Thread thread = new Thread(async () =>
             {
-               await semaphoreSlim.WaitAsync();
+                await semaphoreSlim.WaitAsync();
                 using (HttpClient httpClient = new HttpClient())
                 {
                     httpClient.Timeout=TimeSpan.FromMinutes(2);
@@ -368,7 +368,7 @@ public partial class VideoCheckPage : ContentPage
                                 });
                             }
 
-                            AddToErrorCodeList(new CheckNOKErrorCodeList() {  HTTPStatusCode=statusCode.ToString(), HTTPStatusTextBKG=Colors.Orange });
+                            AddToErrorCodeList(new CheckNOKErrorCodeList() { HTTPStatusCode=statusCode.ToString(), HTTPStatusTextBKG=Colors.Orange });
                         }
 
                     }
@@ -422,7 +422,7 @@ public partial class VideoCheckPage : ContentPage
                             {
                                 CheckProgressText.Text=CheckFinishCount+" / "+videodetaillist.Count;
                                 double tpercent = (double)CheckFinishCount/(double)videodetaillist.Count*100;
-                                CheckPercentText.Text="("+Math.Round(tpercent,2)+" %)";
+                                CheckPercentText.Text="("+Math.Round(tpercent, 2)+" %)";
                             });
                         }
 
@@ -513,10 +513,10 @@ public partial class VideoCheckPage : ContentPage
     public async void PopShowMsg(string msg)
     {
         await DisplayAlert("提示信息", msg, "确定");
-    }    
+    }
     public async Task<bool> PopShowMsgAndReturn(string msg)
     {
-        return await DisplayAlert("提示信息", msg, "确定","取消");
+        return await DisplayAlert("提示信息", msg, "确定", "取消");
     }
 
     public void AddToErrorCodeList(CheckNOKErrorCodeList errorcodeList)
@@ -531,7 +531,7 @@ public partial class VideoCheckPage : ContentPage
             }
             else
             {
-              eclist.FirstOrDefault().ErrorCodeCount+=1;
+                eclist.FirstOrDefault().ErrorCodeCount+=1;
             }
 
             //MainThread.InvokeOnMainThreadAsync(() =>
@@ -545,13 +545,13 @@ public partial class VideoCheckPage : ContentPage
     public void InitErrorCodeList()
     {
         List<CheckNOKErrorCodeList> tlist = new List<CheckNOKErrorCodeList>();
-        tlist.Add(new CheckNOKErrorCodeList() { HTTPStatusCode="检测结束后生成" ,HTTPStatusTextBKG=Colors.Black}) ;
+        tlist.Add(new CheckNOKErrorCodeList() { HTTPStatusCode="检测结束后生成", HTTPStatusTextBKG=Colors.Black });
         CheckNOKErrorCodeList.ItemsSource=tlist;
     }
 
     private async void SaveCheckListBtn_Clicked(object sender, EventArgs e)
     {
-        if(string.IsNullOrWhiteSpace(AllVideoData))
+        if (string.IsNullOrWhiteSpace(AllVideoData))
         {
             await DisplayAlert("提示信息", "请先获取直播源！", "确定");
             return;
@@ -576,12 +576,12 @@ public partial class VideoCheckPage : ContentPage
 
     private async void PrintCheckLogBtn_Clicked(object sender, EventArgs e)
     {
-        if(CurrentCheckList.Count<1)
+        if (CurrentCheckList.Count<1)
         {
             await DisplayAlert("提示信息", "当前列表为空，请选择直播源并进行检测，之后再输出报告！", "确定");
             return;
         }
-        if(CurrentCheckList.Where(p=>!string.IsNullOrWhiteSpace(p.HTTPStatusCode)).Count()<1)
+        if (CurrentCheckList.Where(p => !string.IsNullOrWhiteSpace(p.HTTPStatusCode)).Count()<1)
         {
             await DisplayAlert("提示信息", "请先进行检测再输出报告！", "确定");
             return;
@@ -589,36 +589,86 @@ public partial class VideoCheckPage : ContentPage
 
 
         string printStr = "台名,URL,检测结果";
-        for(int i=0;i<CurrentCheckList.Count; i++)
+        for (int i = 0; i<CurrentCheckList.Count; i++)
         {
-            printStr+="\n"+ CurrentCheckList[i].SourceName+","+CurrentCheckList[i].SourceLink+","+CurrentCheckList[i].HTTPStatusCode;
+            printStr+="\n"+ CurrentCheckList[i].SourceName.Replace("\r\n", "").Replace("\r", "").Replace("\n", "")+
+                ","+CurrentCheckList[i].SourceLink.Replace("\r\n", "").Replace("\r", "").Replace("\n", "")+
+                ","+CurrentCheckList[i].HTTPStatusCode;
         }
 
-        using (var ms = new MemoryStream(Encoding.UTF8.GetBytes(printStr)))
+        Encoding useEncoding = Encoding.Default;
+        string EncodeSelectResult = await DisplayActionSheet("请选择要保存的编码格式：", "取消", null, new string[] { "GB2312", "ASCII", "UTF8", "Default", "Unicode", "UTF32", "Latin1" });
+        if (EncodeSelectResult == "取消"||EncodeSelectResult is null)
         {
-            var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, "CheckLog.csv", ms, CancellationToken.None);
-
-            if (fileSaver.IsSuccessful)
-            {
-                await DisplayAlert("提示信息", "文件已成功保存至：\n"+fileSaver.FilePath, "确定");
-            }
-            else
-            {
-                await DisplayAlert("提示信息", "您已取消了操作。", "确定");
-            }
-
+            return;
         }
+
+        try
+        {
+            switch (EncodeSelectResult)
+            {
+                case "GB2312":
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    useEncoding=Encoding.GetEncoding("GB2312");
+                    break;
+                case "ASCII":
+                    useEncoding=Encoding.ASCII;
+                    break;
+                case "UTF8":
+                    useEncoding=Encoding.UTF8;
+                    break;
+                case "Default":
+                    useEncoding=Encoding.Default;
+                    break;
+                case "Unicode":
+                    useEncoding=Encoding.Unicode;
+                    break;
+                case "UTF32":
+                    useEncoding=Encoding.UTF32;
+                    break;
+                case "Latin1":
+                    useEncoding=Encoding.Latin1;
+                    break;
+            }
+        }
+        catch (Exception)
+        {
+            await DisplayAlert("提示信息", "应用编码格式时发生异常，程序将使用默认编码保存文件。", "确定");
+        }
+
+        try
+        {
+            using (var ms = new MemoryStream(useEncoding.GetBytes(printStr)))
+            {
+                var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, "CheckLog.csv", ms, CancellationToken.None);
+
+                if (fileSaver.IsSuccessful)
+                {
+                    await DisplayAlert("提示信息", "文件已成功保存至：\n"+fileSaver.FilePath, "确定");
+                }
+                else
+                {
+                    await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                }
+
+            }
+        }
+        catch (Exception)
+        {
+            await DisplayAlert("提示信息", "保存文件时发生异常！", "确定");
+        }
+
     }
 
     private void M3UAnalysisStringBtn_Clicked(object sender, EventArgs e)
     {
-        if(string.IsNullOrWhiteSpace(M3UStringTb.Text))
+        if (string.IsNullOrWhiteSpace(M3UStringTb.Text))
         {
             return;
         }
 
 
-        AllVideoData=M3UStringTb.Text.Replace("\r","\n");
+        AllVideoData=M3UStringTb.Text.Replace("\r", "\n");
         //LoadDataToCheckList();
         AutoSelectRecommendRegex();
     }
@@ -665,7 +715,7 @@ public partial class VideoCheckPage : ContentPage
     /// <param name="videoCheckList">要操作的列表</param>
     /// <param name="TargetPage">目标页码</param>
     /// <param name="skipcount">跳过的条目数</param>
-    public void ProcessPageJump(List<VideoDetailList> videoCheckList,int TargetPage)
+    public void ProcessPageJump(List<VideoDetailList> videoCheckList, int TargetPage)
     {
         VCLMaxPageIndex= (int)Math.Ceiling(videoCheckList.Count/D_VCL_COUNT_PER_PAGE);
 
@@ -732,7 +782,7 @@ public partial class VideoCheckPage : ContentPage
             });
         }
 
-        if(sender is not null)
+        if (sender is not null)
         {
             ProcessPageJump(CurrentCheckList, VCLCurrentPageIndex);
         }
@@ -750,17 +800,17 @@ public partial class VideoCheckPage : ContentPage
         VideoDetailListPopup vdlPopup = new VideoDetailListPopup();
         await this.ShowPopupAsync(vdlPopup);
 
-        if(vdlPopup.isStartRun)
+        if (vdlPopup.isStartRun)
         {
-            List<VideoDetailList> findResult = CurrentCheckList.GroupBy(p=>new
+            List<VideoDetailList> findResult = CurrentCheckList.GroupBy(p => new
             {
-             LogoLink= vdlPopup.TVGLogoCB.IsChecked?p.LogoLink:null,
-             SourceName=vdlPopup.TVGNameCB.IsChecked?p.SourceName:null,
-             SourceLink=vdlPopup.URLCB.IsChecked?p.SourceLink:null
-            }).Where(p2=>p2.Count()>1).SelectMany(p3=>p3.Skip(1)).ToList();
-        
-        
-            if(findResult.Count>0)
+                LogoLink = vdlPopup.TVGLogoCB.IsChecked ? p.LogoLink : null,
+                SourceName = vdlPopup.TVGNameCB.IsChecked ? p.SourceName : null,
+                SourceLink = vdlPopup.URLCB.IsChecked ? p.SourceLink : null
+            }).Where(p2 => p2.Count()>1).SelectMany(p3 => p3.Skip(1)).ToList();
+
+
+            if (findResult.Count>0)
             {
                 for (int i = 0; i<findResult.Count; i++)
                 {
