@@ -1,4 +1,4 @@
-@media (max-width: 576px) {
+﻿@media (max-width: 576px) {
     html {
         font-size: 12px;
     }
@@ -141,12 +141,16 @@ input[type=checkbox] {
 #VList {
     max-height: 1000px;
     width: 100%;
+    backdrop-filter: blur(20px) brightness(100%) saturate(80%);
 }
 
     #VList table {
         float: left;
+        background: gray;
+        /*
         backdrop-filter: blur(20px) brightness(160%) saturate(80%);
         -webkit-backdrop-filter: blur(20px) brightness(160%) saturate(80%);
+         */
         border-radius: 6px;
         height: 200px;
         width: 300px;
@@ -511,7 +515,13 @@ margin:0 5px;
     border: none;
     border-radius: 3px;
 }
-
+#SCPanel {
+    display:none;
+}
+#SCPanel >*
+{
+    float:left;
+}
 
 .quelogo {
     background-image: url('../img/Question.png');
@@ -703,8 +713,8 @@ margin:0 5px;
         }
 
 .allAyc {
-    backdrop-filter: blur(20px) brightness(160%) saturate(80%);
-    -webkit-backdrop-filter: blur(20px) brightness(160%) saturate(80%);
+    backdrop-filter: blur(20px) brightness(100%) saturate(80%);
+    -webkit-backdrop-filter: blur(20px) brightness(100%) saturate(80%);
     border-radius: 6px;
 }
 
