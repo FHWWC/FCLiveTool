@@ -906,6 +906,10 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
             string dresult = "";
             string dataPath = new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
 
+            if(filename.Length>50)
+            {
+                filename=filename.Substring(0, 50);
+            }
             foreach (var m in valist.TS_PARM)
             {
                 new Thread(async () =>
