@@ -59,6 +59,13 @@
         <ShellContent.Icon>
             <FontImageSource Glyph="&#xEADF;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
         </ShellContent.Icon>
+    </ShellContent>   
+    <ShellContent Title="直播源共享" 
+        ContentTemplate="{DataTemplate local:VideoSharePage}"
+        Route="VideoSharePage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE753;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+        </ShellContent.Icon>
     </ShellContent>
 
 

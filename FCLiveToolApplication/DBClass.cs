@@ -1,4 +1,6 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.RegularExpressions;
+using System.Xml.Serialization;
 
 namespace FCLiveToolApplication
 {
@@ -162,7 +164,32 @@ namespace FCLiveToolApplication
         public Color HTTPStatusTextBKG { get; set; }
         public int ErrorCodeCount { get; set; }
     }
-
+    public class SharedVideo
+    {
+        public string SourceName { get; set; }
+        public string SourceLink { get; set; }
+        public DateTime UploadTime { get; set; }
+        public DateTime LastCheckTime { get; set; }
+        public string URLProtocol { get; set; }
+        public string Tag { get; set; }
+        //客户端专用
+        public bool isHTTPS { get { return SourceLink.ToLower().StartsWith("https://") ? true : false; }}
+    }
+    public class CheckValidModel
+    {
+        /// <summary>
+        /// 0为正常处理了URL；-1为传来的格式不正确；-2为不支持的URL；-3为无法处理当前请求
+        /// </summary>
+        public string StatusCode { get; set; }
+        /// <summary>
+        /// 检测结果，当正常处理了URL后才需要获取此值
+        /// </summary>
+        public string Result { get; set; }
+        /// <summary>
+        /// 传送的数据
+        /// </summary>
+        public List<SharedVideo> Content { get; set; }
+    }
     public class VideoEditListDataTemplateSelector : DataTemplateSelector
     {
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
@@ -248,7 +275,7 @@ namespace FCLiveToolApplication
         /// 
         /// </summary>
         /// <param name="M3U8PlayList">M3U8文件内的所有直播信号</param>
-        /// <param name="VideoIfm">1：名称；2：URL；</param>
+        /// <param name="VideoIfm">1：名称；2：URL；（计划改成引用类型，调用后可再次获取）</param>
         /// <returns></returns>
         public async Task<string> DownloadAndReadM3U8File(List<string[]> M3U8PlayList, string[] VideoIfm)
         {
@@ -1220,7 +1247,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
         /// 
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="retruns">返回的信息；服务器返回的文件名；</param>
+        /// <param name="returns">返回的信息；服务器返回的文件名；</param>
         /// <returns></returns>
         public async Task<Stream> DownloadM3U8FileToStream(string url,string[] returns)
         {

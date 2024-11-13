@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FCLiveToolApplication.VideoSharePage"
+             Title="VideoSharePage" Loaded="ContentPage_Loaded">
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="VideoShareListStyle">
+            <ViewCell>
+                <Grid Margin="20,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="200" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackLayout Margin="0,20,0,0">
+                        <StackLayout>
+                            <Label Text="{Binding SourceName}" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding Tag}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                        </StackLayout>
+
+                        <StackLayout Orientation="Horizontal">
+                            <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" Padding="5,0">
+                                <Label TextColor="White" Text="HTTPS"/>
+                            </StackLayout>
+                            <StackLayout BackgroundColor="Purple" Padding="5,0" Margin="5,0,0,0">
+                                <Label TextColor="White" Text="{Binding URLProtocol}">
+     <!--
+                                                                   <Label.Style>
+                                   <Style TargetType="Label">
+                                       <Style.Triggers>
+                                           <DataTrigger Binding="{Binding isIPV6}" Value="True">
+                                               <Setter Property="Text" Value="IPV6"/>
+                                           </DataTrigger>                    
+                                           <DataTrigger Binding="{Binding isIPV6}" Value="False">
+                                               <Setter Property="Text" Value="IPV4"/>
+                                           </DataTrigger>
+                                       </Style.Triggers>
+                                   </Style>
+                               </Label.Style>
+                                    -->
+                                </Label>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <Label Text="{Binding SourceLink}" LineBreakMode="TailTruncation"/>
+                        <HorizontalStackLayout Margin="0,10,0,0">
+                            <Label Text="分享时间："/>
+                            <Label Text="{Binding UploadTime}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            <Label Text="最后检测有效时间：" Margin="10,0,0,0"/>
+                            <Label Text="{Binding LastCheckTime}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                        </HorizontalStackLayout>
+                    </StackLayout>
+
+                    <StackLayout Grid.Column="1" Margin="20,0,0,0">
+                        <Button x:Name="M3UStateUpdateBtn" CommandParameter="{Binding SourceLink}" Text="重新检测" Background="{OnPlatform Transparent,Android=LightPink}" Clicked="M3UItemRightBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <Button x:Name="M3UPlayBtn" CommandParameter="{Binding SourceLink}" Text="点击试看" Background="{OnPlatform Transparent,Android=LightPink}" Margin="0,5,0,0" Clicked="M3UItemRightBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xEDB5;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <Button x:Name="M3UDownloadBtn" CommandParameter="{Binding SourceLink}" Text="点击下载" Background="{OnPlatform Transparent,Android=LightPink}" Margin="0,5,0,0" Clicked="M3UItemRightBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                    </StackLayout>
+                </Grid>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+
+    <Shell.TitleView>
+        <HorizontalStackLayout>
+            <Label Text="直播源共享" TextColor="#A0F0FFFF" FontSize="Large" VerticalTextAlignment="Center"/>
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="200"/>
+            </Grid.ColumnDefinitions>
+
+            
+            <StackLayout Grid.ColumnSpan="2">
+                <Label Text="在此页面，你可以看到所有人分享的直播源，你可以直接下载，也可以分享自己的直播源。" LineBreakMode="WordWrap"/>
+                <Label Text="若要检测直播源，请在下方输入直播源地址，然后点击检测，如果直播源检测结果为有效，会自动分享至数据库。分享的直播源链接格式暂时只支持HTTP协议。" LineBreakMode="WordWrap"/>
+            </StackLayout>
+            <StackLayout Grid.Row="1">
+                <Entry x:Name="M3USourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing"/>
+            </StackLayout>
+
+            <Grid Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+                <Button x:Name="M3UAnalysisBtn" Text="检测并分享" Background="LightPink"  VerticalOptions="Start" Clicked="M3UAnalysisBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+            
+            <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="10,0,0,0">
+                <StackLayout Orientation="Horizontal">
+                    <Button x:Name="M3URefreshBtn" Text="刷新列表" Background="LightBlue" Clicked="M3URefreshBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </StackLayout>
+
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="1">
+            <ListView x:Name="VideoShareList" ItemTemplate="{StaticResource VideoShareListStyle}" RowHeight="{ OnPlatform Android= 130}" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never"  Refreshing="VideoShareList_Refreshing"/>
+            <ActivityIndicator x:Name="VideoShareListRing" HorizontalOptions="Center" VerticalOptions="{ OnPlatform Center, Android= Start}" Margin="{ OnPlatform Android= '0,50,0,0'}"/>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="0,10,0,0">
+            <StackLayout x:Name="VSLPagePanel" Orientation="Horizontal"  HorizontalOptions="Center" VerticalOptions="Start" IsVisible="False">
+                <Button x:Name="VSLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" Clicked="VSLBackBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center" Margin="40,0,0,0">
+                    <Label x:Name="VSLCurrentPage" Text="1" FontSize="24" HorizontalOptions="Center"/>
+                    <Entry x:Name="VSLPageTb" MaxLength="3" Placeholder="输入页码" Keyboard="Numeric" Margin="10,0,0,0"/>
+                    <Button x:Name="VSLJumpBtn" Background="LightBlue" HeightRequest="35" Text="跳转" Margin="{ OnPlatform '10,0,0,0', Android=0}" Clicked="VSLJumpBtn_Clicked"/>
+                </StackLayout>
+                <Button x:Name="VSLNextBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="End" Margin="40,0,0,0" Clicked="VSLNextBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </StackLayout>
+            
+            
+        </Grid>
+
+
+    </Grid>
+    
+</ContentPage>
