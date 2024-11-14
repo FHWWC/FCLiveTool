@@ -110,18 +110,21 @@ public partial class VideoDownloadPage : ContentPage
     private async void M3U8AnalysisBtn_Clicked(object sender, EventArgs e)
     {
         List<VideoAnalysisList> ResultList = new List<VideoAnalysisList>();
-        List<string> readresult=new List<string>();
+        List<string> readresult = new List<string>();
+        M3U8AnalysisBtn.IsEnabled=false;
 
         if (M3U8SourceRBtn1.IsChecked)
         {
             if (string.IsNullOrWhiteSpace(M3U8SourceURLTb.Text))
             {
                 await DisplayAlert("提示信息", "请输入直播源M3U8地址！", "确定");
+                M3U8AnalysisBtn.IsEnabled=true;
                 return;
             }
             if (!M3U8SourceURLTb.Text.Contains("://"))
             {
                 await DisplayAlert("提示信息", "输入的内容不符合URL规范！", "确定");
+                M3U8AnalysisBtn.IsEnabled=true;
                 return;
             }
 
@@ -135,6 +138,7 @@ public partial class VideoDownloadPage : ContentPage
                 readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(ResultList, M3U8DownloadURLsList, 0);
                 if (readresult.Count<1)
                 {
+                    M3U8AnalysisBtn.IsEnabled=true;
                     return;
                 }
             }
@@ -146,6 +150,7 @@ public partial class VideoDownloadPage : ContentPage
                     if (stream is null)
                     {
                         await DisplayAlert("提示信息", options[0], "确定");
+                        M3U8AnalysisBtn.IsEnabled=true;
                         return;
                     }
 
@@ -166,6 +171,7 @@ public partial class VideoDownloadPage : ContentPage
                         if (!Directory.Exists(SaveDownloadFolderTb.Text))
                         {
                             await DisplayAlert("提示信息", "当前下载文件保存位置的目录不存在，请重新选择！", "确定");
+                                    M3U8AnalysisBtn.IsEnabled=true;
                             return;
                         }
                         try
@@ -175,9 +181,10 @@ public partial class VideoDownloadPage : ContentPage
                                 stream.CopyTo(fs);
                             }
                         }
-                        catch(Exception)
+                        catch (Exception)
                         {
                             await DisplayAlert("提示信息", "把数据流写入文件时发生异常！", "确定");
+                                    M3U8AnalysisBtn.IsEnabled=true;
                             return;
                         }
 
@@ -204,6 +211,7 @@ public partial class VideoDownloadPage : ContentPage
 
 
                 //如果勾选了仅下载M3U8文件，那么不需要执行后续代码。
+                M3U8AnalysisBtn.IsEnabled=true;
                 return;
             }
 
@@ -213,12 +221,14 @@ public partial class VideoDownloadPage : ContentPage
             if (LocalM3U8FilesList.Count < 1)
             {
                 await DisplayAlert("提示信息", "当前没有选择任何文件！请先选择文件或文件夹！", "确定");
+                M3U8AnalysisBtn.IsEnabled=true;
                 return;
             }
 
-            readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(ResultList,LocalM3U8FilesList , 1);
-            if(readresult.Count<1)
+            readresult = await new VideoManager().DownloadAndReadM3U8FileForDownloadTS(ResultList, LocalM3U8FilesList, 1);
+            if (readresult.Count<1)
             {
+                M3U8AnalysisBtn.IsEnabled=true;
                 return;
             }
             int needAddServerCount = readresult.Where(p => p.StartsWith("CODE_")).Count();
@@ -228,13 +238,13 @@ public partial class VideoDownloadPage : ContentPage
                     "所以需要你补充直播源对应的服务器地址，你要继续补充还是跳过这些文件？", "继续", "跳过");
                 if (tresult)
                 {
-                    for(int i = 0;i<readresult.Count;i++)
+                    for (int i = 0; i<readresult.Count; i++)
                     {
                         if (readresult[i].StartsWith("CODE_"))
                         {
                             string urlnewvalue = await DisplayPromptAsync("添加服务器", "请输入直播源的服务器地址，该地址除了文件名以外其他都要包含。\n"+
                                 "例如文件的地址是 https://example.com/abc/123.ts ，那么你应该填写 https://example.com/abc/", "保存并下一个", "取消", "URL...", -1, Keyboard.Text, "");
-                           
+
                             if (string.IsNullOrWhiteSpace(urlnewvalue))
                             {
                                 if (urlnewvalue!=null)
@@ -255,13 +265,13 @@ public partial class VideoDownloadPage : ContentPage
                                 continue;
                             }
 
-                            if(!urlnewvalue.EndsWith("/"))
+                            if (!urlnewvalue.EndsWith("/"))
                             {
                                 urlnewvalue+="/";
                             }
 
                             //将用户输入的内容与之前的地址进行拼接
-                            ResultList[i].TS_PARM.ForEach(p=>
+                            ResultList[i].TS_PARM.ForEach(p =>
                             {
                                 p.FullURL=urlnewvalue+p.FullURL;
                             });
@@ -286,9 +296,10 @@ public partial class VideoDownloadPage : ContentPage
 
 
                 //要判断readresult是否为空
-                if(readresult.Count<1)
+                if (readresult.Count<1)
                 {
                     await DisplayAlert("提示信息", "本次不会添加新的条目，因为选择的列表里没有有效的直播源！", "确定");
+                    M3U8AnalysisBtn.IsEnabled=true;
                     return;
                 }
 
@@ -299,10 +310,10 @@ public partial class VideoDownloadPage : ContentPage
 
 
         var trList = readresult.Where(p => !string.IsNullOrWhiteSpace(p)).ToList();
-        if(trList.Count > 0)
+        if (trList.Count > 0)
         {
             string tmsg = "";
-            for (int i = readresult.Count-1;i>=0 ; i--)
+            for (int i = readresult.Count-1; i>=0; i--)
             {
                 if (!string.IsNullOrWhiteSpace(readresult[i]))
                 {
@@ -315,33 +326,42 @@ public partial class VideoDownloadPage : ContentPage
             }
             await DisplayAlert("提示信息", "当前有一个或多个直播源存在问题，详细内容如下：\n\n\n"+tmsg, "确定");
 
-            if(ResultList.Count<1)
+            if (ResultList.Count<1)
             {
                 await DisplayAlert("提示信息", "本次不会添加新的条目，因为选择的列表里没有有效的直播源！", "确定");
+                M3U8AnalysisBtn.IsEnabled=true;
                 return;
             }
         }
 
-        
 
-        List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
-        if (VideoAnalysisList.ItemsSource != null)
+        try
         {
-            videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
-
-            videoAnalysisLists.ForEach(p=>
+            List<VideoAnalysisList> videoAnalysisLists = new List<VideoAnalysisList>();
+            if (VideoAnalysisList.ItemsSource != null)
             {
-                var titem = ResultList.FirstOrDefault(p2 => p2.FullURL == p.FullURL);
-                if (titem != null)
+                videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
+
+                videoAnalysisLists.ForEach(p =>
                 {
-                    videoAnalysisLists.Remove(p);
-                }
-            });
+                    var titem = ResultList.FirstOrDefault(p2 => p2.FullURL == p.FullURL);
+                    if (titem != null)
+                    {
+                        videoAnalysisLists.Remove(p);
+                    }
+                });
 
+            }
+            videoAnalysisLists.AddRange(ResultList);
+
+            VideoAnalysisList.ItemsSource = videoAnalysisLists;
         }
-        videoAnalysisLists.AddRange(ResultList);
+        catch (Exception)
+        {
+            await DisplayAlert("提示信息", "将数据添加到列表时发生异常！", "确定");
+        }
 
-        VideoAnalysisList.ItemsSource = videoAnalysisLists;
+        M3U8AnalysisBtn.IsEnabled=true;
     }
 
     private void M3U8SourceRBtn_CheckedChanged(object sender, CheckedChangedEventArgs e)
