@@ -173,7 +173,7 @@ namespace FCLiveToolApplication
         public string URLProtocol { get; set; }
         public string Tag { get; set; }
         //客户端专用
-        public bool isHTTPS { get { return SourceLink.ToLower().StartsWith("https://") ? true : false; }}
+        public bool isHTTPS { get { return SourceLink.ToLower().StartsWith("https://") ? true : false; } }
     }
     public class CheckValidModel
     {
@@ -202,7 +202,7 @@ namespace FCLiveToolApplication
             {
                 return (DataTemplate)VideoEditPage.videoEditPage.Resources["VideoEditListTVGStyle"];
             }
-            else if(item is VideoEditListEXT_Readonly)
+            else if (item is VideoEditListEXT_Readonly)
             {
                 return (DataTemplate)VideoEditPage.videoEditPage.Resources["VideoEditListEXT_ReadonlyStyle"];
             }
@@ -284,7 +284,7 @@ namespace FCLiveToolApplication
             string[] treturn = new string[2];
             using (Stream stream = await DownloadM3U8FileToStream(VideoIfm[1], treturn))
             {
-                if(stream is null)
+                if (stream is null)
                 {
                     return treturn[0];
                 }
@@ -350,7 +350,7 @@ namespace FCLiveToolApplication
                     return "解析出现问题，可能是M3U8文件数据格式有问题。";
                 }
             }
-               
+
             return "";
         }
         /// <summary>
@@ -360,7 +360,7 @@ namespace FCLiveToolApplication
         /// <param name="VideoIfm">1：URL；</param>
         /// <param name="FileFrom">文件来源，0表示URL地址；1表示本地文件路径；</param>
         /// <returns></returns>
-        public async Task<string> DownloadAndReadM3U8FileForDownloadTS(VideoAnalysisList videoAnalysisList, string[] VideoIfm,int FileFrom)
+        public async Task<string> DownloadAndReadM3U8FileForDownloadTS(VideoAnalysisList videoAnalysisList, string[] VideoIfm, int FileFrom)
         {
             bool isNeedAddServer = false;
             videoAnalysisList.FileFromIndex=FileFrom;
@@ -458,7 +458,7 @@ namespace FCLiveToolApplication
                 }
 
             }
-            else if(FileFrom==1)
+            else if (FileFrom==1)
             {
                 if (!File.Exists(VideoIfm[0]))
                 {
@@ -495,7 +495,7 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
                                 }
 
                                 //解析M3U8文件后如果内部不是TS分片文件还是M3U8文件，那么它一定是一个URL，所以FileFrom传0
-                                return await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { r },0);
+                                return await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { r }, 0);
                             }
                             //开始读取带TS分片信息的M3U8
                             else if (r.StartsWith("#EXT-X-ALLOW-CACHE"))
@@ -547,7 +547,7 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
                         videoAnalysisList.TS_PARM = tMTP;
 
                     }
-                    
+
                 }
                 catch (Exception)
                 {
@@ -578,13 +578,13 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
         /// <returns></returns>
         public async Task<List<string>> DownloadAndReadM3U8FileForDownloadTS(List<VideoAnalysisList> videoAnalysisList, List<string> VideoIfm, int FileFrom)
         {
-            List<string> resultList = new List<string>(); 
+            List<string> resultList = new List<string>();
 
             for (int i = 0; i<VideoIfm.Count; i++)
             {
                 bool skipAddResult = false;
                 bool isNeedAddServer = false;
-                videoAnalysisList.Add(new VideoAnalysisList() { FileFromIndex=FileFrom});
+                videoAnalysisList.Add(new VideoAnalysisList() { FileFromIndex=FileFrom });
 
                 if (FileFrom==0)
                 {
@@ -725,7 +725,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                                     {
                                         resultList.Add("当前文件内提供的M3U8的URL是相对地址，程序无法知晓直播源的服务器，所以没有可用的数据源！");
                                         skipAddResult = true;
-                                        
+
                                         break;
                                     }
 
@@ -776,7 +776,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                             }
 
 
-                            if(!skipAddResult)
+                            if (!skipAddResult)
                             {
                                 videoAnalysisList[i].AllowCache = tAllowCache;
                                 videoAnalysisList[i].MediaSequence = tMediaSequence;
@@ -811,7 +811,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                 }
 
 
-                if(!skipAddResult)
+                if (!skipAddResult)
                 {
                     resultList.Add("");
                 }
@@ -897,7 +897,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
 
             return "";
         }
-        public async Task<string> DownloadM3U8Stream(VideoAnalysisList valist, string savepath,bool isMergeBeforeFile)
+        public async Task<string> DownloadM3U8Stream(VideoAnalysisList valist, string savepath, bool isMergeBeforeFile)
         {
             TempFileList=new List<DownloadTempFileList>();
             //int FileIndex = 0;
@@ -906,7 +906,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
             string dresult = "";
             string dataPath = new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
 
-            if(filename.Length>50)
+            if (filename.Length>50)
             {
                 filename=filename.Substring(0, 50);
             }
@@ -920,7 +920,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                     string TempFilepath = "";
 #if ANDROID            
                     if (string.IsNullOrWhiteSpace(dataPath))
-                    {              
+                    {
                         dresult= "保存文件失败！可能是没有权限或者当前平台暂不支持保存操作！";
                         isContinueDownloadStream = false;
                         FinishCount++;
@@ -979,7 +979,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                             ns = await response.Content.ReadAsStreamAsync();
                             ns.CopyTo(fs);
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             dresult = "向临时文件写入发生异常！";
                             isContinueDownloadStream = false;
@@ -996,16 +996,16 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     }
 
                     TempFileList.Add(new DownloadTempFileList() { ItemId = m.ItemId, FileName = TempFilepath.Replace(savepath, ""), FilePath = TempFilepath, Filesize = Filesize, FullLink = url });
-                
+
                     FinishCount++;
                 }).Start();
 
 
             }
 
-            while(true)
+            while (true)
             {
-                if(FinishCount == valist.TS_PARM.Count)
+                if (FinishCount == valist.TS_PARM.Count)
                 {
                     break;
                 }
@@ -1019,21 +1019,34 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
 
             if (!isEndList&&isContinueDownloadStream)
             {
-                double TS_AllTime = valist.TS_PARM.Sum(p=>p.Time)*1000;
-                await Task.Delay((int)TS_AllTime-500);
-
-                //本地文件暂时只循环一次
-                if(valist.FileFromIndex==0)
+                double TS_AllTime = valist.TS_PARM.Sum(p => p.Time)*1000;
+                if (TS_AllTime>0)
                 {
-                    VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
-                    dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
-                    if (string.IsNullOrEmpty(dresult))
+                    try
                     {
-                        dresult = await DownloadM3U8Stream(videoAnalysisList, savepath, isMergeBeforeFile);
+                        await Task.Delay((int)TS_AllTime-500);
+
+                        //本地文件暂时只循环一次
+                        if (valist.FileFromIndex==0)
+                        {
+                            VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
+                            dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
+                            if (string.IsNullOrEmpty(dresult))
+                            {
+                                dresult = await DownloadM3U8Stream(videoAnalysisList, savepath, isMergeBeforeFile);
+                            }
+                        }
                     }
+                    catch (Exception)
+                    {
+                        dresult = "处理TS分片的总时长时发生异常！";
+                    }
+
                 }
-
-
+                else
+                {
+                    dresult = "获取所有TS分片的总时长时发生异常！";
+                }
             }
 
 
@@ -1085,22 +1098,22 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     {
                         if (r.StartsWith("#"))
                         {
-                            if(r.StartsWith("#EXTM3U"))
+                            if (r.StartsWith("#EXTM3U"))
                             {
                                 videoStrList.Add(new VideoEditListEXT_Readonly() { ItemTypeId=3, EXTTag=r });
                             }
                             else if (r.StartsWith("#EXTINF"))
                             {
-                                string groupTitle="";
-                                string tvgGroup="";
-                                string tvgID="";
+                                string groupTitle = "";
+                                string tvgGroup = "";
+                                string tvgID = "";
                                 string tvgLogo = "";
                                 string tvgCountry = "";
                                 string tvgLanguage = "";
                                 string tvgName = "";
                                 string tvgURL = "";
 
-                                if(r.Contains("group-title="))
+                                if (r.Contains("group-title="))
                                 {
                                     Match tResult = Regex.Match(r, @"group-title=""(.*?)""");
                                     groupTitle=tResult.Groups[1].Value;
@@ -1141,12 +1154,12 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                                     tvgURL=tResult.Groups[1].Value;
                                 }
 
-                                videoStrList.Add(new VideoEditListTVG() {ItemTypeId=2, AllStr=r ,GroupTitle=groupTitle, TVGGroup=tvgGroup,TVGID=tvgID,TVGLogo=tvgLogo,TVGCountry=tvgCountry,TVGLanguage=tvgLanguage,TVGName=tvgName,TVGURL=tvgURL});
+                                videoStrList.Add(new VideoEditListTVG() { ItemTypeId=2, AllStr=r, GroupTitle=groupTitle, TVGGroup=tvgGroup, TVGID=tvgID, TVGLogo=tvgLogo, TVGCountry=tvgCountry, TVGLanguage=tvgLanguage, TVGName=tvgName, TVGURL=tvgURL });
 
                             }
                             else
                             {
-                                videoStrList.Add(new VideoEditListEXT() {ItemTypeId=1, EXTTag=r });
+                                videoStrList.Add(new VideoEditListEXT() { ItemTypeId=1, EXTTag=r });
                             }
 
                         }
@@ -1155,11 +1168,11 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                             continue;
                         else if (r.Contains(".m3u8"))
                         {
-                            videoStrList.Add(new VideoEditListSourceLink() {ItemTypeId=4, SourceLink=r });
+                            videoStrList.Add(new VideoEditListSourceLink() { ItemTypeId=4, SourceLink=r });
                         }
                         else
                         {
-                            videoStrList.Add(new VideoEditListOtherString() {ItemTypeId=5, AllStr=r });
+                            videoStrList.Add(new VideoEditListOtherString() { ItemTypeId=5, AllStr=r });
                         }
                     }
                 }
@@ -1185,7 +1198,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     return guid;
                 }
          */
-        private void MergeTempFile(string finalFilepath,bool isMergeBeforeFile)
+        private void MergeTempFile(string finalFilepath, bool isMergeBeforeFile)
         {
             int length = 0;
 
@@ -1253,7 +1266,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
         /// <param name="url"></param>
         /// <param name="returns">返回的信息；服务器返回的文件名；</param>
         /// <returns></returns>
-        public async Task<Stream> DownloadM3U8FileToStream(string url,string[] returns)
+        public async Task<Stream> DownloadM3U8FileToStream(string url, string[] returns)
         {
             Stream returnStream = null;
             using (HttpClient httpClient = new HttpClient())
@@ -1282,7 +1295,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     return null;
                 }
 
-    
+
             }
 
             return returnStream;
@@ -1525,5 +1538,5 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
         public const bool AppDarkMode = false;
         public const int VideoCheckThreadNum = 50;
         public const string VideoCheckUA = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
-  }
+    }
 }
