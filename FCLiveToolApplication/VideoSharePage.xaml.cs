@@ -10,6 +10,7 @@ public partial class VideoSharePage : ContentPage
 	{
 		InitializeComponent();
 	}
+    public static VideoSharePage videoSharePage;
     public int VSLCurrentPageIndex = 1;
     public List<string[]> M3U8PlayList = new List<string[]>();
     private async void M3UAnalysisBtn_Clicked(object sender, EventArgs e)
@@ -236,6 +237,12 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
 
     private async void ContentPage_Loaded(object sender, EventArgs e)
     {
+        if(videoSharePage!=null)
+        {
+            return;
+        }
+        videoSharePage=this;
+
         await GetShareData(1);
     }
 
