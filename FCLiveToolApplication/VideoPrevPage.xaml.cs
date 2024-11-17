@@ -210,7 +210,7 @@ public partial class VideoPrevPage : ContentPage
 
             RecentList.ItemsSource =list;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             await DisplayAlert("提示信息", "获取最近播放数据失败，请稍后重试！", "确定");
         }

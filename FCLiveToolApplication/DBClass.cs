@@ -640,7 +640,11 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
                                     else if (r.Contains("#EXTINF:"))
                                     {
                                         var tvalue = r.Replace("#EXTINF:", "");
-                                        tvalue = tvalue.Substring(0, tvalue.IndexOf(","));
+                                        if(tvalue.Contains(","))
+                                        {
+                                            tvalue = tvalue.Substring(0, tvalue.IndexOf(","));
+                                        }
+                                        //暂时认为不包括英文逗号的字符串为纯数字
 
                                         double.TryParse(tvalue, out tTime);
                                     }
