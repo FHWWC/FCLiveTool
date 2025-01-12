@@ -1,4 +1,3 @@
-本人在职备考考研，暂停更新。  
   
 ![FCLiveToolLogo](FCLiveToolApplication/Resources/Images/fclive_big_logo.png)  
   
