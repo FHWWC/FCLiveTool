@@ -384,7 +384,7 @@ public partial class VideoDownloadPage : ContentPage
     private async void M3U8DownloadBtn_Clicked(object sender, EventArgs e)
     {
 #if ANDROID
-        SaveDownloadFolderTb.Text= new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
+        //SaveDownloadFolderTb.Text= new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
 #endif
 
         if (string.IsNullOrWhiteSpace(SaveDownloadFolderTb.Text))
@@ -441,28 +441,30 @@ r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\", tr
                 else
                 {
 
-#if ANDROID
-                    string dataPath= new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp") + tobj.FileName.Substring(0, tobj.FileName.LastIndexOf(".")) + ".mp4";
-                    using (FileStream fs = File.OpenRead(dataPath))
-                    {
-                        var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, tobj.FileName.Substring(0, tobj.FileName.LastIndexOf(".")) + ".mp4", fs, CancellationToken.None);
+                    /*
+                     #if ANDROID
+                                        string dataPath= new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp") + tobj.FileName.Substring(0, tobj.FileName.LastIndexOf(".")) + ".mp4";
+                                        using (FileStream fs = File.OpenRead(dataPath))
+                                        {
+                                            var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, tobj.FileName.Substring(0, tobj.FileName.LastIndexOf(".")) + ".mp4", fs, CancellationToken.None);
 
-                        MainThread.BeginInvokeOnMainThread(() =>
-                        {
-                            if (fileSaver.IsSuccessful)
-                            {
-                                DisplayAlert("提示信息", "文件已成功保存至：\n" + fileSaver.FilePath, "确定");
-                                File.Delete(dataPath);
-                            }
-                            else
-                            {
-                                DisplayAlert("提示信息", "您已取消了操作，文件被暂存至：\n" + dataPath, "确定");
-                            }
-                        });
+                                            MainThread.BeginInvokeOnMainThread(() =>
+                                            {
+                                                if (fileSaver.IsSuccessful)
+                                                {
+                                                    DisplayAlert("提示信息", "文件已成功保存至：\n" + fileSaver.FilePath, "确定");
+                                                    File.Delete(dataPath);
+                                                }
+                                                else
+                                                {
+                                                    DisplayAlert("提示信息", "您已取消了操作，文件被暂存至：\n" + dataPath, "确定");
+                                                }
+                                            });
 
-                    }
+                                        }
 
-#endif
+                    #endif
+                     */
 
                 }
 

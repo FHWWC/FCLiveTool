@@ -138,7 +138,7 @@
                 </Button.ImageSource>
             </Button>
 
-            <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" IsVisible="{ OnPlatform Android=False}">
+            <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" >
                 <Button x:Name="SelectSaveDownloadFolderBtn" Background="LightBlue" Text="选择保存位置" Clicked="SelectSaveDownloadFolderBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>

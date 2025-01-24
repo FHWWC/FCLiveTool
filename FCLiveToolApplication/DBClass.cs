@@ -1,4 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿#if ANDROID
+using Android.Content;
+using Android.OS;
+#endif
+
+using System.ComponentModel.DataAnnotations;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 
@@ -230,36 +235,61 @@ namespace FCLiveToolApplication
 #if WINDOWS
             return 0;
 #else
-            var checkRead = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
-            var checkWrite = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
 
-            if (checkRead == PermissionStatus.Granted&&checkWrite == PermissionStatus.Granted)
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.R)
             {
+                var reqResult = Android.OS.Environment.IsExternalStorageManager;
+                if (!reqResult)
+                {
+                    var manage = Android.Provider.Settings.ActionManageAppAllFilesAccessPermission;
+                    Intent intent = new Intent(manage);
+                    Android.Net.Uri uri = Android.Net.Uri.Parse("package:" + AppInfo.Current.PackageName);
+                    intent.SetData(uri);
+                    Platform.CurrentActivity.StartActivity(intent);
+
+                    reqResult = Android.OS.Environment.IsExternalStorageManager;
+                    if (!reqResult)
+                    {
+                        return 3;
+                    }
+                }
+
                 return 0;
             }
             else
             {
-                var reqRead = await Permissions.RequestAsync<Permissions.StorageRead>();
-                var reqWrite = await Permissions.RequestAsync<Permissions.StorageWrite>();
+                var checkRead = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+                var checkWrite = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
 
-                if (reqRead == PermissionStatus.Granted&&reqWrite == PermissionStatus.Granted)
+                if (checkRead == PermissionStatus.Granted&&checkWrite == PermissionStatus.Granted)
                 {
                     return 0;
                 }
-                else if (reqRead != PermissionStatus.Granted &&reqWrite == PermissionStatus.Granted)
-                {
-                    return 1;
-                }
-                else if (reqRead == PermissionStatus.Granted &&reqWrite != PermissionStatus.Granted)
-                {
-                    return 2;
-                }
                 else
                 {
-                    return 3;
-                }
+                    var reqRead = await Permissions.RequestAsync<Permissions.StorageRead>();
+                    var reqWrite = await Permissions.RequestAsync<Permissions.StorageWrite>();
 
+                    if (reqRead == PermissionStatus.Granted&&reqWrite == PermissionStatus.Granted)
+                    {
+                        return 0;
+                    }
+                    else if (reqRead != PermissionStatus.Granted &&reqWrite == PermissionStatus.Granted)
+                    {
+                        return 1;
+                    }
+                    else if (reqRead == PermissionStatus.Granted &&reqWrite != PermissionStatus.Granted)
+                    {
+                        return 2;
+                    }
+                    else
+                    {
+                        return 3;
+                    }
+
+                }
             }
+
 #endif
         }
 
@@ -908,7 +938,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
             string filename = valist.FileName.Substring(0, valist.FileName.LastIndexOf("."));
             int FinishCount = 0;
             string dresult = "";
-            string dataPath = new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
+            //string dataPath = new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
 
             if (filename.Length>50)
             {
@@ -922,15 +952,19 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
                     long Filesize = 0;
                     string FileID = Guid.NewGuid().ToString();
                     string TempFilepath = "";
-#if ANDROID            
-                    if (string.IsNullOrWhiteSpace(dataPath))
-                    {
-                        dresult= "保存文件失败！可能是没有权限或者当前平台暂不支持保存操作！";
-                        isContinueDownloadStream = false;
-                        FinishCount++;
-                        return;
-                    }
-                    TempFilepath =dataPath+ string.Format($"{FileID}_{filename}.tmp");
+#if ANDROID
+                    /*
+                                         if (string.IsNullOrWhiteSpace(dataPath))
+                                        {
+                                            dresult= "保存文件失败！可能是没有权限或者当前平台暂不支持保存操作！";
+                                            isContinueDownloadStream = false;
+                                            FinishCount++;
+                                            return;
+                                        }
+                                        TempFilepath =dataPath+ string.Format($"{FileID}_{filename}.tmp");
+                     */
+
+                    TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
 
 #else
 TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
@@ -1016,7 +1050,8 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
             }
 
 #if ANDROID
-            MergeTempFile(dataPath + filename + ".mp4", isMergeBeforeFile);
+            //MergeTempFile(dataPath + filename + ".mp4", isMergeBeforeFile);
+            MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
 #else
             MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
 #endif
