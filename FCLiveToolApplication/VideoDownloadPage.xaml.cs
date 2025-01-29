@@ -154,41 +154,56 @@ public partial class VideoDownloadPage : ContentPage
                         return;
                     }
 
-#if ANDROID
-                    var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, options[1], stream, CancellationToken.None);
+                    /*
+                     #if ANDROID
+                     var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, options[1], stream, CancellationToken.None);
 
-                    if (fileSaver.IsSuccessful)
-                    {
-                        await DisplayAlert("提示信息", "文件已成功保存至：\n" + fileSaver.FilePath, "确定");
-                    }
-                    else
-                    {
-                        await DisplayAlert("提示信息", "您已取消了操作。", "确定");
-                    }
-#else
+                     if (fileSaver.IsSuccessful)
+                     {
+                         await DisplayAlert("提示信息", "文件已成功保存至：\n" + fileSaver.FilePath, "确定");
+                     }
+                     else
+                     {
+                         await DisplayAlert("提示信息", "您已取消了操作。", "确定");
+                     }
+                     */
+
                     if (!string.IsNullOrWhiteSpace(SaveDownloadFolderTb.Text))
                     {
                         if (!Directory.Exists(SaveDownloadFolderTb.Text))
                         {
                             await DisplayAlert("提示信息", "当前下载文件保存位置的目录不存在，请重新选择！", "确定");
-                                    M3U8AnalysisBtn.IsEnabled=true;
+                            M3U8AnalysisBtn.IsEnabled=true;
                             return;
                         }
                         try
                         {
-                            using (FileStream fs = new FileStream(SaveDownloadFolderTb.Text+"\\"+options[1], FileMode.Create))
+#if ANDROID
+                            using (FileStream fs = new FileStream(SaveDownloadFolderTb.Text+"/"+options[1], FileMode.Create))
                             {
                                 stream.CopyTo(fs);
                             }
+#else
+                          using (FileStream fs = new FileStream(SaveDownloadFolderTb.Text+"\\"+options[1], FileMode.Create))
+                            {
+                                stream.CopyTo(fs);
+                            }
+#endif
                         }
                         catch (Exception)
                         {
                             await DisplayAlert("提示信息", "把数据流写入文件时发生异常！", "确定");
-                                    M3U8AnalysisBtn.IsEnabled=true;
+                            M3U8AnalysisBtn.IsEnabled=true;
                             return;
                         }
 
+
+#if ANDROID
+                        await DisplayAlert("提示信息", "文件已成功保存至：\n" +SaveDownloadFolderTb.Text+"/"+options[1], "确定");
+#else
                         await DisplayAlert("提示信息", "文件已成功保存至：\n" +SaveDownloadFolderTb.Text+"\\"+options[1], "确定");
+#endif
+
                     }
                     else
                     {
@@ -204,8 +219,6 @@ public partial class VideoDownloadPage : ContentPage
                         }
                     }
 
-
-#endif
 
                 }
 
@@ -442,7 +455,7 @@ r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\", tr
                 {
 
                     /*
-                     #if ANDROID
+#if ANDROID
                                         string dataPath= new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp") + tobj.FileName.Substring(0, tobj.FileName.LastIndexOf(".")) + ".mp4";
                                         using (FileStream fs = File.OpenRead(dataPath))
                                         {
@@ -463,7 +476,7 @@ r = await vmanager.DownloadM3U8Stream(tobj, SaveDownloadFolderTb.Text + "\\", tr
 
                                         }
 
-                    #endif
+#endif
                      */
 
                 }
