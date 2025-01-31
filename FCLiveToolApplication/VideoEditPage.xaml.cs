@@ -568,7 +568,8 @@ public partial class VideoEditPage : ContentPage
         string[] toptions;
         string tmessage;
 
-        if(CurrentSaveLocation!=""&&DeviceInfo.Platform!=DevicePlatform.Android)
+        //if(CurrentSaveLocation!=""&&DeviceInfo.Platform!=DevicePlatform.Android)
+        if(CurrentSaveLocation!="")
         {
             tmessage="你要如何保存？";
             toptions=new string[] { "保存到源文件","另存为..."};
