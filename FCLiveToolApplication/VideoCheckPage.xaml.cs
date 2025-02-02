@@ -831,4 +831,34 @@ public partial class VideoCheckPage : ContentPage
         }
 
     }
+
+    private void VCNextPrevBtn_Clicked(object sender, EventArgs e)
+    {
+        Button button =sender as Button;
+
+        //0代表第一个界面，1代表第二个界面
+        if(button.CommandParameter.ToString()=="0")
+        {
+            M3USourceRBtnPanel.IsVisible = false;
+            LocalM3USelectPanel.IsVisible = false;
+            M3USourcePanel.IsVisible = false;
+            M3UTextPanel.IsVisible = false;
+
+            VCRightControlPanel.IsVisible = true;
+
+            button.CommandParameter="1";
+            button.Text="上一步";
+        }
+        else
+        {
+            M3USourceRBtnPanel.IsVisible = true;
+            //如果要恢复显示第一个页面，则不能同时显示所有控件，设定模拟点击第一个RadioButton
+            M3USourceRBtn1.IsChecked=true;
+            M3USourceRBtn_CheckedChanged(M3USourceRBtn1,new CheckedChangedEventArgs(true));
+            VCRightControlPanel.IsVisible = false;
+
+            button.CommandParameter="0";
+            button.Text="下一步";
+        }
+    }
 }

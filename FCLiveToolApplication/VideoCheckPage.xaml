@@ -105,9 +105,13 @@
             </Grid.RowDefinitions>
 
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="选择直播源文件来源：" VerticalOptions="Center"/>
-                <StackLayout Orientation="{OnPlatform Horizontal,Android=Vertical}">
+            <StackLayout Orientation="{OnPlatform Horizontal,Android=Vertical}">
+                <Grid>
+                    <Label Text="选择直播源文件来源：" VerticalOptions="Center"/>
+                    <Button x:Name="VCNextPrevBtn" IsVisible="{OnPlatform False,Android=True}" Background="LightBlue" HorizontalOptions="End" Text="下一步" CommandParameter="0" Clicked="VCNextPrevBtn_Clicked"/>
+                </Grid>
+
+                <StackLayout x:Name="M3USourceRBtnPanel" Orientation="Horizontal">
                     <RadioButton x:Name="M3USourceRBtn1" Content="本地文件"  IsChecked="True" GroupName="M3USourceRBtnGroup" Margin="{OnPlatform '20,0,0,0',Android='5,0,0,0'}" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
                     <RadioButton x:Name="M3USourceRBtn2" Content="输入URL" GroupName="M3USourceRBtnGroup" Margin="5,0,0,0" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
                     <RadioButton x:Name="M3USourceRBtn3" Content="输入文本快速检测" GroupName="M3USourceRBtnGroup" Margin="5,0,0,0" CheckedChanged="M3USourceRBtn_CheckedChanged"/>
@@ -117,7 +121,7 @@
             <Grid x:Name="CheckDataSourcePanel" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
-                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="{ OnPlatform 400,Android='0'}"/>
                 </Grid.ColumnDefinitions>
 
                 <StackLayout x:Name="LocalM3USelectPanel" VerticalOptions="Start" Orientation="Horizontal">
@@ -145,7 +149,7 @@
                     </Button>
                 </StackLayout>
 
-                <Grid Grid.Column="1" Margin="10,0,0,0">
+                <Grid x:Name="VCRightControlPanel" Grid.Column="{ OnPlatform 1,Android=0}" IsVisible="{OnPlatform True,Android=False}" Margin="10,0,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>
@@ -175,7 +179,7 @@
                     </StackLayout>
 
                     <StackLayout Grid.Column="1">
-                        <Button x:Name="StartCheckBtn" Text="开始检测" Background="LightBlue" FontSize="Medium" HeightRequest="50" Clicked="StartCheckBtn_Clicked">
+                        <Button x:Name="StartCheckBtn" Text="开始检测" Background="LightBlue" FontSize="{ OnPlatform Medium,Android=Default}" HeightRequest="{ OnPlatform 50,Android=30}" Clicked="StartCheckBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xE9D5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
