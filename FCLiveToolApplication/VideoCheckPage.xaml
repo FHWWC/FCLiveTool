@@ -198,43 +198,43 @@
 
             <StackLayout Grid.Row="2">
                 <StackLayout Orientation="Horizontal">
-                    <Button x:Name="StopCheckBtn" Background="LightPink" Text="停止" IsEnabled="False" Clicked="StopCheckBtn_Clicked">
+                    <Button x:Name="StopCheckBtn" Background="LightPink" Text="{ OnPlatform '停止', Android=''}" IsEnabled="False" Clicked="StopCheckBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
-                    <Button x:Name="RemoveNOKBtn" Background="LightPink" Text="移除无效" IsEnabled="False" Margin="10,0,0,0" Clicked="RemoveNOKBtn_Clicked">
+                    <Button x:Name="RemoveNOKBtn" Background="LightPink" Text="{ OnPlatform '移除无效', Android=''}" IsEnabled="False" Margin="10,0,0,0" Clicked="RemoveNOKBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
-                    </Button>                  
-                    <Button x:Name="SaveCheckListBtn" Background="LightPink" Text="保存列表" Margin="10,0,0,0" Clicked="SaveCheckListBtn_Clicked">
+                    </Button>
+                    <Button x:Name="SaveCheckListBtn" Background="LightPink" Text="{ OnPlatform '保存列表', Android=''}" Margin="10,0,0,0" Clicked="SaveCheckListBtn_Clicked">
                         <Button.ImageSource>
                             <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
-                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
-                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
                     <HorizontalStackLayout x:Name="VCLButtonPanel" Margin="20,0,0,0">
-                        <Button x:Name="PrintCheckLogBtn" Background="LightBlue" Text="输出检测报告" Clicked="PrintCheckLogBtn_Clicked">
+                        <Button x:Name="PrintCheckLogBtn" Background="LightBlue" Text="{ OnPlatform '输出检测报告', Android=''}" Clicked="PrintCheckLogBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xE9F9;" Size="Large" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="ShowVDLPopupBtn" Background="LightBlue" Text="删除重复项" Margin="10,0,0,0" Clicked="ShowVDLPopupBtn_Clicked">
+                        <Button x:Name="ShowVDLPopupBtn" Background="LightBlue" Text="{ OnPlatform '删除重复项', Android=''}" Margin="10,0,0,0" Clicked="ShowVDLPopupBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xE75C;" Size="Large" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
                         </Button>
                     </HorizontalStackLayout>
-                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
-                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
                     <StackLayout Orientation="Horizontal" Margin="20,0,0,0">
                         <CheckBox x:Name="TVLogoVisibleCb" IsChecked="True" CheckedChanged="TVLogoVisibleCb_CheckedChanged"/>
                         <Label Text="显示台标" VerticalOptions="Center"/>
                     </StackLayout>
-                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"/>
-                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
+                    <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
                     <Grid x:Name="VCLPagePanel" HorizontalOptions="FillAndExpand" Margin="20,0,0,0" IsVisible="False">
                         <Button x:Name="VCLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" Clicked="VCLBackBtn_Clicked">
                             <Button.ImageSource>
