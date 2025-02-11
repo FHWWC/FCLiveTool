@@ -299,12 +299,22 @@ public partial class VideoCheckPage : ContentPage
             if (VideoCheckList.ItemsSource is not null&&VideoCheckList.ItemsSource.Cast<VideoDetailList>().Count()>0)
             {
                 VCLIfmText.IsVisible=false;
+#if ANDROID
+                VCLPagePanelAndroid.IsVisible=true;
+#else
                 VCLPagePanel.IsVisible=true;
+#endif
+
             }
             else
             {
                 VCLIfmText.IsVisible=true;
-                VCLPagePanel.IsVisible=false;
+#if ANDROID
+                VCLPagePanelAndroid.IsVisible=false;
+#else
+            VCLPagePanel.IsVisible=false;
+#endif
+
             }
         }
     }

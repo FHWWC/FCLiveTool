@@ -324,8 +324,31 @@
 
 
         <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="{OnPlatform 0,Android=50}"/>
+            </Grid.RowDefinitions>
+            
             <ListView x:Name="VideoCheckList" ItemTemplate="{StaticResource VideoCheckListStyle}" HorizontalOptions="FillAndExpand" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never"  PropertyChanged="VideoCheckList_PropertyChanged"/>
             <Label x:Name="VCLIfmText" Text="这里空空如也~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
+
+            <Grid x:Name="VCLPagePanelAndroid" HorizontalOptions="FillAndExpand" Grid.Row="1" IsVisible="False">
+                <Button Background="LightPink" ContentLayout="0" HorizontalOptions="Start" IsEnabled="{Binding Source={x:Reference VCLBackBtn}, Path=IsEnabled, Mode=TwoWay}" Clicked="VCLBackBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                    <Label Text="{Binding Source={x:Reference VCLCurrentPage}, Path=Text, Mode=TwoWay}" FontSize="24" HorizontalOptions="Center"/>
+                    <Entry Text="{Binding Source={x:Reference VCLPageTb}, Path=Text, Mode=TwoWay}"  MaxLength="3" Placeholder="输入页码" Keyboard="Numeric" Margin="20,0,0,0"/>
+                    <Button Background="LightBlue" HeightRequest="35" Text="跳转" Margin="{ OnPlatform '5,0,0,0', Android=0}" Clicked="VCLJumpBtn_Clicked"/>
+                </StackLayout>
+                <Button  Background="LightPink" ContentLayout="0" HorizontalOptions="End" IsEnabled="{Binding Source={x:Reference VCLNextBtn}, Path=IsEnabled, Mode=TwoWay}" Clicked="VCLNextBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
         </Grid>
         <Grid HorizontalOptions="Center" Grid.Row="1">
             <ActivityIndicator x:Name="VideoCheckListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
