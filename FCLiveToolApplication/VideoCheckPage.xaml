@@ -229,7 +229,7 @@
                     </HorizontalStackLayout>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="20,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
                     <Rectangle Background="Gray" HeightRequest="30" WidthRequest="2" Margin="1,0,0,0"  IsVisible="{OnPlatform True,Android=False}"/>
-                    <StackLayout Orientation="Horizontal" Margin="20,0,0,0">
+                    <StackLayout Orientation="Horizontal" IsVisible="{OnPlatform True,Android=False}" Margin="20,0,0,0">
                         <CheckBox x:Name="TVLogoVisibleCb" IsChecked="True" CheckedChanged="TVLogoVisibleCb_CheckedChanged"/>
                         <Label Text="显示台标" VerticalOptions="Center"/>
                     </StackLayout>
@@ -252,6 +252,12 @@
                             </Button.ImageSource>
                         </Button>
                     </Grid>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" IsVisible="{OnPlatform False,Android=True}">
+                    <StackLayout Orientation="Horizontal">
+                        <CheckBox x:Name="TVLogoVisibleCbAndroid" IsChecked="True" CheckedChanged="TVLogoVisibleCb_CheckedChanged"/>
+                        <Label Text="显示台标" VerticalOptions="Center"/>
+                    </StackLayout>
                 </StackLayout>
             </StackLayout>
 

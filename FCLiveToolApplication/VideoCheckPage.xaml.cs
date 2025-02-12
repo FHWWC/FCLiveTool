@@ -169,7 +169,12 @@ public partial class VideoCheckPage : ContentPage
         CurrentCheckList=regexManager.DoRegex(AllVideoData, regexManager.GetRegexOptionIndex(RegexOptionCB.IsChecked, (RegexSelectBox.SelectedIndex+1).ToString()));
 
         CheckProgressText.Text="0 / "+CurrentCheckList.Count;
+#if ANDROID
+        TVLogoVisibleCb_CheckedChanged(null, new CheckedChangedEventArgs(TVLogoVisibleCbAndroid.IsChecked));
+#else
         TVLogoVisibleCb_CheckedChanged(null, new CheckedChangedEventArgs(TVLogoVisibleCb.IsChecked));
+#endif
+
         ProcessPageJump(CurrentCheckList, 1);
     }
     private async void M3UAnalysisBtn_Clicked(object sender, EventArgs e)
@@ -229,7 +234,12 @@ public partial class VideoCheckPage : ContentPage
         CurrentErrorCodeList=new List<CheckNOKErrorCodeList>();
         SaveCheckListBtn.IsEnabled=false;
         VCLButtonPanel.IsEnabled=false;
+#if ANDROID
+        TVLogoVisibleCbAndroid.IsEnabled=false;
+#else
         TVLogoVisibleCb.IsEnabled=false;
+#endif
+
 
         ValidCheck(CurrentCheckList);
         while (CheckFinishCount<CurrentCheckList.Count)
@@ -247,7 +257,11 @@ public partial class VideoCheckPage : ContentPage
         RemoveNOKBtn.IsEnabled=true;
         SaveCheckListBtn.IsEnabled=true;
         VCLButtonPanel.IsEnabled=true;
+#if ANDROID
+        TVLogoVisibleCbAndroid.IsEnabled=true;
+#else
         TVLogoVisibleCb.IsEnabled=true;
+#endif
         CheckNOKErrorCodeList.ItemsSource=CurrentErrorCodeList.Take(CurrentErrorCodeList.Count);
 
         if (!M3U8ValidCheckCTS.IsCancellationRequested)
