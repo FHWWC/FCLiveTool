@@ -301,7 +301,7 @@
 
                         <Label Text="OK信息" FontSize="Medium" HorizontalOptions="Center" Grid.ColumnSpan="2"/>
                         <Label Text="计&#10;数" Grid.Row="1"/>
-                        <Label x:Name="CheckOKCountText" Text="0" TextColor="LimeGreen" FontAttributes="Bold" Grid.Row="1" Grid.Column="1"/>
+                        <Label x:Name="CheckOKCountText" Text="0" TextColor="LimeGreen" FontAttributes="Bold" Margin="{OnPlatform Android='0,10,0,0'}" Grid.Row="1" Grid.Column="1"/>
                     </Grid>
                 </Border>                
                 <Border StrokeShape="RoundRectangle 6,6,6,6" Stroke="Red" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Column="2">
@@ -311,17 +311,17 @@
                             <RowDefinition/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="50"/>
-                            <ColumnDefinition Width="100"/>               
-                            <ColumnDefinition Width="50"/>
+                            <ColumnDefinition Width="{OnPlatform 50,Android=Auto}"/>
+                            <ColumnDefinition Width="{OnPlatform 100,Android=40}"/>
+                            <ColumnDefinition Width="{OnPlatform 50,Android=Auto}"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
 
                         <Label Text="NOK信息" FontSize="Medium" HorizontalOptions="Center" Grid.ColumnSpan="4"/>
                         <Label Text="计&#10;数" Grid.Row="1"/>
-                        <Label x:Name="CheckNOKCountText" Text="0" TextColor="Red" FontAttributes="Bold" Grid.Row="1" Grid.Column="1"/>
+                        <Label x:Name="CheckNOKCountText" Text="0" TextColor="Red" FontAttributes="Bold" Margin="{OnPlatform Android='0,10,0,0'}" Grid.Row="1" Grid.Column="1"/>
                         <Label Text="详&#10;情" Grid.Row="1" Grid.Column="2"/>
-                        <ListView x:Name="CheckNOKErrorCodeList" ItemTemplate="{StaticResource CheckNOKErrorCodeListStyle}" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Always" Grid.Row="1" Grid.Column="3"/>
+                        <ListView x:Name="CheckNOKErrorCodeList" RowHeight="{OnPlatform Android=20}" ItemTemplate="{StaticResource CheckNOKErrorCodeListStyle}" VerticalOptions="FillAndExpand" VerticalScrollBarVisibility="Always" Grid.Row="1" Grid.Column="3"/>
                     </Grid>
                 </Border>       
             </Grid>
