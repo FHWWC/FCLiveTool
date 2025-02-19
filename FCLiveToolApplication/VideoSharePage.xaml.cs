@@ -260,8 +260,9 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
 
         try
         {
-            CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(
-            await new HttpClient().GetStreamAsync("https://fclivetool.com/api/GetShareURL?pageindex="+pageindex));
+            var getresult = await new HttpClient().GetStringAsync("https://fclivetool.com/api/GetShareURL?pageindex="+pageindex);
+            CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(new StringReader(getresult));
+            //CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(await new HttpClient().GetStreamAsync("https://fclivetool.com/api/GetShareURL?pageindex="+pageindex));
 
             if (videoCheckModel is null)
             {
@@ -292,7 +293,7 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
             }
 
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             await DisplayAlert("提示信息", "获取数据时发生异常，请稍后重试！", "确定");
         }

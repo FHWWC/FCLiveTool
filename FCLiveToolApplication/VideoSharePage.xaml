@@ -53,17 +53,17 @@
                     </StackLayout>
 
                     <StackLayout Grid.Column="1" Margin="20,0,0,0">
-                        <Button x:Name="M3UStateUpdateBtn" CommandParameter="{Binding SourceLink}" Text="重新检测" Background="{OnPlatform Transparent,Android=LightPink}" Clicked="M3UItemRightBtn_Clicked">
+                        <Button x:Name="M3UStateUpdateBtn" CommandParameter="{Binding SourceLink}" Text="{OnPlatform '重新检测',Android=''}" WidthRequest="{OnPlatform Android=50}" HorizontalOptions="{OnPlatform Android=End}" Background="{OnPlatform Transparent,Android=LightPink}" Clicked="M3UItemRightBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="M3UPlayBtn" CommandParameter="{Binding SourceLink}" Text="点击试看" Background="{OnPlatform Transparent,Android=LightPink}" Margin="0,5,0,0" Clicked="M3UItemRightBtn_Clicked">
+                        <Button x:Name="M3UPlayBtn" CommandParameter="{Binding SourceLink}"  Text="{OnPlatform '点击试看',Android=''}" WidthRequest="{OnPlatform Android=50}" HorizontalOptions="{OnPlatform Android=End}" Background="{OnPlatform Transparent,Android=LightPink}" Margin="0,5,0,0" Clicked="M3UItemRightBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xEDB5;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="M3UDownloadBtn" CommandParameter="{Binding SourceLink}" Text="点击下载" Background="{OnPlatform Transparent,Android=LightPink}" Margin="0,5,0,0" Clicked="M3UItemRightBtn_Clicked">
+                        <Button x:Name="M3UDownloadBtn" CommandParameter="{Binding SourceLink}" Text="{OnPlatform '点击下载',Android=''}" WidthRequest="{OnPlatform Android=50}" HorizontalOptions="{OnPlatform Android=End}" Background="{OnPlatform Transparent,Android=LightPink}" Margin="0,5,0,0" Clicked="M3UItemRightBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
@@ -130,7 +130,7 @@
             </Grid>
         </Grid>
         <Grid Grid.Row="1">
-            <ListView x:Name="VideoShareList" ItemTemplate="{StaticResource VideoShareListStyle}" RowHeight="{ OnPlatform Android= 130}" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never"  Refreshing="VideoShareList_Refreshing"/>
+            <ListView x:Name="VideoShareList" ItemTemplate="{StaticResource VideoShareListStyle}" RowHeight="{ OnPlatform Android= 150}" IsPullToRefreshEnabled="True" HorizontalScrollBarVisibility="Never"  Refreshing="VideoShareList_Refreshing"/>
             <ActivityIndicator x:Name="VideoShareListRing" HorizontalOptions="Center" VerticalOptions="{ OnPlatform Center, Android= Start}" Margin="{ OnPlatform Android= '0,50,0,0'}"/>
         </Grid>
 
