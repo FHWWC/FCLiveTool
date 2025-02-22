@@ -13,7 +13,7 @@
                         <ColumnDefinition Width="200" />
                     </Grid.ColumnDefinitions>
 
-                    <StackLayout Margin="0,20,0,0">
+                    <StackLayout Margin="0,10">
                         <StackLayout>
                             <Label Text="{Binding SourceName}" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
                             <Label Text="{Binding Tag}" FontSize="14"  LineBreakMode="TailTruncation"/>
@@ -44,12 +44,16 @@
                         </StackLayout>
 
                         <Label Text="{Binding SourceLink}" LineBreakMode="TailTruncation"/>
-                        <HorizontalStackLayout Margin="0,10,0,0">
-                            <Label Text="分享时间："/>
-                            <Label Text="{Binding UploadTime}" FontSize="14"  LineBreakMode="TailTruncation"/>
-                            <Label Text="最后检测有效时间：" Margin="10,0,0,0"/>
-                            <Label Text="{Binding LastCheckTime}" FontSize="14"  LineBreakMode="TailTruncation"/>
-                        </HorizontalStackLayout>
+                        <StackLayout Orientation="{OnPlatform Horizontal,Android=Vertical}" Margin="0,10,0,0">
+                            <HorizontalStackLayout>
+                                <Label Text="分享时间："/>
+                                <Label Text="{Binding UploadTime}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            </HorizontalStackLayout>
+                            <HorizontalStackLayout>
+                                <Label Text="最后检测有效时间：" Margin="{ OnPlatform '10,0,0,0', Android=0}"/>
+                                <Label Text="{Binding LastCheckTime}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            </HorizontalStackLayout>
+                        </StackLayout>
                     </StackLayout>
 
                     <StackLayout Grid.Column="1" Margin="20,0,0,0">
@@ -106,11 +110,11 @@
                 <Label Text="在此页面，你可以看到所有人分享的直播源，你可以直接下载，也可以分享自己的直播源。" LineBreakMode="WordWrap"/>
                 <Label Text="若要检测直播源，请在下方输入直播源地址，然后点击检测，如果直播源检测结果为有效，会自动分享至数据库。分享的直播源链接格式暂时只支持HTTP协议。" LineBreakMode="WordWrap"/>
             </StackLayout>
-            <StackLayout Grid.Row="1">
+
+            <StackLayout Margin="{ OnPlatform Android='0,10,0,0'}" Grid.Row="1">
                 <Entry x:Name="M3USourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing"/>
             </StackLayout>
-
-            <Grid Grid.Row="1" Grid.Column="1" Margin="10,0,0,0">
+            <Grid Margin="{ OnPlatform '10,0,0,0' ,Android='10,10,0,0'}" Grid.Row="1" Grid.Column="1">
                 <Button x:Name="M3UAnalysisBtn" Text="检测并分享" Background="LightPink"  VerticalOptions="Start" Clicked="M3UAnalysisBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xEDE4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>

@@ -231,8 +231,13 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
 
     private async void VideoShareList_Refreshing(object sender, EventArgs e)
     {
+
+
         VSLCurrentPageIndex=1;
         await GetShareData(1);
+
+        //不使用ListView自己的加载圈
+        VideoShareList.IsRefreshing=false;
     }
 
     private async void ContentPage_Loaded(object sender, EventArgs e)
@@ -304,6 +309,9 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
 
     private async void M3URefreshBtn_Clicked(object sender, EventArgs e)
     {
+
+
+
         VSLCurrentPageIndex=1;
         await GetShareData(1);
     }
