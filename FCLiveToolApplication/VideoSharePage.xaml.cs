@@ -28,6 +28,7 @@ public partial class VideoSharePage : ContentPage
 
 
         M3UAnalysisBtn.IsEnabled=false;
+        M3URefreshBtn.IsEnabled=false;
         try
         {
             CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(
@@ -37,6 +38,7 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
             {
                 await DisplayAlert("提示信息", "获取数据时发生异常，请稍后重试！", "确定");
                 M3UAnalysisBtn.IsEnabled=true;
+                M3URefreshBtn.IsEnabled=true;
                 return;
             }
 
@@ -75,6 +77,7 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
         }
 
         M3UAnalysisBtn.IsEnabled=true;
+        M3URefreshBtn.IsEnabled=true;
     }
 
     private async void M3UItemRightBtn_Clicked(object sender, EventArgs e)
@@ -231,13 +234,16 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
 
     private async void VideoShareList_Refreshing(object sender, EventArgs e)
     {
-
+        M3URefreshBtn.IsEnabled=false;
+        M3UAnalysisBtn.IsEnabled=false;
+        //不使用ListView自己的加载圈
+        VideoShareList.IsRefreshing=false;
 
         VSLCurrentPageIndex=1;
         await GetShareData(1);
 
-        //不使用ListView自己的加载圈
-        VideoShareList.IsRefreshing=false;
+        M3URefreshBtn.IsEnabled=true;
+        M3UAnalysisBtn.IsEnabled=true;
     }
 
     private async void ContentPage_Loaded(object sender, EventArgs e)
@@ -309,11 +315,14 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
 
     private async void M3URefreshBtn_Clicked(object sender, EventArgs e)
     {
+        M3URefreshBtn.IsEnabled=false;
+        M3UAnalysisBtn.IsEnabled=false;
 
-
-
-        VSLCurrentPageIndex=1;
+        VSLCurrentPageIndex =1;
         await GetShareData(1);
+
+        M3URefreshBtn.IsEnabled=true;
+        M3UAnalysisBtn.IsEnabled=true;
     }
 
     private async void VSLBackBtn_Clicked(object sender, EventArgs e)

@@ -12,7 +12,7 @@ public partial class VideoPrevPage : ContentPage
     public static VideoPrevPage videoPrevPage;
     public List<string[]> M3U8PlayList = new List<string[]>();
     public List<LocalM3U8List> CurrentLocalM3U8List = new List<LocalM3U8List>();
-    private void ContentPage_Loaded(object sender, EventArgs e)
+    private async void ContentPage_Loaded(object sender, EventArgs e)
     {
         if (videoPrevPage != null)
         {
@@ -30,6 +30,7 @@ public partial class VideoPrevPage : ContentPage
 
 
         ReadAndLoadLocalM3U8();
+        await Task.Delay(1000);
         LoadRecent();
 #if ANDROID
         RecentPanel.WidthRequest=PageGrid.Width;
@@ -269,11 +270,11 @@ public partial class VideoPrevPage : ContentPage
     }
 
     private void RecentList_Refreshing(object sender, EventArgs e)
-    {
-        LoadRecent();
-
+    {       
         //不使用ListView自己的加载圈
         RecentList.IsRefreshing=false;
+
+        LoadRecent();
     }
 
     private void RLRefreshBtn_Clicked(object sender, EventArgs e)

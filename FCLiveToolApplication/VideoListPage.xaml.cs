@@ -944,11 +944,11 @@ public partial class VideoListPage : ContentPage
     }
 
     private void VideosList_Refreshing(object sender, EventArgs e)
-    {
-        LoadVideos();
-
+    {       
         //不使用ListView自己的加载圈
         VideosList.IsRefreshing=false;
+
+        LoadVideos();
     }
 
     private void VLToolbarBtn_Clicked(object sender, EventArgs e)
@@ -989,10 +989,10 @@ public partial class VideoListPage : ContentPage
             return;
         }
 
-        LoadVideoDetail(CurrentVURL, RecommendReg);
-
         //不使用ListView自己的加载圈
         VideoDetailList.IsRefreshing=false;
+
+        LoadVideoDetail(CurrentVURL, RecommendReg);
     }
 
     private void VDLToolbarBtn_Clicked(object sender, EventArgs e)
