@@ -13,6 +13,7 @@ public partial class VideoSharePage : ContentPage
     public static VideoSharePage videoSharePage;
     public int VSLCurrentPageIndex = 1;
     public List<string[]> M3U8PlayList = new List<string[]>();
+    public bool isVSLRefresh=false;
     private async void M3UAnalysisBtn_Clicked(object sender, EventArgs e)
     {
         if(string.IsNullOrWhiteSpace(M3USourceURLTb.Text)||!M3USourceURLTb.Text.Contains("://"))
@@ -233,17 +234,23 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
     }
 
     private async void VideoShareList_Refreshing(object sender, EventArgs e)
-    {
-        M3URefreshBtn.IsEnabled=false;
-        M3UAnalysisBtn.IsEnabled=false;
+    {      
         //不使用ListView自己的加载圈
         VideoShareList.IsRefreshing=false;
+        if (isVSLRefresh)
+        {
+            return;
+        }
+        M3URefreshBtn.IsEnabled=false;
+        M3UAnalysisBtn.IsEnabled=false;
+        isVSLRefresh=true;
 
         VSLCurrentPageIndex=1;
         await GetShareData(1);
 
         M3URefreshBtn.IsEnabled=true;
         M3UAnalysisBtn.IsEnabled=true;
+        isVSLRefresh=false;
     }
 
     private async void ContentPage_Loaded(object sender, EventArgs e)
@@ -315,14 +322,21 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
 
     private async void M3URefreshBtn_Clicked(object sender, EventArgs e)
     {
+        if (isVSLRefresh)
+        {
+            return;
+        }
+
         M3URefreshBtn.IsEnabled=false;
         M3UAnalysisBtn.IsEnabled=false;
+        isVSLRefresh=true;
 
         VSLCurrentPageIndex =1;
         await GetShareData(1);
 
         M3URefreshBtn.IsEnabled=true;
         M3UAnalysisBtn.IsEnabled=true;
+        isVSLRefresh=false;
     }
 
     private async void VSLBackBtn_Clicked(object sender, EventArgs e)

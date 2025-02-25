@@ -12,6 +12,7 @@ public partial class VideoPrevPage : ContentPage
     public static VideoPrevPage videoPrevPage;
     public List<string[]> M3U8PlayList = new List<string[]>();
     public List<LocalM3U8List> CurrentLocalM3U8List = new List<LocalM3U8List>();
+    public bool isRLRefresh = false;
     private async void ContentPage_Loaded(object sender, EventArgs e)
     {
         if (videoPrevPage != null)
@@ -216,6 +217,7 @@ public partial class VideoPrevPage : ContentPage
             await DisplayAlert("提示信息", "获取最近播放数据失败，请稍后重试！", "确定");
         }
 
+        isRLRefresh=false;
         RecentListRing.IsRunning=false;
     }
     public string GetPastTime(DateTime dt)
@@ -273,12 +275,23 @@ public partial class VideoPrevPage : ContentPage
     {       
         //不使用ListView自己的加载圈
         RecentList.IsRefreshing=false;
+        if(isRLRefresh)
+        {
+            return;
+        }
 
+        isRLRefresh=true;
         LoadRecent();
     }
 
     private void RLRefreshBtn_Clicked(object sender, EventArgs e)
     {
+        if(isRLRefresh)
+        {
+            return;
+        }
+
+        isRLRefresh=true;
         LoadRecent();
     }
 

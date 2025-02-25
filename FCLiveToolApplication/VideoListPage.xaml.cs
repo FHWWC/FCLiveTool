@@ -84,7 +84,8 @@ public partial class VideoListPage : ContentPage
     public bool ShowLoadOrRefreshDialog = false;
     CancellationTokenSource M3U8ValidCheckCTS;
     public const string DEFAULT_USER_AGENT = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
-
+    public bool isVLRefresh = false;
+    public bool isVDLRefresh = false;
     private void Question_Clicked(object sender, EventArgs e)
     {
         ImageButton button = sender as ImageButton;
@@ -683,6 +684,7 @@ public partial class VideoListPage : ContentPage
             await DisplayAlert("提示信息", "获取数据失败，请稍后重试！", "确定");
         }
 
+        isVLRefresh=false;
         VideosListRing.IsRunning=false;
     }
     /// <summary>
@@ -733,6 +735,7 @@ public partial class VideoListPage : ContentPage
              */
         }
 
+        isVDLRefresh=false;
         VideoDetailListRing.IsRunning = false;
     }
 
@@ -940,6 +943,12 @@ public partial class VideoListPage : ContentPage
 
     private void VLRefreshBtn_Clicked(object sender, EventArgs e)
     {
+        if(isVLRefresh)
+        {
+            return;
+        }
+
+        isVLRefresh=true;
         LoadVideos();
     }
 
@@ -947,7 +956,12 @@ public partial class VideoListPage : ContentPage
     {       
         //不使用ListView自己的加载圈
         VideosList.IsRefreshing=false;
+        if(isVLRefresh)
+        {
+            return;
+        }
 
+        isVLRefresh=true;
         LoadVideos();
     }
 
@@ -978,7 +992,13 @@ public partial class VideoListPage : ContentPage
         {
             return;
         }
+        if(isVDLRefresh)
+        {
+            return;
+        }
 
+
+        isVDLRefresh=true;
         LoadVideoDetail(CurrentVURL, RecommendReg);
     }
 
@@ -991,7 +1011,12 @@ public partial class VideoListPage : ContentPage
 
         //不使用ListView自己的加载圈
         VideoDetailList.IsRefreshing=false;
+        if(isVDLRefresh)
+        {
+            return;
+        }
 
+        isVDLRefresh=true;
         LoadVideoDetail(CurrentVURL, RecommendReg);
     }
 
