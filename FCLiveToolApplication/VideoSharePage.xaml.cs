@@ -32,8 +32,8 @@ public partial class VideoSharePage : ContentPage
         M3URefreshBtn.IsEnabled=false;
         try
         {
-            CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(
-await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?url="+M3USourceURLTb.Text));
+            var getresult = await new HttpClient().GetStringAsync("https://fclivetool.com/api/NewShareURL?url="+M3USourceURLTb.Text);
+            CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(new StringReader(getresult));
 
             if (videoCheckModel is null)
             {
@@ -93,8 +93,8 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
             {
                 try
                 {
-                    CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(
-        await new HttpClient().GetStreamAsync("https://fclivetool.com/api/UpdateShareURL?url="+UpdBtn.CommandParameter.ToString()));
+                    var getresult = await new HttpClient().GetStringAsync("https://fclivetool.com/api/UpdateShareURL?url="+UpdBtn.CommandParameter.ToString());
+                    CheckValidModel videoCheckModel = (CheckValidModel)new XmlSerializer(typeof(CheckValidModel)).Deserialize(new StringReader(getresult));
 
                     if (videoCheckModel is null)
                     {
@@ -205,11 +205,6 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
                         return;
                     }
 
-#if ANDROID
-                        await DisplayAlert("提示信息", "安卓暂未开发", "确定");
-                        UpdBtn.IsEnabled=true;
-                        return;
-#else
                     var fileSaver = await FileSaver.SaveAsync(FileSystem.AppDataDirectory, options[1], stream, CancellationToken.None);
 
                     if (fileSaver.IsSuccessful)
@@ -221,7 +216,6 @@ await new HttpClient().GetStreamAsync("https://fclivetool.com/api/NewShareURL?ur
                         await DisplayAlert("提示信息", "您已取消了操作。", "确定");
                     }
 
-#endif
 
                 }
 
