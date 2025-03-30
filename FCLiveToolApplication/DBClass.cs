@@ -195,6 +195,16 @@ namespace FCLiveToolApplication
         /// </summary>
         public List<SharedVideo> Content { get; set; }
     }
+    public class VideoSubList
+    {
+        public string SubName { get; set; }
+        public string SubTag { get; set; }
+        public string SubURL { get; set; }
+        public bool IsEnabledUpdate { get; set; }
+        public string UserAgent { get; set; }
+        public VideoDetailList SubVDL { get; set; }
+        public string SubDetailStr { get; set; }
+    }
     public class VideoEditListDataTemplateSelector : DataTemplateSelector
     {
         protected override DataTemplate OnSelectTemplate(object item, BindableObject container)
@@ -1347,7 +1357,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
             //根据不同平台选择不同的缓存方式
             string dataPath;
 #if WINDOWS
-            dataPath = Path.Combine(FileSystem.AppDataDirectory+"/"+foldername)+"\\";
+            dataPath =FileSystem.AppDataDirectory+"\\"+foldername+"\\";
 #elif ANDROID
             //var test= Directory.CreateDirectory(Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DataDirectory.AbsolutePath)+"/LiveStreamCache");
             dataPath = Path.Combine(Android.OS.Environment.ExternalStorageDirectory.AbsolutePath, "Android", "data", Android.App.Application.Context.PackageName+"/"+foldername)+"/";

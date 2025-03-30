@@ -105,12 +105,18 @@ public partial class VideoPrevPage : ContentPage
             {
                 if (File.Exists(dataPath+"/LocalM3U8.log"))
                 {
-                    var tlist = (List<LocalM3U8List>)xmlSerializer.Deserialize(new StringReader(File.ReadAllText(dataPath+"/LocalM3U8.log")));
-
-                    await MainThread.InvokeOnMainThreadAsync(() =>
+                    var localStr = File.ReadAllText(dataPath+"/LocalM3U8.log");
+                    if(!string.IsNullOrWhiteSpace(localStr))
                     {
-                        LocalM3U8List.ItemsSource = tlist;
-                    });
+                        var tlist = (List<LocalM3U8List>)xmlSerializer.Deserialize(new StringReader(localStr));
+
+                        await MainThread.InvokeOnMainThreadAsync(() =>
+                        {
+                            LocalM3U8List.ItemsSource = tlist;
+                        });
+
+                    }
+
                 }
             }
             catch (Exception)

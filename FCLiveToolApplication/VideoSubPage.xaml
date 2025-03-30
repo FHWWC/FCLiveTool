@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="FCLiveToolApplication.VideoSubPage"
+             Title="VideoSubPage" Loaded="ContentPage_Loaded">
+
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="VideoSubListStyle">
+            <ViewCell>
+                <StackLayout Padding="15,5">
+                    <Label Text="{Binding SubName}" FontSize="Medium" LineBreakMode="WordWrap"/>
+                    <Label Text="{Binding SubTag}" LineBreakMode="WordWrap"/>
+                    <Label Text="{Binding SubURL}" LineBreakMode="TailTruncation"/>
+                    <StackLayout Orientation="Horizontal">
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="启用更新" VerticalOptions="Center"/>
+                            <Switch x:Name="VSLEnabledUpdateToogle" IsToggled="{Binding IsEnabledUpdate}" Margin="20,0,0,0" Toggled="VSLEnabledUpdateToogle_Toggled"/>
+                        </StackLayout>
+                    </StackLayout> 
+                    <StackLayout Orientation="Horizontal" HorizontalOptions="End">
+                        <Button x:Name="VSLEditBtn" Background="LightBlue" CommandParameter="{Binding SubName}" Clicked="VSLEditBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <Button x:Name="VSLUpdateBtn" Background="LightBlue" CommandParameter="{Binding SubName}" Margin="5,0,0,0" Clicked="VSLUpdateBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                        <Button x:Name="VSLRemoveBtn" Background="LightPink" CommandParameter="{Binding SubName}" Margin="5,0,0,0" Clicked="VSLRemoveBtn_Clicked">
+                            <Button.ImageSource>
+                                <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            </Button.ImageSource>
+                        </Button>
+                        
+                    </StackLayout>
+                </StackLayout>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+    
+    
+    <Shell.TitleView>
+        <HorizontalStackLayout>
+            <Label Text="直播源订阅" TextColor="#A0F0FFFF" FontSize="Large" VerticalTextAlignment="Center"/>
+        </HorizontalStackLayout>
+    </Shell.TitleView>
+    
+    
+    <Grid Margin="20,10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+
+
+            <StackLayout>
+                <Label Text="此处列出了你的所有订阅。"/>
+            </StackLayout>
+            <HorizontalStackLayout VerticalOptions="Start" Grid.Row="1">
+                <Button x:Name="VideoSubListAddItemBtn" Background="LightBlue" Clicked="VideoSubListAddItemBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE710;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+
+            <ListView x:Name="VideoSubList" ItemTemplate="{StaticResource VideoSubListStyle}" HorizontalScrollBarVisibility="Never" Grid.Row="2"/>
+
+
+        </Grid>
+        
+        
+        
+    </Grid>
+    
+</ContentPage>

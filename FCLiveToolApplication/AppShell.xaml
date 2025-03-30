@@ -43,6 +43,13 @@
     <ShellContent Title="直播源列表" Icon="videoslist_page.png"
         ContentTemplate="{DataTemplate local:VideoListPage}"
         Route="VideoListPage"/>
+    <ShellContent Title="直播源共享" 
+        ContentTemplate="{DataTemplate local:VideoSharePage}"
+        Route="VideoSharePage">
+        <ShellContent.Icon>
+            <FontImageSource Glyph="&#xE753;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+        </ShellContent.Icon>
+    </ShellContent>
     <ShellContent Title="直播源编辑" Icon="videoedit_page.png"
         ContentTemplate="{DataTemplate local:VideoEditPage}"
         Route="VideoEditPage"/>
@@ -59,14 +66,10 @@
         <ShellContent.Icon>
             <FontImageSource Glyph="&#xEADF;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
         </ShellContent.Icon>
-    </ShellContent>   
-    <ShellContent Title="直播源共享" 
-        ContentTemplate="{DataTemplate local:VideoSharePage}"
-        Route="VideoSharePage">
-        <ShellContent.Icon>
-            <FontImageSource Glyph="&#xE753;" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-        </ShellContent.Icon>
     </ShellContent>
+    <ShellContent Title="直播源订阅" Icon="videosub_page.png"
+        ContentTemplate="{DataTemplate local:VideoSubPage}"
+        Route="VideoSubPage"/>
 
 
     <Shell.FlyoutFooter>
