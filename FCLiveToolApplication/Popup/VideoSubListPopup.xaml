@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="FCLiveToolApplication.Popup.VideoSubListPopup">
+
+    <Grid x:Name="MainGrid" x:FieldModifier="Public" Padding="20,10" Loaded="MainGrid_Loaded">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <Label x:Name="SubListManagerTitle" HorizontalOptions="Center" FontSize="Medium"/>
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="{OnPlatform 75,Android=100}"/>
+                <RowDefinition Height="{OnPlatform 75,Android=100}"/>
+                <RowDefinition Height="{OnPlatform 75,Android=100}"/>
+                <RowDefinition Height="{OnPlatform 75,Android=100}"/>
+                <RowDefinition Height="{OnPlatform 75,Android=100}"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+            <Label Text="订阅名称：" Margin="0,5,0,0"/>
+            <StackLayout Grid.Column="1">
+                <Entry x:Name="VideoSubNameTb" VerticalOptions="Center"/>
+                <Label Text="直播源订阅的名称，该名称在你的订阅列表里是唯一的"  TextColor="Gray" FontSize="12"/>
+            </StackLayout>
+
+            <Label Text="备注：" Grid.Row="1" Margin="0,5,0,0"/>
+            <StackLayout Grid.Row="1" Grid.Column="1" >
+                <Entry x:Name="VideoTagTb" VerticalOptions="Center"/>
+                <Label Text="对当前订阅的描述"  TextColor="Gray" FontSize="12"/>
+            </StackLayout>
+
+            <Label Text="订阅地址：" Grid.Row="2" Margin="0,5,0,0"/>
+            <StackLayout Grid.Row="2" Grid.Column="1" >
+                <Entry x:Name="VideoURLTb" VerticalOptions="Center"/>
+                <Label Text="直播源订阅地址"  TextColor="Gray" FontSize="12"/>
+            </StackLayout>
+
+            <Label Text="启用更新：" Grid.Row="3" Margin="0,5,0,0"/>
+            <StackLayout Grid.Row="3" Grid.Column="1" >
+                <Switch x:Name="VideoEnabledUpdate"/>
+                <Label Text="是否启用更新。如果开启，则会在更新全部订阅的时候，更新该订阅，反之亦然"  TextColor="Gray" FontSize="12"/>
+            </StackLayout>
+
+            <Label Text="更新使用User-Agent：" Grid.Row="4" Margin="0,5,0,0"/>
+            <StackLayout Grid.Row="4" Grid.Column="1" >
+                <Entry x:Name="VideoUATb" VerticalOptions="Center"/>
+                <Label Text="更新当前订阅所使用的User-Agent"  TextColor="Gray" FontSize="12"/>
+            </StackLayout>
+
+        </Grid>
+
+        <StackLayout VerticalOptions="End" Grid.Row="2">
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button x:Name="SubmitBtn" Background="Azure" Text="提交" Clicked="SubmitBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE930;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="CancelBtn" Background="LightPink" Text="取消" Clicked="CancelBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+
+            <HorizontalStackLayout  HorizontalOptions="Center">
+                <Label Text="&#xE946;"  TextColor="Gray" FontSize="14" FontFamily="Segoe MDL2 Assets"/>
+                <Label Text="  在此页面修改的参数会保存到本地缓存中"  TextColor="Gray" FontSize="12"/>
+            </HorizontalStackLayout>
+
+            <Label Text="点击窗口外任意区域关闭窗口则视为取消操作"  TextColor="Gray" FontSize="12" HorizontalOptions="Center"/>
+        </StackLayout>
+
+    </Grid>
+
+</toolkit:Popup>

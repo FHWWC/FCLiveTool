@@ -57,7 +57,7 @@
                 <Label Text="  在此页面修改的参数会保存到本地缓存中"  TextColor="Gray" FontSize="12"/>
             </HorizontalStackLayout>
 
-            <Label Text="点击窗口外任意区域关闭窗口"  TextColor="Gray" FontSize="12" HorizontalOptions="Center"/>
+            <Label Text="点击窗口外任意区域关闭窗口则视为取消操作"  TextColor="Gray" FontSize="12" HorizontalOptions="Center"/>
         </StackLayout>
 
     </Grid>
