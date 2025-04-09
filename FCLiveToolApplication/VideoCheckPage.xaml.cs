@@ -3,6 +3,7 @@ using CommunityToolkit.Maui.Views;
 using FCLiveToolApplication.Popup;
 using Microsoft.Maui.Storage;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FCLiveToolApplication;
 
@@ -20,15 +21,17 @@ public partial class VideoCheckPage : ContentPage
         }
 
         videoCheckPage=this;
-        InitRegexList();
+        //InitRegexList();
         InitErrorCodeList();
     }
-    public void InitRegexList()
-    {
-        List<string> RegexOption = new List<string>() { "规则1", "规则2", "规则3", "规则4", "规则5" };
-        RegexSelectBox.ItemsSource = RegexOption;
-        RegexSelectBox.SelectedIndex=2;
-    }
+    /*
+         public void InitRegexList()
+        {
+            List<string> RegexOption = new List<string>() { "规则1", "规则2", "规则3", "规则4", "规则5" };
+            RegexSelectBox.ItemsSource = RegexOption;
+            RegexSelectBox.SelectedIndex=2;
+        }
+     */
 
     public static VideoCheckPage videoCheckPage;
     List<VideoDetailList> CurrentCheckList = new List<VideoDetailList>();
@@ -45,6 +48,9 @@ public partial class VideoCheckPage : ContentPage
     public int VCLMaxPageIndex;
     public const int VCL_COUNT_PER_PAGE = 100;
     public const double D_VCL_COUNT_PER_PAGE = 100.0;
+    public int RegexSelectIndex = 2;
+    public string RecommendRegex="3";
+    public bool RegexOption1 = false;
     private void M3USourceRBtn_CheckedChanged(object sender, CheckedChangedEventArgs e)
     {
         RadioButton entry = sender as RadioButton;
@@ -117,42 +123,56 @@ public partial class VideoCheckPage : ContentPage
 
         int tvglogoIndex = AllVideoData.IndexOf("tvg-logo=");
         int tvgnameIndex = AllVideoData.IndexOf("tvg-name=");
-        int OldSelectedIndex = RegexSelectBox.SelectedIndex;
+        //int OldSelectedIndex = RegexSelectBox.SelectedIndex;
 
         if (tvglogoIndex>-1&&tvgnameIndex>-1)
         {
             if (tvgnameIndex<tvglogoIndex)
             {
-                RegexSelectBox.SelectedIndex=1;
-                RecommendRegexTb.Text = "2";
+                RegexSelectIndex=1;
+                //RegexSelectBox.SelectedIndex=1;
+                //RecommendRegexTb.Text = "2";
+                RecommendRegex="2";
             }
             else
             {
-                RegexSelectBox.SelectedIndex=0;
-                RecommendRegexTb.Text = "1";
+                RegexSelectIndex=0;
+                //RegexSelectBox.SelectedIndex=0;
+                //RecommendRegexTb.Text = "1";
+                RecommendRegex="1";
             }
         }
         else if (tvglogoIndex>-1)
         {
-            RegexSelectBox.SelectedIndex=2;
-            RecommendRegexTb.Text = "3";
+            RegexSelectIndex=2;
+            //RegexSelectBox.SelectedIndex=2;
+            //RecommendRegexTb.Text = "3";
+            RecommendRegex="3";
         }
         else if (tvglogoIndex<0&&tvgnameIndex<0&&!AllVideoData.Contains("#EXTINF:"))
         {
-            RegexSelectBox.SelectedIndex=4;
-            RecommendRegexTb.Text = "5";
+            RegexSelectIndex=4;
+            //RegexSelectBox.SelectedIndex=4;
+            //RecommendRegexTb.Text = "5";
+            RecommendRegex="5";
         }
         else
         {
-            RegexSelectBox.SelectedIndex=3;
-            RecommendRegexTb.Text = "4";
+            RegexSelectIndex=3;
+            //RegexSelectBox.SelectedIndex=3;
+            //RecommendRegexTb.Text = "4";
+            RecommendRegex="4";
         }
 
+
+        LoadDataToCheckList();
         //手动触发
-        if (OldSelectedIndex==RegexSelectBox.SelectedIndex)
-        {
-            LoadDataToCheckList();
-        }
+        /*
+                 if (OldSelectedIndex==RegexSelectBox.SelectedIndex)
+                {
+                    LoadDataToCheckList();
+                }
+         */
 
     }
     public async void LoadDataToCheckList()
@@ -166,7 +186,7 @@ public partial class VideoCheckPage : ContentPage
         ClearAllCount();
 
         RegexManager regexManager = new RegexManager();
-        CurrentCheckList=regexManager.DoRegex(AllVideoData, regexManager.GetRegexOptionIndex(RegexOptionCB.IsChecked, (RegexSelectBox.SelectedIndex+1).ToString()));
+        CurrentCheckList=regexManager.DoRegex(AllVideoData, regexManager.GetRegexOptionIndex(RegexOption1, (RegexSelectIndex+1).ToString()));
 
         CheckProgressText.Text="0 / "+CurrentCheckList.Count;
 #if ANDROID
@@ -466,15 +486,17 @@ public partial class VideoCheckPage : ContentPage
         DisplayAlert("帮助信息", new MsgManager().GetRegexOptionTip(), "关闭");
     }
 
-    private void RegexSelectBox_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (string.IsNullOrWhiteSpace(AllVideoData))
+    /*
+        private void RegexSelectBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            return;
-        }
+            if (string.IsNullOrWhiteSpace(AllVideoData))
+            {
+                return;
+            }
 
-        LoadDataToCheckList();
-    }
+            LoadDataToCheckList();
+        }
+     */
 
     private async void StopCheckBtn_Clicked(object sender, EventArgs e)
     {
@@ -884,5 +906,17 @@ public partial class VideoCheckPage : ContentPage
             button.CommandParameter="0";
             button.Text="下一步";
         }
+    }
+
+    private async void OpenRegexPageBtn_Clicked(object sender, EventArgs e)
+    {
+        RegexSelectPopup regexSelectPopup = new RegexSelectPopup(1,RegexSelectIndex,RecommendRegex);
+        await this.ShowPopupAsync(regexSelectPopup);
+        
+        if(regexSelectPopup.isOKBtnClicked)
+        {
+            LoadDataToCheckList();
+        }
+
     }
 }

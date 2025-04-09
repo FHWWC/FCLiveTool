@@ -692,4 +692,18 @@ tname = item.Substring(item.LastIndexOf("\\")+1);
         VideoWindow.Play();
         NowPlayingTb.Text="在线直播源";
     }
+
+
+    public async void PopShowMsg(string msg)
+    {
+        await DisplayAlert("提示信息", msg, "确定");
+    }  
+    public async void PopShowMsg(string title,string msg,string buttonText1)
+    {
+        await DisplayAlert(title, msg, buttonText1);
+    }
+    public async Task<bool> PopShowMsgAndReturn(string msg)
+    {
+        return await DisplayAlert("提示信息", msg, "确定", "取消");
+    }
 }

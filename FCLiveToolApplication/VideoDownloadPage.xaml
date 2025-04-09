@@ -114,20 +114,20 @@
             <StackLayout x:Name="M3U8SourcePanel" Grid.Row="1">
                 <Entry x:Name="M3U8SourceURLTb" HeightRequest="{ OnPlatform 30,Android=40}" ClearButtonVisibility="WhileEditing"/>
                 <StackLayout Orientation="Horizontal">
-                    <CheckBox x:Name="MSP_OnlyDownM3U8FileCB"/>
                     <Label Text="仅下载.M3U8文件" VerticalOptions="Center"/>
+                    <CheckBox x:Name="MSP_OnlyDownM3U8FileCB" Margin="5,0,0,0" />
                 </StackLayout>
             </StackLayout>
 
             <StackLayout x:Name="LocalM3U8SelectPanel" Orientation="Horizontal" Grid.Row="1" IsVisible="False">
                 <Button x:Name="SelectLocalM3U8FileBtn" Background="LightBlue" ContentLayout="Top,-3" Clicked="SelectLocalM3U8FileBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE8E5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE8E5;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Button x:Name="SelectLocalM3U8FolderBtn" Background="LightBlue" ContentLayout="Top,-3" Margin="5,0,0,0" Clicked="SelectLocalM3U8FolderBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE8F4;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Label x:Name="LocalM3U8Tb" LineBreakMode="WordWrap" VerticalOptions="Center" Margin="10,0,0,0"/>
@@ -141,7 +141,7 @@
             <StackLayout Orientation="Horizontal" Grid.Row="2" Grid.ColumnSpan="2" >
                 <Button x:Name="SelectSaveDownloadFolderBtn" Background="LightBlue" Text="选择保存位置" Clicked="SelectSaveDownloadFolderBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE8F4;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Label x:Name="SaveDownloadFolderTb" LineBreakMode="WordWrap" VerticalOptions="Center" Margin="10,0,0,0"/>
@@ -152,12 +152,12 @@
         <StackLayout Grid.Row="1" Margin="0,0,5,0">
             <Grid>
                 <StackLayout Orientation="Horizontal">
-                    <CheckBox x:Name="VideoAnalysisListCB" CheckedChanged="VideoAnalysisListCB_CheckedChanged"/>
                     <Label Text="全选" VerticalOptions="Center"/>
+                    <CheckBox x:Name="VideoAnalysisListCB" Margin="5,0,0,0"  CheckedChanged="VideoAnalysisListCB_CheckedChanged"/>
                 </StackLayout>
                 <Button x:Name="M3U8DownloadBtn" Text="下载" Background="LightPink" HorizontalOptions="End" Clicked="M3U8DownloadBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE896;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE896;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </Grid>
@@ -169,8 +169,8 @@
         <StackLayout Grid.Row="1" Grid.Column="1" Margin="5,0,0,0">
             <Grid>
                 <StackLayout Orientation="Horizontal">
-                    <CheckBox x:Name="DownloadFileListCB" CheckedChanged="DownloadFileListCB_CheckedChanged"/>
                     <Label Text="全选" VerticalOptions="Center"/>
+                    <CheckBox x:Name="DownloadFileListCB" Margin="5,0,0,0" CheckedChanged="DownloadFileListCB_CheckedChanged"/>
                 </StackLayout>
                 <Button x:Name="DownloadFileStopBtn" Text="停止任务" Background="LightPink" HorizontalOptions="End" Clicked="DownloadFileStopBtn_Clicked">
                     <Button.ImageSource>

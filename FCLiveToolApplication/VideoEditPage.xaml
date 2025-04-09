@@ -170,17 +170,17 @@
             <StackLayout Orientation="Horizontal" Margin="0,10,0,0">
                 <Button x:Name="SelectLocalM3UFolderBtn" Background="LightBlue" ContentLayout="Top,-3" Clicked="SelectLocalM3UFolderBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE8F4;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Button x:Name="SelectLocalM3UFileBtn" Background="LightBlue" ContentLayout="Top,-3" Margin="5,0,0,0" Clicked="SelectLocalM3UFileBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE8E5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE8E5;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Button x:Name="ClearLocalM3UBtn" Background="LightBlue" Margin="10,0,0,0"  Clicked="ClearLocalM3UBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE74D;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </StackLayout>
@@ -200,26 +200,26 @@
             <StackLayout Orientation="Horizontal">
                 <Button x:Name="VideoEditListAddItemBtn" Background="LightBlue" Clicked="VideoEditListAddItemBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE710;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE710;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Button x:Name="VideoEditListRemoveItemBtn" Background="LightPink" Margin="5,0,0,0" Clicked="VideoEditListRemoveItemBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE74D;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </StackLayout>
             
             <Button x:Name="VideoEditListSaveBtn" Background="LightBlue" Text="编辑好了" HorizontalOptions="End" Clicked="VideoEditListSaveBtn_Clicked">
                 <Button.ImageSource>
-                    <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    <FontImageSource Glyph="&#xEA35;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
             </Button>
 
             <StackLayout Grid.Row="1">
                 <HorizontalStackLayout>
-                    <CheckBox x:Name="VideoEditListMulCB"/>
                     <Label Text="选择" VerticalOptions="Center"/>
+                    <CheckBox x:Name="VideoEditListMulCB" Margin="5,0,0,0"/>
                 </HorizontalStackLayout>
             </StackLayout>
         </Grid>

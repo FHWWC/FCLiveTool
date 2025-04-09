@@ -48,7 +48,7 @@
                     <Button x:Name="GroupsBtn" Background="LightBlue" Text="加入群组" Margin="5,0,0,0" Clicked="GroupsBtn_Clicked"/>
                 </StackLayout>
             </HorizontalStackLayout>
-            <Label Text="© 2017-2024 -- FC Dev Team" Margin="0,10,0,0"/>
+            <Label Text="© 2017-2025 -- FC Dev Team" Margin="0,10,0,0"/>
         </StackLayout>
     </Grid>
     

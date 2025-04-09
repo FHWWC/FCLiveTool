@@ -287,8 +287,8 @@
                 </Button>
                 <StackLayout VerticalOptions="Center" Margin="10,0,0,0">
                     <HorizontalStackLayout>
-                        <CheckBox x:Name="RegexOptionCB"/>
                         <Label Text="仅匹配M3U8文件名" VerticalOptions="Center"/>
+                        <CheckBox x:Name="RegexOptionCB" Margin="5,0,0,0"/>
                     </HorizontalStackLayout>
                 </StackLayout>
             </HorizontalStackLayout>
@@ -314,7 +314,7 @@
 
                 <Button x:Name="M3U8ValidRemoveBtn" Background="LightPink" Text="移除无效的直播源" Margin="5,0,0,0" Clicked="M3U8ValidRemoveBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE74D;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </HorizontalStackLayout>

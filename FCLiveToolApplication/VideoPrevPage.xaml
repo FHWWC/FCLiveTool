@@ -71,7 +71,7 @@
             </HorizontalStackLayout>
             <Button x:Name="CheckRecentBtn" Background="LightBlue" Text="大家都在看" HorizontalOptions="Center" VerticalOptions="Start" Margin="{ OnPlatform Android= '0,-5,0,0'}" Clicked="CheckRecentBtn_Clicked">
                 <Button.ImageSource>
-                    <FontImageSource Glyph="&#xF738;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    <FontImageSource Glyph="&#xF738;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                 </Button.ImageSource>
             </Button>
 
@@ -92,17 +92,17 @@
                 <StackLayout Orientation="Horizontal" Margin="0,10,0,0">
                     <Button x:Name="SelectLocalM3U8FolderBtn" Background="LightBlue" ContentLayout="Top,-3" Clicked="SelectLocalM3U8FolderBtn_Clicked">
                         <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE8F4;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            <FontImageSource Glyph="&#xE8F4;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
                     <Button x:Name="SelectLocalM3U8FileBtn" Background="LightBlue" ContentLayout="Top,-3" Margin="5,0,0,0" IsVisible="{OnPlatform Android=False}" Clicked="SelectLocalM3U8FileBtn_Clicked">
                         <Button.ImageSource>
-                            <FontImageSource Glyph="&#xE8E5;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            <FontImageSource Glyph="&#xE8E5;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
                     <Button x:Name="SaveLocalM3U8Btn" Background="LightBlue" Margin="10,0,0,0"  Clicked="SaveLocalM3U8Btn_Clicked">
                         <Button.ImageSource>
-                            <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                            <FontImageSource Glyph="&#xEA35;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                         </Button.ImageSource>
                     </Button>
                 </StackLayout>

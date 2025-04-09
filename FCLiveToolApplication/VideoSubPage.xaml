@@ -69,7 +69,7 @@
             <HorizontalStackLayout VerticalOptions="Start" Grid.Row="1">
                 <Button x:Name="VideoSubListAddItemBtn" Background="LightBlue" Clicked="VideoSubListAddItemBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE710;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE710;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </HorizontalStackLayout>
@@ -78,6 +78,10 @@
 
 
         </Grid>
+        
+        
+        
+        
         
         
         
