@@ -62,12 +62,12 @@
             <HorizontalStackLayout HorizontalOptions="Center">
                 <Button x:Name="SubmitBtn" Background="Azure" Text="提交" Clicked="SubmitBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE930;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE930;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
                 <Button x:Name="CancelBtn" Background="LightPink" Text="取消" Clicked="CancelBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE711;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE711;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </HorizontalStackLayout>

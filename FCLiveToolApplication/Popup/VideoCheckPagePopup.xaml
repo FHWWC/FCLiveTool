@@ -42,12 +42,12 @@
             <HorizontalStackLayout HorizontalOptions="Center">
                 <Button x:Name="SaveOptionBtn" Background="Azure" Clicked="SaveOptionBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xEA35;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xEA35;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>           
                 <Button x:Name="ResetOptionBtn" Background="Azure" Clicked="ResetOptionBtn_Clicked">
                     <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE777;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        <FontImageSource Glyph="&#xE777;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
             </HorizontalStackLayout>

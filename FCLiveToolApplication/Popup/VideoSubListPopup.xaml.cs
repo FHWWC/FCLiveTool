@@ -7,6 +7,7 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
 	public VideoSubListPopup(int popupType,string vsn="")
 	{
 		InitializeComponent();
+
         ReceiveVideoSubName = vsn;
         PopupType = popupType;
 	}
@@ -29,6 +30,8 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
 
         if(PopupType==0)
         {
+            SubListManagerTitle.Text="Ìí¼Ó¶©ÔÄ";
+
             string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");
             if (dataPath != null)
             {
@@ -63,6 +66,7 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
                 this.Close();
             }
 
+            SubListManagerTitle.Text="±à¼­¶©ÔÄ";
             VideoSubNameTb.IsEnabled=false;
 
             string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");

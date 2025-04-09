@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="FCLiveToolApplication.Popup.RegexSelectPopup">
+
+
+    <Grid x:Name="MainGrid" x:FieldModifier="Public" Padding="20,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition/>
+            <RowDefinition Height="100"/>
+        </Grid.RowDefinitions>
+
+        <Label Text="选择解析方案" HorizontalOptions="Center" FontSize="Medium"/>
+
+        <StackLayout Grid.Row="1">
+            <HorizontalStackLayout>
+                <Picker x:Name="RegexSelectBox" Title="选择解析方案："/>
+                <StackLayout  Margin="10,0,0,0">
+                    <Button x:Name="RegexSelectTipBtn" Background="LightGray" ContentLayout="Top,-2" HorizontalOptions="Start" Clicked="RegexSelectTipBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE946;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <HorizontalStackLayout Margin="20,0,0,0">
+                        <Label Text="推荐选择：" TextColor="Brown"/>
+                        <Label x:Name="RecommendRegexTb" TextColor="Brown" HorizontalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </StackLayout>
+            </HorizontalStackLayout>
+            <StackLayout Margin="0,10,0,0">
+                <HorizontalStackLayout>
+                    <Label Text="仅匹配M3U8文件名" VerticalOptions="Center"/>
+                    <CheckBox x:Name="RegexOptionCB" Margin="5,0,0,0" />
+                </HorizontalStackLayout>
+            </StackLayout>
+        </StackLayout>
+
+        <StackLayout VerticalOptions="End" Grid.Row="2">
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button x:Name="SaveOptionBtn" Background="Azure" Text="保存" Clicked="SaveOptionBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xEA35;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button x:Name="CancelBtn" Background="LightPink" Text="取消" Clicked="CancelBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE711;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </HorizontalStackLayout>
+
+            <Label Text="点击窗口外任意区域关闭窗口则视为取消操作"  TextColor="Gray" FontSize="12" HorizontalOptions="Center"/>
+        </StackLayout>
+
+    </Grid>
+
+</toolkit:Popup>
