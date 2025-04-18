@@ -481,11 +481,13 @@ public partial class VideoCheckPage : ContentPage
             await Task.Delay(10);
         }
     }
-    private void RegexSelectTipBtn_Clicked(object sender, EventArgs e)
-    {
-        DisplayAlert("帮助信息", new MsgManager().GetRegexOptionTip(), "关闭");
-    }
+    /*
+         private void RegexSelectTipBtn_Clicked(object sender, EventArgs e)
+        {
+            DisplayAlert("帮助信息", new MsgManager().GetRegexOptionTip(), "关闭");
+        }
 
+     */
     /*
         private void RegexSelectBox_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -497,7 +499,6 @@ public partial class VideoCheckPage : ContentPage
             LoadDataToCheckList();
         }
      */
-
     private async void StopCheckBtn_Clicked(object sender, EventArgs e)
     {
         if (M3U8ValidCheckCTS!=null)

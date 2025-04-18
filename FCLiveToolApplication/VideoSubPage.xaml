@@ -24,7 +24,7 @@
                                 <FontImageSource Glyph="&#xE70F;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="VSLUpdateBtn" Background="LightBlue" CommandParameter="{Binding SubName}" Margin="5,0,0,0" Clicked="VSLUpdateBtn_Clicked">
+                        <Button x:Name="VSLUpdateBtn" Background="LightBlue" Margin="5,0,0,0" Clicked="VSLUpdateBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
@@ -37,6 +37,63 @@
                         
                     </StackLayout>
                 </StackLayout>
+            </ViewCell>
+        </DataTemplate>
+        <DataTemplate x:Key="VideoSubDetailListStyle">
+            <ViewCell>
+                <Grid Margin="20,10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+             
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <Image HeightRequest="40" MaximumWidthRequest="85" Source="{Binding LogoLink}"  HorizontalOptions="Start"/>
+
+                        <StackLayout WidthRequest="2" HorizontalOptions="Start" VerticalOptions="Fill" Grid.Column="1">
+                            <StackLayout.Background>
+                                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                                    <GradientStop Color="Transparent" Offset="0"/>
+                                    <GradientStop Color="Black" Offset="0.5"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </LinearGradientBrush>
+                            </StackLayout.Background>
+                        </StackLayout>
+
+
+                        <StackLayout HorizontalOptions="Start" Margin="15,0,0,0"  Grid.Column="1">
+                            <Label Text="{Binding SourceName}" FontAttributes="Bold" LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding GroupTitle}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding TVGID}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding TVGCountry}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                            <Label Text="{Binding TVGLanguage}" FontSize="14"  LineBreakMode="TailTruncation"/>
+                        </StackLayout>
+                    </Grid>
+
+                    <Grid Margin="0,10,0,0" Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+
+                        <StackLayout Orientation="Horizontal" VerticalOptions="Start">
+                            <StackLayout BackgroundColor="Green" IsVisible="{Binding isHTTPS}" Padding="5,0">
+                                <Label TextColor="White" Text="HTTPS"/>
+                            </StackLayout>
+                            <StackLayout BackgroundColor="Purple" IsVisible="{Binding isIPV6}" Padding="5,0" Margin="5,0,0,0">
+                                <Label TextColor="White" Text="IPV6"/>
+                            </StackLayout>
+                        </StackLayout>
+
+                        <Label Text="{Binding SourceLink}" HorizontalOptions="Start" Margin="10,0,0,0" LineBreakMode="TailTruncation" Grid.Column="1"/>
+                    </Grid>
+
+                </Grid>
             </ViewCell>
         </DataTemplate>
     </ContentPage.Resources>
@@ -72,14 +129,58 @@
                         <FontImageSource Glyph="&#xE710;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
+                <Button x:Name="VideoSubListUpdateAllBtn" Background="LightBlue" Text="更新全部" Margin="5,0,0,0" Clicked="VideoSubListUpdateAllBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
             </HorizontalStackLayout>
 
-            <ListView x:Name="VideoSubList" ItemTemplate="{StaticResource VideoSubListStyle}" HorizontalScrollBarVisibility="Never" Grid.Row="2"/>
+            <ListView x:Name="VideoSubList" ItemTemplate="{StaticResource VideoSubListStyle}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoSubList_ItemTapped" Grid.Row="2"/>
 
 
         </Grid>
-        
-        
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition/>
+                <RowDefinition Height="50"/>
+            </Grid.RowDefinitions>
+
+
+            <StackLayout>
+                <Button x:Name="OpenRegexPageBtn" Text="配置解析方案" Background="LightPink" HorizontalOptions="End" Clicked="OpenRegexPageBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE9E9;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </StackLayout>
+            <Grid Grid.Row="1">
+                <ListView x:Name="VideoSubDetailList" ItemTemplate="{StaticResource VideoSubDetailListStyle}" HorizontalOptions="Fill" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" PropertyChanged="VideoSubDetailList_PropertyChanged"/>
+                <Label x:Name="VSDLIfmText" Text="这里空空如也~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
+                <ActivityIndicator x:Name="VideoSubDetailListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Grid>
+
+            <Grid x:Name="VSDLPagePanel" IsVisible="False" Grid.Row="2">
+                <Button x:Name="VSDLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" VerticalOptions="Start" Clicked="VSDLBackBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center"  VerticalOptions="Start" >
+                    <Label x:Name="VSDLCurrentPage" Text="1/1" FontSize="24" HorizontalOptions="Center"/>
+                    <Entry x:Name="VSDLPageTb" MaxLength="3" Placeholder="输入页码" Keyboard="Numeric" Margin="20,0,0,0"/>
+                    <Button x:Name="VSDLJumpBtn" Background="LightBlue" HeightRequest="35" Text="跳转" Margin="{ OnPlatform '5,0,0,0', Android=0}" Clicked="VSDLJumpBtn_Clicked"/>
+                </StackLayout>
+                <Button x:Name="VSDLNextBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="End"  VerticalOptions="Start" Clicked="VSDLNextBtn_Clicked">
+                    <Button.ImageSource>
+                        <FontImageSource Glyph="&#xE0E3;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                    </Button.ImageSource>
+                </Button>
+            </Grid>
+
+        </Grid>
         
         
         

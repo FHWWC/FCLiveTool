@@ -202,7 +202,7 @@ namespace FCLiveToolApplication
         public string SubURL { get; set; }
         public bool IsEnabledUpdate { get; set; }
         public string UserAgent { get; set; }
-        public VideoDetailList SubVDL { get; set; }
+        public List<VideoDetailList> SubVDL { get; set; }
         public string SubDetailStr { get; set; }
     }
     public class VideoEditListDataTemplateSelector : DataTemplateSelector
