@@ -48,6 +48,11 @@ public partial class RegexSelectPopup : CommunityToolkit.Maui.Views.Popup
             VideoCheckPage.videoCheckPage.RegexSelectIndex=RegexSelectBox.SelectedIndex;
             VideoCheckPage.videoCheckPage.RegexOption1=RegexOptionCB.IsChecked;
         }
+        else if (PopupType == 2)
+        {
+            VideoSubPage.videoSubPage.RegexSelectIndex=RegexSelectBox.SelectedIndex;
+            VideoSubPage.videoSubPage.RegexOption1=RegexOptionCB.IsChecked;
+        }
 
         isOKBtnClicked = true;
         this.Close();
