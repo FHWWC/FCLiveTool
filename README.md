@@ -31,6 +31,7 @@ FCLiveTool是一款直播源观看和管理的工具，您可以随时下载想�
 ![FCLiveToolAPPSS1](GitMPIMG/IMG11.png)  
 ![FCLiveToolAPPSS1](GitMPIMG/IMG12.png)  
 ![FCLiveToolAPPSS1](GitMPIMG/IMG8.png)  
+![FCLiveToolAPPSS1](GitMPIMG/IMG14.png)  
   
 **如有意见或者问题请提出，感谢您的支持。项目会不断更新，少不了各位的贡献。**
 
