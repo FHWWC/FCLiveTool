@@ -544,7 +544,7 @@ public partial class VideoListPage : ContentPage
             VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
 
 
-            var mainpage = ((Shell)App.Current.MainPage);
+            var mainpage = (Shell)App.Current.MainPage;
             mainpage.CurrentItem = mainpage.Items.FirstOrDefault();
             await mainpage.Navigation.PopToRootAsync();
 

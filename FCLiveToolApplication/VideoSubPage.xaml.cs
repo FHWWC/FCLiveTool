@@ -22,6 +22,7 @@ public partial class VideoSubPage : ContentPage
     public int RegexSelectIndex = 2;
     public string RecommendRegex = "3";
     public bool RegexOption1 = false;
+    public List<string[]> M3U8PlayList = new List<string[]>();
     private void ContentPage_Loaded(object sender, EventArgs e)
     {
         if (videoSubPage != null)
@@ -235,12 +236,10 @@ public partial class VideoSubPage : ContentPage
             return;
         }
 
-        await UpdateSubFunc(itemSubName);
-
-        await DisplayAlert("提示信息", "更新订阅成功！", "确定");
+        await UpdateSubFunc(itemSubName,true);
     }
 
-    public async Task UpdateSubFunc(string itemSubName)
+    public async Task UpdateSubFunc(string itemSubName,bool isShowSuccessDialog=false)
     {
         string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");
         if (dataPath != null)
@@ -308,7 +307,10 @@ public partial class VideoSubPage : ContentPage
                             File.WriteAllText(dataPath+"\\VideoSubList.log", sw.ToString());
                         }
 
-                        //await DisplayAlert("提示信息", "更新订阅成功！", "确定");
+                        if(isShowSuccessDialog)
+                        {
+                            await DisplayAlert("提示信息", "更新订阅成功！", "确定");
+                        }
 
                     }
                     else
@@ -607,5 +609,54 @@ public partial class VideoSubPage : ContentPage
         VideoSubListUpdateAllBtn.IsEnabled=true;
         await DisplayAlert("提示信息", "已更新全部"+tlist.Count+"个订阅！", "确定");
 
+    }
+
+    private async void VideoSubDetailList_ItemTapped(object sender, ItemTappedEventArgs e)
+    {
+        VideoDetailList detail = e.Item as VideoDetailList;
+
+        string readresult = await new VideoManager().DownloadAndReadM3U8File(M3U8PlayList, new string[] { detail.SourceName, detail.SourceLink });
+        if (readresult!="")
+        {
+            await DisplayAlert("提示信息", readresult, "确定");
+            return;
+        }
+
+
+        M3U8PlayList.Insert(0, new string[] { "默认", detail.SourceLink });
+        string[] MOptions = new string[M3U8PlayList.Count];
+        MOptions[0]="默认\n";
+        string WantPlayURL = detail.SourceLink;
+
+        if (M3U8PlayList.Count > 2)
+        {
+            for (int i = 1; i<M3U8PlayList.Count; i++)
+            {
+                MOptions[i]="【"+i+"】\n文件名："+M3U8PlayList[i][0]+"\n位率："+M3U8PlayList[i][2]+"\n分辨率："+M3U8PlayList[i][3]+"\n帧率："+M3U8PlayList[i][4]+"\n编解码器："+M3U8PlayList[i][5]+"\n标签："+M3U8PlayList[i][6]+"\n";
+            }
+
+            string MSelectResult = await DisplayActionSheet("请选择一个直播源：", "取消", null, MOptions);
+            if (MSelectResult == "取消"||MSelectResult is null)
+            {
+                return;
+            }
+            else if (!MSelectResult.Contains("默认"))
+            {
+                int tmindex = Convert.ToInt32(MSelectResult.Remove(0, 1).Split("】")[0]);
+                WantPlayURL=M3U8PlayList[tmindex][1];
+            }
+
+        }
+
+
+        new VideoManager().UpdatePrevPagePlaylist(M3U8PlayList);
+        VideoPrevPage.videoPrevPage.VideoWindow.Source=WantPlayURL;
+        VideoPrevPage.videoPrevPage.VideoWindow.Play();
+        VideoPrevPage.videoPrevPage.NowPlayingTb.Text=detail.SourceName;
+
+
+        var mainpage = (Shell)App.Current.Windows[0].Page;
+        mainpage.CurrentItem = mainpage.Items.FirstOrDefault();
+        await mainpage.Navigation.PopToRootAsync();
     }
 }

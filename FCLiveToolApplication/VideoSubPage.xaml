@@ -157,7 +157,7 @@
                 </Button>
             </StackLayout>
             <Grid Grid.Row="1">
-                <ListView x:Name="VideoSubDetailList" ItemTemplate="{StaticResource VideoSubDetailListStyle}" HorizontalOptions="Fill" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" PropertyChanged="VideoSubDetailList_PropertyChanged"/>
+                <ListView x:Name="VideoSubDetailList" ItemTemplate="{StaticResource VideoSubDetailListStyle}" HorizontalOptions="Fill" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoSubDetailList_ItemTapped" PropertyChanged="VideoSubDetailList_PropertyChanged"/>
                 <Label x:Name="VSDLIfmText" Text="这里空空如也~" LineBreakMode="WordWrap" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <ActivityIndicator x:Name="VideoSubDetailListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Grid>
