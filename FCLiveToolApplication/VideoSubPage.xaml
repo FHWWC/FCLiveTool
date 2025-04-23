@@ -9,6 +9,7 @@
         <DataTemplate x:Key="VideoSubListStyle">
             <ViewCell>
                 <StackLayout Padding="15,5">
+                    <CheckBox IsChecked="{Binding IsSelected,Mode=TwoWay}" HorizontalOptions="End"/>
                     <Label Text="{Binding SubName}" FontSize="Medium" LineBreakMode="WordWrap"/>
                     <Label Text="{Binding SubTag}" LineBreakMode="WordWrap"/>
                     <Label Text="{Binding SubURL}" LineBreakMode="TailTruncation"/>
@@ -29,7 +30,7 @@
                                 <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
                         </Button>
-                        <Button x:Name="VSLRemoveBtn" Background="LightPink" CommandParameter="{Binding SubName}" Margin="5,0,0,0" Clicked="VSLRemoveBtn_Clicked">
+                        <Button x:Name="VSLRemoveBtn" Background="LightPink" Margin="5,0,0,0" Clicked="VSLRemoveBtn_Clicked">
                             <Button.ImageSource>
                                 <FontImageSource Glyph="&#xE74D;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                             </Button.ImageSource>
@@ -123,18 +124,31 @@
             <StackLayout>
                 <Label Text="此处列出了你的所有订阅。"/>
             </StackLayout>
-            <HorizontalStackLayout VerticalOptions="Start" Grid.Row="1">
-                <Button x:Name="VideoSubListAddItemBtn" Background="LightBlue" Clicked="VideoSubListAddItemBtn_Clicked">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE710;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                    </Button.ImageSource>
-                </Button>
-                <Button x:Name="VideoSubListUpdateAllBtn" Background="LightBlue" Text="更新全部" Margin="5,0,0,0" Clicked="VideoSubListUpdateAllBtn_Clicked">
-                    <Button.ImageSource>
-                        <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
-                    </Button.ImageSource>
-                </Button>
-            </HorizontalStackLayout>
+            <StackLayout Grid.Row="1">
+                <HorizontalStackLayout >
+                    <Button x:Name="VideoSubListAddItemBtn" Background="LightBlue" Clicked="VideoSubListAddItemBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE710;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    <Button x:Name="VideoSubListUpdateAllBtn" Background="LightBlue" Text="更新全部" Margin="5,0,0,0" Clicked="VideoSubListUpdateAllBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE72C;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                </HorizontalStackLayout>
+                <HorizontalStackLayout HorizontalOptions="End">
+                    <Button x:Name="VSLRemoveCheckedBtn" Background="LightPink" Margin="0,0,20,0" Clicked="VSLRemoveCheckedBtn_Clicked">
+                        <Button.ImageSource>
+                            <FontImageSource Glyph="&#xE74D;" Size="Micro" Color="Black" FontFamily="Segoe MDL2 Assets"/>
+                        </Button.ImageSource>
+                    </Button>
+                    
+                    <CheckBox x:Name="VideoSubListSelectCB" CheckedChanged="VideoSubListSelectCB_CheckedChanged"/>
+                    <Label Text="全选/反选" VerticalOptions="Center"/>
+                </HorizontalStackLayout>
+            </StackLayout>
+
 
             <ListView x:Name="VideoSubList" ItemTemplate="{StaticResource VideoSubListStyle}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoSubList_ItemTapped" Grid.Row="2"/>
 

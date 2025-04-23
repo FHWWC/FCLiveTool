@@ -204,6 +204,7 @@ namespace FCLiveToolApplication
         public string UserAgent { get; set; }
         public List<VideoDetailList> SubVDL { get; set; }
         public string SubDetailStr { get; set; }
+        public bool IsSelected { get; set; }
     }
     public class VideoEditListDataTemplateSelector : DataTemplateSelector
     {

@@ -218,8 +218,8 @@
 
             <StackLayout Grid.Row="1">
                 <HorizontalStackLayout>
+                    <CheckBox x:Name="VideoEditListMulCB" />
                     <Label Text="选择" VerticalOptions="Center"/>
-                    <CheckBox x:Name="VideoEditListMulCB" Margin="5,0,0,0"/>
                 </HorizontalStackLayout>
             </StackLayout>
         </Grid>

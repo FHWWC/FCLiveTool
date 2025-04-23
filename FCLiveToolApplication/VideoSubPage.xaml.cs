@@ -31,15 +31,23 @@ public partial class VideoSubPage : ContentPage
         }
 
         videoSubPage=this;
-        ReadLocalSubList();
+
+        new Thread(async()=>
+        {
+            ReadLocalSubList();
+        }).Start();
+
     }
     public async void ReadLocalSubList()
     {
         int permResult = await new APPPermissions().CheckAndReqPermissions();
         if (permResult!=0)
         {
-            await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要保存和读取文件！如果不授权，后续涉及文件读写的操作将无法正常使用！", "确定");
-            return;
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await DisplayAlert("提示信息", "请授权读取和写入权限，程序需要保存和读取文件！如果不授权，后续涉及文件读写的操作将无法正常使用！", "确定");
+                return;
+            });
         }
 
         string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");
@@ -64,7 +72,11 @@ public partial class VideoSubPage : ContentPage
             }
             catch (Exception)
             {
-                await DisplayAlert("提示信息", "读取本地数据时出错！", "确定");
+                await MainThread.InvokeOnMainThreadAsync(async() =>
+                {
+                    await DisplayAlert("提示信息", "读取本地数据时出错！", "确定");
+                });
+
             }
 
         }
@@ -91,14 +103,15 @@ public partial class VideoSubPage : ContentPage
     private async void VSLRemoveBtn_Clicked(object sender, EventArgs e)
     {
         Button button = sender as Button;
+        string itemSubName = (button.BindingContext as VideoSubList).SubName;
 
-        if(!await DisplayAlert("提示信息","你要删除订阅 "+ button.CommandParameter.ToString()+" 吗？", "确定", "取消"))
-        {
-            return;
-        }
-        if (string.IsNullOrWhiteSpace(button.CommandParameter.ToString()))
+        if (string.IsNullOrWhiteSpace(itemSubName))
         {
             await DisplayAlert("提示信息", "参数错误！请重试！", "确定");
+            return;
+        }
+        if (!await DisplayAlert("提示信息","你要删除订阅 "+itemSubName+" 吗？", "确定", "取消"))
+        {
             return;
         }
 
@@ -113,7 +126,7 @@ public partial class VideoSubPage : ContentPage
                 {
                     var tlist = (List<VideoSubList>)xmlSerializer.Deserialize(new StringReader(File.ReadAllText(dataPath+"\\VideoSubList.log")));
 
-                    var items = tlist.FirstOrDefault(p => p.SubName==button.CommandParameter.ToString());
+                    var items = tlist.FirstOrDefault(p => p.SubName==itemSubName);
                     if (items != null)
                     {
                         tlist.Remove(items);
@@ -332,6 +345,54 @@ public partial class VideoSubPage : ContentPage
         else
         {
             await DisplayAlert("提示信息", "源文件丢失！请重新创建！", "确定");
+        }
+    }
+    public string DeleteSubFunc(string itemSubName)
+    {
+        string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");
+        if (dataPath != null)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<VideoSubList>));
+            try
+            {
+                if (File.Exists(dataPath+"\\VideoSubList.log"))
+                {
+                    var tlist = (List<VideoSubList>)xmlSerializer.Deserialize(new StringReader(File.ReadAllText(dataPath+"\\VideoSubList.log")));
+
+                    var items = tlist.FirstOrDefault(p => p.SubName==itemSubName);
+                    if (items != null)
+                    {
+                        tlist.Remove(items);
+                        //批量操作不在这里刷新
+
+                        using (StringWriter sw = new StringWriter())
+                        {
+                            xmlSerializer.Serialize(sw, tlist);
+                            File.WriteAllText(dataPath+"\\VideoSubList.log", sw.ToString());
+                        }
+
+                        //return "删除订阅成功！";
+                        return "";
+                    }
+                    else
+                    {
+                        return "未查找到当前订阅名称对应的本地数据，请重试！";
+                    }
+                }
+                else
+                {
+                    return "源文件丢失！请重新创建！";
+                }
+            }
+            catch (Exception)
+            {
+                return "操作数据时出错，请刷新重试！";
+            }
+
+        }
+        else
+        {
+            return "源文件丢失！请重新创建！";
         }
     }
 
@@ -658,5 +719,90 @@ public partial class VideoSubPage : ContentPage
         var mainpage = (Shell)App.Current.Windows[0].Page;
         mainpage.CurrentItem = mainpage.Items.FirstOrDefault();
         await mainpage.Navigation.PopToRootAsync();
+    }
+
+    private async void VSLRemoveCheckedBtn_Clicked(object sender, EventArgs e)
+    {
+        if (VideoSubList.ItemsSource is null)
+        {
+            await DisplayAlert("提示信息", "当前列表为空！", "确定");
+            return;
+        }
+
+        var tlist = VideoSubList.ItemsSource.Cast<VideoSubList>().Where(p => p.IsSelected).ToList();
+        if (tlist.Count < 1)
+        {
+            await DisplayAlert("提示信息", "当前订阅列表内没有被勾选的订阅！", "确定");
+            return;
+        }
+        if (!await DisplayAlert("提示信息", "你要批量删除"+tlist.Count+"个订阅吗？", "确定", "取消"))
+        {
+            return;
+        }
+
+        await Task.Run(() =>
+        {
+            for (int i = 0; i<tlist.Count; i++)
+            {
+                DeleteSubFunc(tlist[i].SubName);
+            }
+
+        }).ContinueWith(async (p) =>
+        {
+            ReadLocalSubList();
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                await DisplayAlert("提示信息", "已执行移除"+tlist.Count+"条数据！", "确定");
+            });
+        });
+
+        /*
+                 var tlist=VideoSubList.ItemsSource.Cast<VideoSubList>().ToList();
+                var tcount = tlist.Where(p => p.IsSelected).Count();
+                if (tcount < 1)
+                {
+                    await DisplayAlert("提示信息", "当前订阅列表内没有被勾选的订阅！", "确定");
+                    return;
+                }
+
+                int successRemoveCount = 0;
+                await Task.Run(() =>
+                {
+                    for (int i = tlist.Count-1; i>=0; i--)
+                    {
+                        if (tlist[i].IsSelected)
+                        {
+                            if(DeleteSubFunc(tlist[i].SubName)=="")
+                            {
+                                successRemoveCount++;
+                            }
+                            tlist.RemoveAt(i);
+                        }
+                    }
+
+                }).ContinueWith(async(p)=>
+                {
+                    RefreshVSL(tlist);
+                    await DisplayAlert("提示信息", "已成功移除"+successRemoveCount+"条数据！", "确定");
+                },TaskScheduler.FromCurrentSynchronizationContext());
+         */
+    }
+
+    private async void VideoSubListSelectCB_CheckedChanged(object sender, CheckedChangedEventArgs e)
+    {
+        if (VideoSubList.ItemsSource is null)
+        {
+            await DisplayAlert("提示信息", "当前列表为空！", "确定");
+            return;
+        }
+
+        var tlist = VideoSubList.ItemsSource.Cast<VideoSubList>().ToList();   
+        
+        tlist.ForEach(p =>
+        {
+            p.IsSelected=e.Value;
+        });
+
+        VideoSubList.ItemsSource=tlist;
     }
 }
