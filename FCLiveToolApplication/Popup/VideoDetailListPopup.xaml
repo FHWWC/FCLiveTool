@@ -16,16 +16,16 @@
 
         <StackLayout Grid.Row="1">
             <HorizontalStackLayout>
+                <CheckBox x:Name="TVGLogoCB"  x:FieldModifier="Public"/>
                 <Label Text="台标" VerticalOptions="Center"/>
-                <CheckBox x:Name="TVGLogoCB" Margin="5,0,0,0"  x:FieldModifier="Public"/>
-            </HorizontalStackLayout>          
+            </HorizontalStackLayout>
             <HorizontalStackLayout>
+                <CheckBox x:Name="TVGNameCB"  x:FieldModifier="Public"/>
                 <Label Text="台名" VerticalOptions="Center"/>
-                <CheckBox x:Name="TVGNameCB" Margin="5,0,0,0"  x:FieldModifier="Public"/>
-            </HorizontalStackLayout>        
+            </HorizontalStackLayout>
             <HorizontalStackLayout>
-                <Label Text="URL" VerticalOptions="Center"/>
-                <CheckBox x:Name="URLCB" IsChecked="True" Margin="5,0,0,0"  x:FieldModifier="Public"/>
+                <CheckBox x:Name="URLCB" IsChecked="True" x:FieldModifier="Public"/>
+                <Label Text="URL" VerticalOptions="Center" />
             </HorizontalStackLayout>
         </StackLayout>
 

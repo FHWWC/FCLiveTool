@@ -31,8 +31,8 @@
             </HorizontalStackLayout>
             <StackLayout Margin="0,10,0,0">
                 <HorizontalStackLayout>
+                    <CheckBox x:Name="RegexOptionCB"/>
                     <Label Text="仅匹配M3U8文件名" VerticalOptions="Center"/>
-                    <CheckBox x:Name="RegexOptionCB" Margin="5,0,0,0" />
                 </HorizontalStackLayout>
             </StackLayout>
         </StackLayout>
