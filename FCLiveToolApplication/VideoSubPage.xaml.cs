@@ -249,10 +249,9 @@ public partial class VideoSubPage : ContentPage
             return;
         }
 
-        await UpdateSubFunc(itemSubName,true);
+        UpdateSubFunc(itemSubName);
     }
-
-    public async Task UpdateSubFunc(string itemSubName,bool isShowSuccessDialog=false)
+    public async void UpdateSubFunc(string itemSubName)
     {
         string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");
         if (dataPath != null)
@@ -288,19 +287,7 @@ public partial class VideoSubPage : ContentPage
                                 }
 
                                 AllVideoData = await response.Content.ReadAsStringAsync();
-
-                                //如果当前右侧列表里展示的数据是左侧选中的订阅，则执行更新右侧的UI。
-                                var selectItem = VideoSubList.SelectedItem;
-                                if(selectItem != null)
-                                {
-                                    var selectSubName = (selectItem as VideoSubList).SubName;
-                                    if(selectSubName==itemSubName)
-                                    {
-                                        AutoSelectRecommendRegex();
-                                    }
-
-                                }
-
+                                AutoSelectRecommendRegex();
                             }
                         }
                         catch (Exception ex)
@@ -320,10 +307,7 @@ public partial class VideoSubPage : ContentPage
                             File.WriteAllText(dataPath+"\\VideoSubList.log", sw.ToString());
                         }
 
-                        if(isShowSuccessDialog)
-                        {
-                            await DisplayAlert("提示信息", "更新订阅成功！", "确定");
-                        }
+                        await DisplayAlert("提示信息", "更新订阅成功！", "确定");
 
                     }
                     else
@@ -347,6 +331,78 @@ public partial class VideoSubPage : ContentPage
             await DisplayAlert("提示信息", "源文件丢失！请重新创建！", "确定");
         }
     }
+    public async Task<string> UpdateAllSubFunc(string itemSubName)
+    {
+        string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");
+        if (dataPath != null)
+        {
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<VideoSubList>));
+            try
+            {
+                if (File.Exists(dataPath+"\\VideoSubList.log"))
+                {
+                    var tlist = (List<VideoSubList>)xmlSerializer.Deserialize(new StringReader(File.ReadAllText(dataPath+"\\VideoSubList.log")));
+
+                    var items = tlist.FirstOrDefault(p => p.SubName==itemSubName);
+                    if (items != null)
+                    {                   
+                        try
+                        {
+                            using (HttpClient httpClient = new HttpClient())
+                            {
+                                if (!string.IsNullOrWhiteSpace(items.UserAgent))
+                                {
+                                    httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(items.UserAgent);
+                                }
+                                HttpResponseMessage response = await httpClient.GetAsync(items.SubURL);
+
+                                int statusCode = (int)response.StatusCode;
+                                if (!response.IsSuccessStatusCode)
+                                {
+                                    return "请求失败！" + "HTTP错误代码：" + statusCode;
+                                }
+
+                                items.SubDetailStr = await response.Content.ReadAsStringAsync();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            return "更新数据失败，请稍后重试！";
+                        }
+
+                        //items.SubVDL=CurrentVideoSubDetailList;
+
+                        using (StringWriter sw = new StringWriter())
+                        {
+                            xmlSerializer.Serialize(sw, tlist);
+                            File.WriteAllText(dataPath+"\\VideoSubList.log", sw.ToString());
+                        }
+
+                        return "";
+
+                    }
+                    else
+                    {
+                        return "未查找到当前订阅名称对应的本地数据，请重试！";
+                    }
+                }
+                else
+                {
+                    return "源文件丢失！请重新创建！";
+                }
+            }
+            catch (Exception)
+            {
+                return "更新数据时出错，请刷新重试！";
+            }
+
+        }
+        else
+        {
+            return "源文件丢失！请重新创建！";
+        }
+    }
+
     public string DeleteSubFunc(string itemSubName)
     {
         string dataPath = new APPFileManager().GetOrCreateAPPDirectory("AppData\\VideoSubList");
@@ -661,14 +717,32 @@ public partial class VideoSubPage : ContentPage
         }
         
         VideoSubListUpdateAllBtn.IsEnabled=false;
+        VideoSubDetailListRing.IsRunning=true;
 
-        for (int i = 0; i < tlist.Count; i++)
+        await Task.Run(async() =>
         {
-            await UpdateSubFunc(tlist[i].SubName);
-        }
+            for (int i = 0; i < tlist.Count; i++)
+            {
+                await UpdateAllSubFunc(tlist[i].SubName);
+            }
 
-        VideoSubListUpdateAllBtn.IsEnabled=true;
-        await DisplayAlert("提示信息", "已更新全部"+tlist.Count+"个订阅！", "确定");
+        }).ContinueWith(async (p) =>
+        {
+            await MainThread.InvokeOnMainThreadAsync(async () =>
+            {
+                //如果当前右侧列表里展示的数据是左侧选中的订阅，则执行更新右侧的UI。
+                var selectItem = VideoSubList.SelectedItem;
+                if (selectItem != null)
+                {
+                    AllVideoData = (selectItem as VideoSubList).SubDetailStr;
+                    AutoSelectRecommendRegex();
+                }
+
+                VideoSubListUpdateAllBtn.IsEnabled=true;
+                VideoSubDetailListRing.IsRunning=false;
+                await DisplayAlert("提示信息", "已执行更新"+tlist.Count+"个订阅！", "确定");
+            });
+        });
 
     }
 
