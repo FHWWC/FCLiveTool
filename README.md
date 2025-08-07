@@ -19,7 +19,7 @@ FCLiveTool是一款直播源观看和管理的工具，您可以随时下载想�
   
 # FCLiveToolApplication  
 基于微软的.NET MAUI开发的跨平台程序  
-[![MS Store](https://outcoder.com/apps/surfy/img/microsoft-badge.png)](https://www.microsoft.com/store/apps/9N35QBD7BWLZ)  
+[![MS Store](https://outcoder.com/apps/surfy/img/microsoft-badge.png)](https://apps.microsoft.com/detail/9n35qbd7bwlz)  
   
 跨平台应用程序，可以在 Win/Android 上运行，IOS暂未适配。一个简单的小程序，项目下载下来就可以直接编译运行，注意不要忘记安装MAUI相关开发框架，可以在Visual Studio Installer内看到。  
 ![FCLiveToolAPPSS1](GitMPIMG/IMG1.png)  
