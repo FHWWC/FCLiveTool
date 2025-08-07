@@ -42,7 +42,7 @@ public partial class VideoCheckPagePopup : CommunityToolkit.Maui.Views.Popup
 
 
         VideoCheckPage.videoCheckPage.PopShowMsg("已更新检测选项的参数。");
-        this.Close();
+        CloseAsync();
     }
 
     private async void ResetOptionBtn_Clicked(object sender, EventArgs e)
@@ -52,7 +52,7 @@ public partial class VideoCheckPagePopup : CommunityToolkit.Maui.Views.Popup
             Preferences.Set("VideoCheckThreadNum", GlobalParameter.VideoCheckThreadNum);
             Preferences.Set("VideoCheckUA", GlobalParameter.VideoCheckUA);
 
-            this.Close();
+            await CloseAsync();
         }
     }
 

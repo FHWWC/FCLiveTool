@@ -25,7 +25,7 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
         if (permResult!=0)
         {
             VideoSubPage.videoSubPage.PopShowMsg("请授权读取和写入权限，程序需要保存和读取文件！如果不授权，后续涉及文件读写的操作将无法正常使用！");
-            this.Close();
+            await CloseAsync();
         }
 
         if(PopupType==0)
@@ -48,14 +48,14 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
                 catch (Exception)
                 {
                     VideoSubPage.videoSubPage.PopShowMsg("读取本地数据时出错！");
-                    this.Close();
+                    await CloseAsync();
                 }
 
             }
             else
             {
                 VideoSubPage.videoSubPage.PopShowMsg("源文件丢失！请重新创建！");
-                this.Close();
+                await CloseAsync();
             }
         }
         else
@@ -63,7 +63,7 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
             if (string.IsNullOrWhiteSpace(ReceiveVideoSubName))
             {
                 VideoSubPage.videoSubPage.PopShowMsg("参数错误！请重试！");
-                this.Close();
+                await CloseAsync();
             }
 
             SubListManagerTitle.Text="编辑订阅";
@@ -91,7 +91,7 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
                         else
                         {
                             VideoSubPage.videoSubPage.PopShowMsg("未查找到当前订阅名称对应的本地数据，请重试！");
-                            this.Close();
+                            await CloseAsync();
                         }
 
 
@@ -99,20 +99,20 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
                     else
                     {
                         VideoSubPage.videoSubPage.PopShowMsg("源文件丢失！请重新创建！");
-                        this.Close();
+                        await CloseAsync();
                     }
                 }
                 catch (Exception)
                 {
                     VideoSubPage.videoSubPage.PopShowMsg("读取本地数据时出错！");
-                    this.Close();
+                    await CloseAsync();
                 }
 
             }
             else
             {
                 VideoSubPage.videoSubPage.PopShowMsg("源文件丢失！请重新创建！");
-                this.Close();
+                await CloseAsync();
             }
         }
 
@@ -173,28 +173,28 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
                             }
 
                             VideoSubPage.videoSubPage.PopShowMsg("添加成功！");
-                            this.Close();
+                            CloseAsync();
                         }
 
                     }
                     else
                     {
                         VideoSubPage.videoSubPage.PopShowMsg("源文件丢失！请重新创建！");
-                        this.Close();
+                        CloseAsync();
                     }
 
                 }
                 catch (Exception)
                 {
                     VideoSubPage.videoSubPage.PopShowMsg("更新数据时出错，请刷新重试！");
-                    this.Close();
+                    CloseAsync();
                 }
 
             }
             else
             {
                 VideoSubPage.videoSubPage.PopShowMsg("源文件丢失！请重新创建！");
-                this.Close();
+                CloseAsync();
             }
         }
         else
@@ -226,32 +226,32 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
                             }
 
                             VideoSubPage.videoSubPage.PopShowMsg("修改成功！");
-                            this.Close();
+                            CloseAsync();
                         }
                         else
                         {
                             VideoSubPage.videoSubPage.PopShowMsg("未查找到当前订阅名称对应的本地数据，请重试！");
-                            this.Close();
+                            CloseAsync();
                         }
 
                     }
                     else
                     {
                         VideoSubPage.videoSubPage.PopShowMsg("源文件丢失！请重新创建！");
-                        this.Close();
+                        CloseAsync();
                     }
                 }
                 catch (Exception)
                 {
                     VideoSubPage.videoSubPage.PopShowMsg("更新数据时出错，请刷新重试！");
-                    this.Close();
+                    CloseAsync();
                 }
 
             }
             else
             {
                 VideoSubPage.videoSubPage.PopShowMsg("源文件丢失！请重新创建！");
-                this.Close();
+                CloseAsync();
             }
         }
 
@@ -261,7 +261,7 @@ public partial class VideoSubListPopup : CommunityToolkit.Maui.Views.Popup
     {
         if (await VideoSubPage.videoSubPage.PopShowMsgAndReturn("你要取消操作吗？"))
         {
-            this.Close();
+            await CloseAsync();
         }
     }
 }

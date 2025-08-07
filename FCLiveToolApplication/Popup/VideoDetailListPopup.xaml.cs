@@ -49,12 +49,12 @@ public partial class VideoDetailListPopup : CommunityToolkit.Maui.Views.Popup
 
 
         isStartRun=true;
-        this.Close();
+        CloseAsync();
     }
 
     private void CancelOptionBtn_Clicked(object sender, EventArgs e)
     {
         isStartRun = false;
-        this.Close();
+        CloseAsync();
     }
 }

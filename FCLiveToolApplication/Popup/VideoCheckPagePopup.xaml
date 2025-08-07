@@ -2,7 +2,7 @@
 <toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
-             x:Class="FCLiveToolApplication.VideoCheckPagePopup" Color="AliceBlue">
+             x:Class="FCLiveToolApplication.VideoCheckPagePopup" BackgroundColor="AliceBlue">
 
 
     <Grid x:Name="MainGrid" x:FieldModifier="Public" Padding="20,10" Loaded="MainGrid_Loaded">

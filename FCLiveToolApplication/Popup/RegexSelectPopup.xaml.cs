@@ -55,14 +55,14 @@ public partial class RegexSelectPopup : CommunityToolkit.Maui.Views.Popup
         }
 
         isOKBtnClicked = true;
-        this.Close();
+        this.CloseAsync();
     }
 
     private void CancelBtn_Clicked(object sender, EventArgs e)
     {
         //暂时不做询问提示框
         isOKBtnClicked = false;
-        this.Close();
+        this.CloseAsync();
     }
 
     private void RegexSelectTipBtn_Clicked(object sender, EventArgs e)
