@@ -1,3 +1,4 @@
+using CommunityToolkit.Maui.Extensions;
 using CommunityToolkit.Maui.Views;
 using FCLiveToolApplication.Popup;
 using System.Xml.Serialization;
