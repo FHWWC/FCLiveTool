@@ -39,3 +39,8 @@ FCLiveTool是一款直播源观看和管理的工具，您可以随时下载想�
 # 开发者联系方式  
 邮箱：justineedyoumost@163.com 或 wzzedznhl3@outlook.com  
 QQ：3524984135
+  
+  
+# Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=FHWWC/FCLiveTool&type=date&legend=top-left)](https://www.star-history.com/#FHWWC/FCLiveTool&type=date&legend=top-left)
