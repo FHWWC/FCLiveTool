@@ -27,12 +27,13 @@ public partial class AboutPage : ContentPage
     {
         if(!await Launcher.TryOpenAsync("mailto:justineedyoumost@163.com"))
         {
-            await DisplayAlert("ÌáÊ¾ĞÅÏ¢", "ÎŞ·¨´ò¿ªÓÊ¼ş¿Í»§¶Ë£¬ÈçÓĞĞèÒªÇëÊÖ¶¯ÊäÈëÓÊÏä£º\n justineedyoumost@163.com", "È·¶¨");
+            await DisplayAlert("æç¤ºä¿¡æ¯", "æ— æ³•æ‰“å¼€é‚®ä»¶å®¢æˆ·ç«¯ï¼Œå¦‚æœ‰éœ€è¦è¯·æ‰‹åŠ¨è¾“å…¥é‚®ç®±ï¼š\n justineedyoumost@163.com", "ç¡®å®š");
         }
     }
 
     private void GroupsBtn_Clicked(object sender, EventArgs e)
     {
-        DisplayAlert("ÌáÊ¾ĞÅÏ¢", "ÎÒÃÇµÄÈº×é£º\n TGÈº t.me/fclivetoolgroup\n QQÈº 877202338", "È·¶¨");
+        DisplayAlert("æç¤ºä¿¡æ¯", "æˆ‘ä»¬çš„ç¾¤ç»„ï¼š\n TGç¾¤ t.me/fclivetoolgroup\n QQç¾¤ 1072911580", "ç¡®å®š");
     }
+
 }
