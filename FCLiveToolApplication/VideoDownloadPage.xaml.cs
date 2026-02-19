@@ -355,12 +355,12 @@ public partial class VideoDownloadPage : ContentPage
             {
                 videoAnalysisLists = VideoAnalysisList.ItemsSource.Cast<VideoAnalysisList>().ToList();
 
-                videoAnalysisLists.ForEach(p =>
+                ResultList.ForEach(p =>
                 {
-                    var titem = ResultList.FirstOrDefault(p2 => p2.FullURL == p.FullURL);
+                    var titem = videoAnalysisLists.FirstOrDefault(p2 => p2.FullURL == p.FullURL);
                     if (titem != null)
                     {
-                        videoAnalysisLists.Remove(p);
+                        videoAnalysisLists.Remove(titem);
                     }
                 });
 
