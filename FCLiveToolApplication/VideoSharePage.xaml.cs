@@ -195,7 +195,7 @@ public partial class VideoSharePage : ContentPage
             }
             else if (UpdBtn.StyleId=="M3UDownloadBtn")
             {
-                string[] options = new string[2];
+                string[] options = new string[3];
                 using (Stream stream = await new VideoManager().DownloadM3U8FileToStream(UpdBtn.CommandParameter.ToString(), options))
                 {
                     if (stream is null)

@@ -144,7 +144,7 @@ public partial class VideoDownloadPage : ContentPage
             }
             else
             {
-                string[] options = new string[2];
+                string[] options = new string[3];
                 using (Stream stream = await new VideoManager().DownloadM3U8FileToStream(M3U8SourceURLTb.Text, options))
                 {
                     if (stream is null)

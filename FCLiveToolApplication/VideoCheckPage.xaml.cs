@@ -212,7 +212,7 @@ public partial class VideoCheckPage : ContentPage
         }
 
 
-        string[] options = new string[2];
+        string[] options = new string[3];
         using (Stream stream = await new VideoManager().DownloadM3U8FileToStream(M3USourceURLTb.Text, options))
         {
             if (stream is null)
