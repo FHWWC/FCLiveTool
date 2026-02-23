@@ -122,18 +122,30 @@ namespace FCLiveToolApplication
 
     public class VideoAnalysisList
     {
-        public string ItemId { get; set; }
-        public string AllowCache { get; set; }
-        public string TargetDuration { get; set; }
-        public string MediaSequence { get; set; }
+        public string ItemId { get; set; } = "";
+        public string AllowCache { get; set; } = "";
+        /// <summary>
+        /// 单个分片的最大时长
+        /// </summary>
+        public string TargetDuration { get; set; } = "";
+        /// <summary>
+        /// M3U8文件内的媒体序列号，直播源的M3U8文件会不断更新，媒体序列号会随着更新而增加
+        /// </summary>
+        public string MediaSequence { get; set; } = "";
+        /// <summary>
+        /// 分片列表，包含每个分片的URL和时长等信息
+        /// </summary>
         public List<M3U8_TS_PARM> TS_PARM { get; set; }
         //非M3U8文件内参数
-        public string M3U8URL { get; set; }
-        public string FileName { get; set; }
-        public string FullURL { get; set; }
-        public int FileFromIndex { get; set; }
+        public string M3U8URL { get; set; } = "";
+        public string FileName { get; set; } = "";
+        public string FullURL { get; set; } = "";
+        public int FileFromIndex { get; set; } = 0;
         public bool IsSelected { get; set; }
-
+        /// <summary>
+        /// 当前M3U8文件完整的字符串，附加属性
+        /// </summary>
+        public string FullM3U8Text { get; set; } = "";
     }
     public class M3U8_TS_PARM
     {
@@ -311,7 +323,8 @@ namespace FCLiveToolApplication
         public bool isContinueDownloadStream = true;
         public bool isEndList = false;
         public const string DEFAULT_USER_AGENT = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
-
+        public string CurrentFullM3U8Str = "";
+        public string CurrentMediaSequence = "";
         /// <summary>
         /// 
         /// </summary>
@@ -322,7 +335,7 @@ namespace FCLiveToolApplication
         {
             M3U8PlayList.Clear();
 
-            string[] treturn = new string[2];
+            string[] treturn = new string[3];
             using (Stream stream = await DownloadM3U8FileToStream(VideoIfm[1], treturn))
             {
                 if (stream is null)
@@ -408,7 +421,7 @@ namespace FCLiveToolApplication
 
             if (FileFrom==0)
             {
-                string[] treturn = new string[2];
+                string[] treturn = new string[3];
                 using (Stream stream = await DownloadM3U8FileToStream(VideoIfm[0], treturn))
                 {
                     if (stream is null)
@@ -418,6 +431,7 @@ namespace FCLiveToolApplication
 
                     try
                     {
+                        videoAnalysisList.FullM3U8Text = treturn[2];
                         using (StreamReader sr = new StreamReader(stream))
                         {
                             string r = "";
@@ -457,7 +471,7 @@ namespace FCLiveToolApplication
                                 else if (r.Contains("#EXTINF:"))
                                 {
                                     var tvalue = r.Replace("#EXTINF:", "");
-                                    tvalue = tvalue.Substring(0, tvalue.IndexOf(","));
+                                    tvalue =tvalue.Contains(",") ? tvalue.Substring(0, tvalue.IndexOf(",")) : tvalue;
 
                                     double.TryParse(tvalue, out tTime);
                                 }
@@ -508,7 +522,8 @@ namespace FCLiveToolApplication
 
                 try
                 {
-                    using (StringReader sr = new StringReader(File.ReadAllText(VideoIfm[0])))
+                    videoAnalysisList.FullM3U8Text=File.ReadAllText(VideoIfm[0]);
+                    using (StringReader sr = new StringReader(videoAnalysisList.FullM3U8Text))
                     {
                         string r = "";
                         string tAllowCache = "---";
@@ -629,7 +644,7 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
 
                 if (FileFrom==0)
                 {
-                    string[] treturn = new string[2];
+                    string[] treturn = new string[3];
                     using (Stream stream = await DownloadM3U8FileToStream(VideoIfm[i], treturn))
                     {
                         if (stream is null)
@@ -640,6 +655,7 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
 
                         try
                         {
+                            videoAnalysisList[i].FullM3U8Text = treturn[2];
                             using (StreamReader sr = new StreamReader(stream))
                             {
                                 string r = "";
@@ -742,7 +758,8 @@ tsurl = VideoIfm[0].Substring(0, VideoIfm[0].LastIndexOf("\\") + 1);
 
                     try
                     {
-                        using (StringReader sr = new StringReader(File.ReadAllText(VideoIfm[i])))
+                        videoAnalysisList[i].FullM3U8Text =File.ReadAllText(VideoIfm[i]);
+                        using (StringReader sr = new StringReader(videoAnalysisList[i].FullM3U8Text))
                         {
                             string r = "";
                             string tAllowCache = "---";
@@ -944,122 +961,132 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
         }
         public async Task<string> DownloadM3U8Stream(VideoAnalysisList valist, string savepath, bool isMergeBeforeFile)
         {
-            TempFileList=new List<DownloadTempFileList>();
-            //int FileIndex = 0;
+            TempFileList = new List<DownloadTempFileList>();
             string filename = valist.FileName.Substring(0, valist.FileName.LastIndexOf("."));
-            int FinishCount = 0;
             string dresult = "";
-            //string dataPath = new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
 
-            if (filename.Length>50)
+            if (filename.Length > 50)
             {
-                filename=filename.Substring(0, 50);
+                filename = filename.Substring(0, 50);
             }
-            foreach (var m in valist.TS_PARM)
-            {
-                new Thread(async () =>
-                {
-                    string url = m.FullURL;
-                    long Filesize = 0;
-                    string FileID = Guid.NewGuid().ToString();
-                    string TempFilepath = "";
-#if ANDROID
-                    /*
-                                         if (string.IsNullOrWhiteSpace(dataPath))
-                                        {
-                                            dresult= "保存文件失败！可能是没有权限或者当前平台暂不支持保存操作！";
-                                            isContinueDownloadStream = false;
-                                            FinishCount++;
-                                            return;
-                                        }
-                                        TempFilepath =dataPath+ string.Format($"{FileID}_{filename}.tmp");
-                     */
 
-                    TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
+            CurrentFullM3U8Str=valist.FullM3U8Text;
+            CurrentMediaSequence=valist.MediaSequence;
+            // 在方法开始处记录开始时间
+            var operationStopwatch = System.Diagnostics.Stopwatch.StartNew();
+            //使用 SemaphoreSlim 限制并发数量，避免资源耗尽
+            const int maxConcurrentDownloads = 5;
+            using (var semaphore = new SemaphoreSlim(maxConcurrentDownloads))
+            {
+                var downloadTasks = new List<Task>();
+                var lockObj = new object(); // 保护 TempFileList 和 dresult 的访问
+
+                foreach (var m in valist.TS_PARM)
+                {
+                    var task = Task.Run(async () =>
+                    {
+                        await semaphore.WaitAsync();
+                        try
+                        {
+                            string url = m.FullURL;
+                            long filesize = 0;
+                            string fileID = Guid.NewGuid().ToString();
+                            string tempFilepath = "";
+#if ANDROID
+                            /*
+                                                 if (string.IsNullOrWhiteSpace(dataPath))
+                                                {
+                                                    dresult= "保存文件失败！可能是没有权限或者当前平台暂不支持保存操作！";
+                                                    isContinueDownloadStream = false;
+                                                    FinishCount++;
+                                                    return;
+                                                }
+                                                TempFilepath =dataPath+ string.Format($"{FileID}_{filename}.tmp");
+                             */
+
+                            tempFilepath = string.Format($"{savepath}{fileID}_{filename}.tmp");
 
 #else
-TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
+                                    tempFilepath = string.Format($"{savepath}{fileID}_{filename}.tmp");
 #endif
 
-
-                    using (HttpClient httpClient = new HttpClient())
-                    {
-                        int statusCode;
-                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
-                        HttpResponseMessage response = null;
-
-                        try
-                        {
-                            response = await httpClient.GetAsync(url);
-
-                            statusCode = (int)response.StatusCode;
-                            if (!response.IsSuccessStatusCode)
+                            using (HttpClient httpClient = new HttpClient())
                             {
-                                dresult= "请求失败！" + "HTTP错误代码：" + statusCode;
-                                isContinueDownloadStream = false;
-                                FinishCount++;
-                                return;
+                                httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
+
+                                try
+                                {
+                                    HttpResponseMessage response = await httpClient.GetAsync(url);
+
+                                    if (!response.IsSuccessStatusCode)
+                                    {
+                                        lock (lockObj)
+                                        {
+                                            dresult = $"请求失败！HTTP错误代码：{(int)response.StatusCode}";
+                                            isContinueDownloadStream = false;
+                                        }
+                                        return;
+                                    }
+
+                                    filesize = response.Content.Headers.ContentLength ?? -1;
+                                    if (filesize <= 0)
+                                    {
+                                        lock (lockObj)
+                                        {
+                                            dresult = "无法从 ContentLength 中获取有效的文件大小！";
+                                            isContinueDownloadStream = false;
+                                        }
+                                        return;
+                                    }
+
+                                    //使用 using 语句确保资源正确释放
+
+                                    using (var ns = await response.Content.ReadAsStreamAsync())
+                                    using (var fs = new FileStream(tempFilepath, FileMode.Create, FileAccess.Write, FileShare.None, 65536, useAsync: false))
+                                    {
+                                        //使用固定缓冲区大小进行复制，避免整个文件加载到内存
+                                       await ns.CopyToAsync(fs, 65536);
+                                        fs.Flush();
+                                    }
+
+                                    //线程安全地添加到列表
+
+                                    lock (lockObj)
+                                    {
+                                        TempFileList.Add(new DownloadTempFileList()
+                                        {
+                                            ItemId = m.ItemId,
+                                            FileName = tempFilepath.Replace(savepath, ""),
+                                            FilePath = tempFilepath,
+                                            Filesize = filesize,
+                                            FullLink = url
+                                        });
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    lock (lockObj)
+                                    {
+                                        dresult = $"请求发生异常：{ex.Message}";
+                                        isContinueDownloadStream = false;
+                                    }
+                                }
                             }
-
-                            Filesize = response.Content.Headers.ContentLength ?? -1;
-                            if (Filesize <= 0)
-                            {
-                                dresult= "无法从 ContentLength 中获取有效的文件大小！";
-                                isContinueDownloadStream = false;
-                                FinishCount++;
-                                return;
-                            }
-
-                        }
-                        catch (Exception)
-                        {
-                            dresult = "请求发生异常！";
-                            isContinueDownloadStream = false;
-                            FinishCount++;
-                            return;
-                        }
-
-                        FileStream fs = null;
-                        Stream ns = null;
-                        try
-                        {
-                            fs = new FileStream(TempFilepath, FileMode.Create);
-
-                            ns = await response.Content.ReadAsStreamAsync();
-                            ns.CopyTo(fs);
-                        }
-                        catch (Exception ex)
-                        {
-                            dresult = "向临时文件写入发生异常！";
-                            isContinueDownloadStream = false;
-                            FinishCount++;
-                            return;
                         }
                         finally
                         {
-                            fs?.Close();
-                            ns?.Close();
+                            semaphore.Release();
                         }
+                    });
 
-
-                    }
-
-                    TempFileList.Add(new DownloadTempFileList() { ItemId = m.ItemId, FileName = TempFilepath.Replace(savepath, ""), FilePath = TempFilepath, Filesize = Filesize, FullLink = url });
-
-                    FinishCount++;
-                }).Start();
-
-
-            }
-
-            while (true)
-            {
-                if (FinishCount == valist.TS_PARM.Count)
-                {
-                    break;
+                    downloadTasks.Add(task);
                 }
+
+                //等待所有下载任务完成，而不是使用 busy-wait
+                        await Task.WhenAll(downloadTasks);
             }
 
+            //合并文件
 #if ANDROID
             //MergeTempFile(dataPath + filename + ".mp4", isMergeBeforeFile);
             MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
@@ -1067,20 +1094,25 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
             MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
 #endif
 
-            if (!isEndList&&isContinueDownloadStream)
+            // 停止计时并获取耗时（毫秒）
+            operationStopwatch.Stop();
+            long elapsedMilliseconds = operationStopwatch.ElapsedMilliseconds;
+
+            //处理直播流续传逻辑
+            if (!isEndList && isContinueDownloadStream)
             {
-                double TS_AllTime = valist.TS_PARM.Sum(p => p.Time)*1000;
-                if (TS_AllTime>0)
+                double tsAllTime = valist.TS_PARM.Sum(p => p.Time) * 1000;
+                if (tsAllTime > 0)
                 {
                     try
                     {
-                        await Task.Delay((int)TS_AllTime-500);
-
+                        await Task.Delay((int)tsAllTime-100);
                         //本地文件暂时只循环一次
-                        if (valist.FileFromIndex==0)
+                        if (valist.FileFromIndex == 0)
                         {
                             VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
                             dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
+
                             if (string.IsNullOrEmpty(dresult))
                             {
                                 dresult = await DownloadM3U8Stream(videoAnalysisList, savepath, isMergeBeforeFile);
@@ -1091,7 +1123,6 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     {
                         dresult = "处理TS分片的总时长时发生异常！";
                     }
-
                 }
                 else
                 {
@@ -1099,8 +1130,228 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                 }
             }
 
-
             return dresult;
+        }
+
+
+        //        public async Task<string> DownloadM3U8Stream(VideoAnalysisList valist, string savepath, bool isMergeBeforeFile)
+        //        {
+        //            TempFileList=new List<DownloadTempFileList>();
+        //            //int FileIndex = 0;
+        //            string filename = valist.FileName.Substring(0, valist.FileName.LastIndexOf("."));
+        //            int FinishCount = 0;
+        //            string dresult = "";
+        //            //string dataPath = new APPFileManager().GetOrCreateAPPDirectory("DownloadStreamTemp");
+
+        //            if (filename.Length>50)
+        //            {
+        //                filename=filename.Substring(0, 50);
+        //            }
+        //            foreach (var m in valist.TS_PARM)
+        //            {
+        //                new Thread(async () =>
+        //                {
+        //                    string url = m.FullURL;
+        //                    long Filesize = 0;
+        //                    string FileID = Guid.NewGuid().ToString();
+        //                    string TempFilepath = "";
+        //#if ANDROID
+        //                    /*
+        //                                         if (string.IsNullOrWhiteSpace(dataPath))
+        //                                        {
+        //                                            dresult= "保存文件失败！可能是没有权限或者当前平台暂不支持保存操作！";
+        //                                            isContinueDownloadStream = false;
+        //                                            FinishCount++;
+        //                                            return;
+        //                                        }
+        //                                        TempFilepath =dataPath+ string.Format($"{FileID}_{filename}.tmp");
+        //                     */
+
+        //                    TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
+
+        //#else
+        //        TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
+        //#endif
+
+
+        //                    using (HttpClient httpClient = new HttpClient())
+        //                    {
+        //                        int statusCode;
+        //                        httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(DEFAULT_USER_AGENT);
+        //                        HttpResponseMessage response = null;
+
+        //                        try
+        //                        {
+        //                            response = await httpClient.GetAsync(url);
+
+        //                            statusCode = (int)response.StatusCode;
+        //                            if (!response.IsSuccessStatusCode)
+        //                            {
+        //                                dresult= "请求失败！" + "HTTP错误代码：" + statusCode;
+        //                                isContinueDownloadStream = false;
+        //                                FinishCount++;
+        //                                return;
+        //                            }
+
+        //                            Filesize = response.Content.Headers.ContentLength ?? -1;
+        //                            if (Filesize <= 0)
+        //                            {
+        //                                dresult= "无法从 ContentLength 中获取有效的文件大小！";
+        //                                isContinueDownloadStream = false;
+        //                                FinishCount++;
+        //                                return;
+        //                            }
+
+        //                        }
+        //                        catch (Exception)
+        //                        {
+        //                            dresult = "请求发生异常！";
+        //                            isContinueDownloadStream = false;
+        //                            FinishCount++;
+        //                            return;
+        //                        }
+
+        //                        FileStream fs = null;
+        //                        Stream ns = null;
+        //                        try
+        //                        {
+        //                            fs = new FileStream(TempFilepath, FileMode.Create);
+
+        //                            ns = await response.Content.ReadAsStreamAsync();
+        //                            ns.CopyTo(fs);
+        //                        }
+        //                        catch (Exception ex)
+        //                        {
+        //                            dresult = "向临时文件写入发生异常！";
+        //                            isContinueDownloadStream = false;
+        //                            FinishCount++;
+        //                            return;
+        //                        }
+        //                        finally
+        //                        {
+        //                            fs?.Close();
+        //                            ns?.Close();
+        //                        }
+
+
+        //                    }
+
+        //                    TempFileList.Add(new DownloadTempFileList() { ItemId = m.ItemId, FileName = TempFilepath.Replace(savepath, ""), FilePath = TempFilepath, Filesize = Filesize, FullLink = url });
+
+        //                    FinishCount++;
+        //                }).Start();
+
+
+        //            }
+
+        //            while (true)
+        //            {
+        //                if (FinishCount == valist.TS_PARM.Count)
+        //                {
+        //                    break;
+        //                }
+        //            }
+
+        //#if ANDROID
+        //            //MergeTempFile(dataPath + filename + ".mp4", isMergeBeforeFile);
+        //            MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
+        //#else
+        //                    MergeTempFile(savepath + filename + ".mp4", isMergeBeforeFile);
+        //#endif
+
+        //            if (!isEndList&&isContinueDownloadStream)
+        //            {
+        //                double TS_AllTime = valist.TS_PARM.Sum(p => p.Time)*1000;
+        //                if (TS_AllTime>0)
+        //                {
+        //                    try
+        //                    {
+        //                        await Task.Delay((int)TS_AllTime-500);
+
+        //                        //本地文件暂时只循环一次
+        //                        if (valist.FileFromIndex==0)
+        //                        {
+        //                            VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
+        //                            dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
+        //                            if (string.IsNullOrEmpty(dresult))
+        //                            {
+        //                                dresult = await DownloadM3U8Stream(videoAnalysisList, savepath, isMergeBeforeFile);
+        //                            }
+        //                        }
+        //                    }
+        //                    catch (Exception)
+        //                    {
+        //                        dresult = "处理TS分片的总时长时发生异常！";
+        //                    }
+
+        //                }
+        //                else
+        //                {
+        //                    dresult = "获取所有TS分片的总时长时发生异常！";
+        //                }
+        //            }
+
+
+        //            return dresult;
+        //        }
+        private void MergeTempFile(string finalFilepath, bool isMergeBeforeFile)
+        {
+            const int bufferSize = 1024 * 1024; // 1MB 缓冲区
+            byte[] buffer = new byte[bufferSize];
+
+            try
+            {
+                using (FileStream fs = new FileStream(finalFilepath, FileMode.Append, FileAccess.Write, FileShare.None, bufferSize))
+                {
+                    // 按 ItemId 排序确保顺序正确
+                    foreach (var item in TempFileList.OrderBy(p => p.ItemId))
+                    {
+                        string tempFilePath = item.FilePath;
+                        if (!File.Exists(tempFilePath))
+                            continue;
+
+                        try
+                        {
+                            using (FileStream tempStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read, FileShare.Read, bufferSize))
+                            {
+                                int bytesRead;
+                                // 使用循环读取缓冲区而不是一次性加载整个文件
+                                while ((bytesRead = tempStream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    fs.Write(buffer, 0, bytesRead);
+                                }
+                                fs.Flush();
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"合并文件失败: {tempFilePath}, 错误: {ex.Message}");
+                        }
+
+                        // 合并后删除临时文件
+                        try
+                        {
+                            File.Delete(tempFilePath);
+                            System.Diagnostics.Debug.WriteLine($"删除文件: {tempFilePath}, 时间: {DateTime.Now.ToString()}");
+                        }
+                        catch (Exception ex)
+                        {
+                            // 忽略删除失败
+                        }
+                    }
+                }
+
+                // 检查最终文件大小
+                long fsLength = new FileInfo(finalFilepath).Length;
+                if (fsLength <= 0)
+                {
+                    File.Delete(finalFilepath);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"合并临时文件时发生异常: {ex.Message}");
+            }
         }
         /// <summary>
         /// 将当前播放列表更新到直播源预览页面
@@ -1248,73 +1499,73 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     return guid;
                 }
          */
-        private void MergeTempFile(string finalFilepath, bool isMergeBeforeFile)
-        {
-            int length = 0;
+        //private void MergeTempFile(string finalFilepath, bool isMergeBeforeFile)
+        //{
+        //    int length = 0;
 
-            /*
-                         FileMode fileMode;
-                        if (isNeedJoinFile)
-                        {
-                            fileMode = FileMode.Append;
-                        }
-                        else
-                        {
-                            fileMode = FileMode.Create;
-                        }
-             */
+        //    /*
+        //                 FileMode fileMode;
+        //                if (isNeedJoinFile)
+        //                {
+        //                    fileMode = FileMode.Append;
+        //                }
+        //                else
+        //                {
+        //                    fileMode = FileMode.Create;
+        //                }
+        //     */
 
-            try
-            {
-                long fsLength = 0;
-                using (FileStream fs = new FileStream(finalFilepath, FileMode.Append))
-                {
-                    foreach (var item in TempFileList.OrderBy(p => p.ItemId))
-                    {
-                        string tempFilePath = item.FilePath;
-                        if (!File.Exists(tempFilePath)) continue;
+        //    try
+        //    {
+        //        long fsLength = 0;
+        //        using (FileStream fs = new FileStream(finalFilepath, FileMode.Append))
+        //        {
+        //            foreach (var item in TempFileList.OrderBy(p => p.ItemId))
+        //            {
+        //                string tempFilePath = item.FilePath;
+        //                if (!File.Exists(tempFilePath)) continue;
 
-                        try
-                        {
-                            using (FileStream tempStream = new FileStream(tempFilePath, FileMode.Open))
-                            {
-                                byte[] buffer = new byte[tempStream.Length];
+        //                try
+        //                {
+        //                    using (FileStream tempStream = new FileStream(tempFilePath, FileMode.Open))
+        //                    {
+        //                        byte[] buffer = new byte[tempStream.Length];
 
-                                while ((length = tempStream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    fs.Write(buffer, 0, length);
-                                }
-                                tempStream.Flush();
-                            }
+        //                        while ((length = tempStream.Read(buffer, 0, buffer.Length)) > 0)
+        //                        {
+        //                            fs.Write(buffer, 0, length);
+        //                        }
+        //                        tempStream.Flush();
+        //                    }
 
-                        }
-                        catch
-                        {
+        //                }
+        //                catch
+        //                {
 
-                        }
+        //                }
 
-                        File.Delete(tempFilePath);
-                    }
+        //                File.Delete(tempFilePath);
+        //            }
 
-                    fsLength=fs.Length;
-                }
+        //            fsLength=fs.Length;
+        //        }
 
-                if (fsLength<=0)
-                {
-                    File.Delete(finalFilepath);
-                }
-            }
-            catch (Exception)
-            {
+        //        if (fsLength<=0)
+        //        {
+        //            File.Delete(finalFilepath);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
 
-            }
+        //    }
 
-        }
+        //}
         /// <summary>
         /// 
         /// </summary>
         /// <param name="url"></param>
-        /// <param name="returns">返回的信息；服务器返回的文件名；</param>
+        /// <param name="returns">返回的信息；服务器返回的文件名；完整的M3U8字符串</param>
         /// <returns></returns>
         public async Task<Stream> DownloadM3U8FileToStream(string url, string[] returns)
         {
@@ -1338,6 +1589,7 @@ TempFilepath = string.Format($"{savepath}{FileID}_{filename}.tmp");
                     }
 
                     returnStream=await response.Content.ReadAsStreamAsync();
+                    returns[2]=await response.Content.ReadAsStringAsync();
                 }
                 catch (Exception)
                 {
