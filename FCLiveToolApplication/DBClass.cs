@@ -1101,17 +1101,57 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
             //处理直播流续传逻辑
             if (!isEndList && isContinueDownloadStream)
             {
-                double tsAllTime = valist.TS_PARM.Sum(p => p.Time) * 1000;
+                double tsAllSec = valist.TS_PARM.Sum(p => p.Time);
+                double tsAllTime = tsAllSec * 1000;
                 if (tsAllTime > 0)
                 {
                     try
                     {
-                        await Task.Delay((int)tsAllTime-100);
-                        //本地文件暂时只循环一次
                         if (valist.FileFromIndex == 0)
                         {
                             VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
-                            dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
+
+                            for (int i=0;i<=tsAllSec;i++)
+                            {
+                                dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
+
+                                // 防御性空检查：TS_PARM 可能为 null
+                                List<string> valistUrls = valist.TS_PARM?.Select(p => p.FullURL).ToList() ?? new List<string>();
+
+                                bool hasOverlap = (videoAnalysisList.TS_PARM?.Any(p => valistUrls.IndexOf(p.FullURL)>=0)) ?? false;
+
+                                // 如果没有重合项，退出 while；否则等待再试
+                                if (!hasOverlap)
+                                {
+                                    break;
+                                }
+
+                                await Task.Delay(1000);
+                            }
+                            /*
+                                        while (true)
+                                       {
+                                           dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
+                                           bool tfouned = false;
+                                           for (int i = 0; i<valist.TS_PARM.Count; i++)
+                                           {
+                                               for (int j = 0; j<videoAnalysisList.TS_PARM.Count; j++)
+                                               {
+                                                   if (videoAnalysisList.TS_PARM[j].FullURL==valist.TS_PARM[i].FullURL)
+                                                   {
+                                                       tfouned=true;
+                                                       break;
+                                                   }
+                                               }
+                                           }
+
+                                           await Task.Delay(1000);
+                                           if (!tfouned)
+                                           {
+                                               break;
+                                           }
+                                       }
+                             */
 
                             if (string.IsNullOrEmpty(dresult))
                             {
@@ -1131,6 +1171,39 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
             }
 
             return dresult;
+
+            /*
+             if (!isEndList && isContinueDownloadStream)
+{
+    double tsAllTime = valist.TS_PARM.Sum(p => p.Time) * 1000;
+    if (tsAllTime > 0)
+    {
+        try
+        {
+            await Task.Delay((int)tsAllTime-100);
+            //本地文件暂时只循环一次
+            if (valist.FileFromIndex == 0)
+            {
+                VideoAnalysisList videoAnalysisList = new VideoAnalysisList();
+                dresult = await DownloadAndReadM3U8FileForDownloadTS(videoAnalysisList, new string[] { valist.FullURL }, valist.FileFromIndex);
+
+                if (string.IsNullOrEmpty(dresult))
+                {
+                    dresult = await DownloadM3U8Stream(videoAnalysisList, savepath, isMergeBeforeFile);
+                }
+            }
+        }
+        catch (Exception)
+        {
+            dresult = "处理TS分片的总时长时发生异常！";
+        }
+    }
+    else
+    {
+        dresult = "获取所有TS分片的总时长时发生异常！";
+    }
+}
+ */
         }
 
 

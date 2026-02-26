@@ -178,7 +178,7 @@
                     </Button.ImageSource>
                 </Button>
             </Grid>
-            <Label Text="程序向服务器请求下一个M3U8文件的间隔时间是当前M3U8文件内所有TS分片的累计时长。停止任务后程序将不再请求新的M3U8，如需继续则需要重新手动点解析和下载。" LineBreakMode="WordWrap"/>
+            <Label Text="程序在下载完当前M3U8片段后，会自动向直播源服务器请求下一个片段。停止任务后程序将不再请求新的M3U8，如需继续则需要重新手动点解析和下载。请注意，下载的视频质量很大程度取决于与直播源服务器通讯的稳定性。" LineBreakMode="WordWrap"/>
             <ListView x:Name="DownloadVideoFileList" ItemTemplate="{StaticResource DownloadVideoFileListStyle}"  RowHeight="{ OnPlatform Android=150}" HorizontalScrollBarVisibility="Never"/>
         </StackLayout>
     </Grid>
