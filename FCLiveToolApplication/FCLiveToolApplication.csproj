@@ -47,7 +47,7 @@
 	  <Title>FCLiveTool</Title>
 	  <DefaultLanguage>zh-cn</DefaultLanguage>
 	  <GenerateTemporaryStoreCertificate>True</GenerateTemporaryStoreCertificate>
-	  <WindowsPackageType>None</WindowsPackageType>
+	  <WindowsPackageType>MSIX</WindowsPackageType>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net9.0-android35.0|AnyCPU'">
@@ -262,6 +262,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="View\VideoSubPageAndroid.xaml.cs">
+	    <DependentUpon>VideoSubPageAndroid.xaml</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
 	  <MauiXaml Update="AboutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
@@ -296,6 +302,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="VideoSubPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="View\VideoSubPageAndroid.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

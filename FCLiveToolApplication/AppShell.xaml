@@ -69,7 +69,10 @@
     </ShellContent>
     <ShellContent Title="直播源订阅" Icon="videosub_page.png"
         ContentTemplate="{DataTemplate local:VideoSubPage}"
-        Route="VideoSubPage"/>
+        Route="VideoSubPage" IsVisible="{OnPlatform Android=False}"/>
+    <ShellContent Title="直播源订阅" Icon="videosub_page.png"
+        ContentTemplate="{DataTemplate local:VideoSubPageAndroid}"
+        Route="VideoSubPageAndroid" IsVisible="{OnPlatform False,Android=True}"/>
 
 
     <Shell.FlyoutFooter>
