@@ -50,8 +50,14 @@ public partial class RegexSelectPopup : CommunityToolkit.Maui.Views.Popup
         }
         else if (PopupType == 2)
         {
+#if ANDROID
+            VideoSubPageAndroid.videoSubPageAndroid.RegexSelectIndex=RegexSelectBox.SelectedIndex;
+            VideoSubPageAndroid.videoSubPageAndroid.RegexOption1=RegexOptionCB.IsChecked;
+#else
             VideoSubPage.videoSubPage.RegexSelectIndex=RegexSelectBox.SelectedIndex;
             VideoSubPage.videoSubPage.RegexOption1=RegexOptionCB.IsChecked;
+#endif
+
         }
 
         isOKBtnClicked = true;
