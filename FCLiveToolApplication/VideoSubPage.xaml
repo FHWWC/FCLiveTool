@@ -115,14 +115,15 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="100"/>
                 <RowDefinition Height="80"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
 
             <StackLayout>
-                <Label Text="此处列出了你的所有订阅。"/>
+                <Label Text="此处列出了你创建的所有订阅。"/>
+                <Label Text="当你创建了一个订阅并更新后，你本次获取到的直播源订阅数据都会保存到本地，你每次只需要点击某一项即可立即查看直播源数据列表。你可以点击更新按钮重新从对应的服务器拉取数据。"  LineBreakMode="WordWrap"/>
             </StackLayout>
             <StackLayout Grid.Row="1">
                 <HorizontalStackLayout >
@@ -157,7 +158,7 @@
 
         <Grid Grid.Column="1">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="100"/>
                 <RowDefinition/>
                 <RowDefinition Height="50"/>
             </Grid.RowDefinitions>
@@ -169,6 +170,7 @@
                         <FontImageSource Glyph="&#xE9E9;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
                     </Button.ImageSource>
                 </Button>
+                <Label Margin="0,10,0,0">此处列出了当前订阅内的M3U8直播源列表，点击即可观看直播。如果没有解析出你想要的数据，可点击右侧按钮更换解析方案，关于解析方案的帮助信息在弹出的界面上，供你查看。</Label>
             </StackLayout>
             <Grid Grid.Row="1">
                 <ListView x:Name="VideoSubDetailList" ItemTemplate="{StaticResource VideoSubDetailListStyle}" HorizontalOptions="Fill" RowHeight="{OnPlatform Android=100}" HorizontalScrollBarVisibility="Never" ItemTapped="VideoSubDetailList_ItemTapped" PropertyChanged="VideoSubDetailList_PropertyChanged"/>
@@ -176,7 +178,7 @@
                 <ActivityIndicator x:Name="VideoSubDetailListRing" IsRunning="False" HorizontalOptions="Center" VerticalOptions="Center"/>
             </Grid>
 
-            <Grid x:Name="VSDLPagePanel" IsVisible="False" Grid.Row="2">
+            <Grid x:Name="VSDLPagePanel" IsVisible="False" VerticalOptions="Center" Grid.Row="2">
                 <Button x:Name="VSDLBackBtn" Background="LightPink" ContentLayout="0" HorizontalOptions="Start" VerticalOptions="Start" Clicked="VSDLBackBtn_Clicked">
                     <Button.ImageSource>
                         <FontImageSource Glyph="&#xE0E2;" Size="Small" Color="Black" FontFamily="Segoe MDL2 Assets"/>
@@ -195,10 +197,6 @@
             </Grid>
 
         </Grid>
-        
-        
-        
-        
         
     </Grid>
     
