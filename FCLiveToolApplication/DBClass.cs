@@ -1910,7 +1910,7 @@ tsurl = VideoIfm[i].Substring(0, VideoIfm[i].LastIndexOf("\\") + 1);
         public const string DefaultPlayM3U8Name = "CGTN (英语)";
         public const string DefaultPlayM3U8URL = @"https://english-livetx.cgtn.com/hls/yypdyyctzb_hd.m3u8";
         public const bool StartAutoPlayM3U8 = true;
-        public const bool AppDarkMode = false;
+        public const int AppThemeType = 0;
         public const int VideoCheckThreadNum = 50;
         public const string VideoCheckUA = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36";
     }
