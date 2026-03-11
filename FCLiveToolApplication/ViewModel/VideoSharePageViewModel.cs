@@ -42,7 +42,6 @@ namespace FCLiveToolApplication.ViewModel
 
         public static VideoSharePageViewModel videoSharePageViewModel;
         private readonly IDialogService _dialogService;
-        public static VideoSharePage videoSharePage;
 
         public List<string[]> M3U8PlayList = new List<string[]>();
         public bool isVSLRefresh = false;
